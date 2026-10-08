@@ -1,0 +1,226 @@
+[
+  {
+    "id": "code-001",
+    "source": "cursor",
+    "category": "Inline Editing",
+    "name": "Ghost Text Tab Completion",
+    "description": "Die KI schlägt Code als ausgegrautem Geistertext direkt an der Cursor-Position vor. Tab drücken übernimmt den ganzen Vorschlag, Esc verwirft ihn, Cmd+→ übernimmt Wort für Wort. Fühlt sich an wie Autocomplete auf Steroiden — man schreibt und die KI ergänzt in Echtzeit."
+  },
+  {
+    "id": "code-002",
+    "source": "cursor",
+    "category": "Inline Editing",
+    "name": "Mehrzeiliges Inline-Diff-Popup",
+    "description": "Wenn die KI mehrzeilige Änderungen vorschlägt, erscheint direkt im Editor ein Vergleichs-Popup mit alter und neuer Version nebeneinander, plus Annehmen/Ablehnen-Buttons. Kein Wechsel zu einem separaten Diff-Viewer nötig — alles passiert dort, wo man gerade arbeitet."
+  },
+  {
+    "id": "code-003",
+    "source": "cursor",
+    "category": "Inline Editing",
+    "name": "Cmd+K Inline-Bearbeitung",
+    "description": "Code markieren, Cmd+K drücken, die gewünschte Änderung in natürlicher Sprache beschreiben — die KI schreibt nur die markierte Stelle um und zeigt eine Diff-Vorschau. Schnelle, chirurgische Eingriffe ohne die Datei zu verlassen. Ideal für kleine, präzise Anpassungen."
+  },
+  {
+    "id": "code-004",
+    "source": "cursor",
+    "category": "Context System",
+    "name": "@Mention Kontext-Einspeisung",
+    "description": "Umfangreiches @Mention-System: @file (Datei einbeziehen), @folder (ganzer Ordner), @codebase (semantische Suche über die Codebasis), @web (URL abrufen), @git (Diff/Verlauf), @terminal (letzte Ausgabe), @docs (indexierte Dokumentation). Damit hat man präzise Kontrolle darüber, welchen Kontext die KI sieht."
+  },
+  {
+    "id": "code-005",
+    "source": "cursor",
+    "category": "Context System",
+    "name": "Automatische Semantische Codebase-Suche",
+    "description": "Im Agent-Modus durchsucht die KI automatisch den indexierten Code, um relevante Dateien und Symbole zu finden — ohne dass man @codebase manuell tippen muss. Findet die passendsten Code-Stellen über Embedding-Ähnlichkeit, sodass der Agent immer den richtigen Kontext hat."
+  },
+  {
+    "id": "code-006",
+    "source": "cursor",
+    "category": "Context System",
+    "name": "Vorindexierte Dokumentation (@Docs)",
+    "description": "Dokumentations-URLs (Framework-Docs, API-Referenzen, interne Wikis) in den Einstellungen hinterlegen — Cursor crawlt und indexiert sie. Mit @Docs im Prompt werden relevante Dokumentationsabschnitte in den Kontext eingefügt. So hat die KI immer die aktuelle Doku griffbereit."
+  },
+  {
+    "id": "code-007",
+    "source": "cursor",
+    "category": "Agent Management",
+    "name": "Agent-Sidebar mit Plänen und Ausführungen",
+    "description": "Rechte Seitenleiste, die alle Agenten als eigenständige Einträge mit Status (läuft/fertig/wartet), Fortschrittsanzeige und Ausgabe-Logs zeigt. Das Gespräch und die Diffs jedes Agenten stehen im Vordergrund — wie ein Pull Request reviewen, aber für KI-Arbeit."
+  },
+  {
+    "id": "code-008",
+    "source": "cursor",
+    "category": "Agent Management",
+    "name": "Plan-Modus (Strukturierte Planung)",
+    "description": "Ein eigener Modus, in dem die KI erst einen Mehrschritte-Plan erstellt, bevor sie etwas ausführt. Man kann den Plan reviewen, bearbeiten und genehmigen — erst danach arbeitet der Agent ihn Schritt für Schritt ab. Pläne sind eigenständige Objekte, die in der Sidebar sichtbar bleiben."
+  },
+  {
+    "id": "code-009",
+    "source": "cursor",
+    "category": "Agent Management",
+    "name": "Parallele Agenten (bis zu 8)",
+    "description": "Bis zu 8 Agenten gleichzeitig an verschiedenen Aufgaben arbeiten lassen. Jeder arbeitet in seinem eigenen Git-Worktree, damit keine Dateikonflikte entstehen. Alle sind in der Sidebar mit unabhängiger Statusverfolgung sichtbar — echter Parallelbetrieb."
+  },
+  {
+    "id": "code-010",
+    "source": "cursor",
+    "category": "Agent Management",
+    "name": "Hintergrund-Agenten mit Checkpoints",
+    "description": "Agenten laufen im Hintergrund, während man selbst im Vordergrund weiterarbeitet. Jeder abgeschlossene Schritt erzeugt einen Checkpoint, zu dem man jederzeit zurückkehren kann — einfach auf 'Wiederherstellen' bei einem beliebigen Checkpoint klicken. Checkpoints bleiben auch nach einem Neustart erhalten."
+  },
+  {
+    "id": "code-011",
+    "source": "cursor",
+    "category": "Agent Management",
+    "name": "Auto-Run-Modus (früher YOLO)",
+    "description": "Entfernt die Bestätigungsabfrage vor jedem Befehl, sodass der Agent Terminal-Befehle ohne Nachfragen ausführt. Über Team-Richtlinien konfigurierbar und bleibt auch nach Session-Neustart aktiv. Für erfahrene Nutzer, die den Agenten arbeiten lassen wollen, ohne ständig zu bestätigen."
+  },
+  {
+    "id": "code-012",
+    "source": "cursor",
+    "category": "Code Review",
+    "name": "BugBot PR-Review",
+    "description": "Ein KI-Code-Reviewer, der automatisch jeden GitHub Pull Request inspiziert, Inline-Kommentare über Regressionen und riskante Änderungen postet und direkt Fixes auf dem PR vorschlagen kann. Wie ein automatischer Code-Reviewer, der bei jedem PR mitliest."
+  },
+  {
+    "id": "code-013",
+    "source": "cursor",
+    "category": "Code Review",
+    "name": "Pull-Request-artige Änderungsübersicht",
+    "description": "Alle Agent-Änderungen über mehrere Dateien hinweg in einer einheitlichen Diff-Ansicht sehen, die sich anfühlt wie ein Pull Request reviewen. Kein Herumspringen zwischen einzelnen Dateien nötig — alles auf einen Blick."
+  },
+  {
+    "id": "code-014",
+    "source": "cursor",
+    "category": "Layout",
+    "name": "Klassische vs. Agent-Ansicht",
+    "description": "Umschalten zwischen klassischem Editor-Layout (Dateibaum links, traditionelle IDE) und Agent-zuerst-Layout (Agenten/Pläne-Sidebar rechts, Diffs im Vordergrund). Per 'Agents'-Button wechseln — je nachdem ob man selbst tippt oder die KI arbeiten lässt."
+  },
+  {
+    "id": "code-015",
+    "source": "windsurf",
+    "category": "Agent Flow",
+    "name": "Cascade Write Mode (Multi-Datei-Agent)",
+    "description": "Eine Anweisung in natürlicher Sprache löst eine ganze Pipeline aus: Plan erstellen → ausführen → Diffs bereitstellen. Cascade erstellt, ändert und löscht Dateien über das gesamte Projekt hinweg in einem einzigen Durchgang — mit Schritt-für-Schritt-Sichtbarkeit, was gerade passiert."
+  },
+  {
+    "id": "code-016",
+    "source": "windsurf",
+    "category": "Agent Flow",
+    "name": "Plan-Vorschau vor der Ausführung",
+    "description": "Nach dem Absenden einer Anweisung zeigt Cascade erst einen Schritt-für-Schritt-Plan, BEVOR irgendeine Datei angefasst wird. Man kann den Plan überprüfen, abbrechen oder anpassen. Erst nach der Freigabe beginnt die eigentliche Ausführung — keine überraschenden Änderungen."
+  },
+  {
+    "id": "code-017",
+    "source": "windsurf",
+    "category": "Agent Flow",
+    "name": "Schritt-für-Schritt-Freigabe",
+    "description": "Während der Ausführung kann jeder Schritt eine Freigabe erfordern. Die Diff-Bereitstellungs-Oberfläche zeigt jede geänderte Datei mit Annehmen/Rückgängig-Kontrollen auf Dateiebene — vertrauenswürdig genug für Produktions-Code."
+  },
+  {
+    "id": "code-018",
+    "source": "windsurf",
+    "category": "Context Awareness",
+    "name": "Echtzeit-Aktionsverfolgung",
+    "description": "Cascade beobachtet deine Bearbeitungen, Terminal-Befehle, Zwischenablage und Datei-Navigation in Echtzeit mit. Nach einer manuellen Änderung reicht es, 'mach weiter' zu sagen — die KI macht nahtlos dort weiter, wo man aufgehört hat, ohne den Kontext explizit teilen zu müssen."
+  },
+  {
+    "id": "code-019",
+    "source": "windsurf",
+    "category": "Context Awareness",
+    "name": "Automatisch generierte Erinnerungen",
+    "description": "Cascade speichert automatisch nützliche Fakten aus Gesprächen — bevorzugte Bibliotheken, wiederkehrende Muster, Projekt-Konventionen — und bringt sie in zukünftigen Sitzungen wieder ein. Kein manuelles Konfigurieren nötig, die KI lernt mit."
+  },
+  {
+    "id": "code-020",
+    "source": "windsurf",
+    "category": "Context Awareness",
+    "name": ".windsurfrules Projektkontext",
+    "description": "Eine Regeldatei auf Projektebene, die Coding-Konventionen, bevorzugte Muster und projektspezifische Anweisungen definiert. Die KI befolgt diese automatisch in jeder Sitzung — ähnlich wie CLAUDE.md bei Claude Code."
+  },
+  {
+    "id": "code-021",
+    "source": "windsurf",
+    "category": "Agent Flow",
+    "name": "Selbstkorrigierende Ausführung",
+    "description": "Während der Ausführung führt Cascade Terminal-Befehle aus, liest die Ausgabe, erkennt Fehler und korrigiert sich selbst, bevor verbleibende Probleme gemeldet werden. Eine automatische Wiederholungsschleife bei Fehlschlägen — die KI gibt nicht beim ersten Fehler auf."
+  },
+  {
+    "id": "code-022",
+    "source": "windsurf",
+    "category": "Input",
+    "name": "Screenshot-zu-Code-Eingabe",
+    "description": "Screenshots per Drag-and-Drop in den Chat ziehen, um daraus Frontend-Code zu generieren. Cascade analysiert das Bild und erzeugt passenden Code dazu — ideal für 'Mach es so wie hier'-Arbeitsabläufe, wo man ein Design nachbauen möchte."
+  },
+  {
+    "id": "code-023",
+    "source": "claude-code",
+    "category": "Layout",
+    "name": "Frei verschiebbare Panel-Anordnung",
+    "description": "Jedes Panel (Chat, Diff, Browser, Terminal, Datei-Editor, Plan, Aufgaben, Subagenten) lässt sich frei in jede beliebige Gitter-Anordnung ziehen. Terminal links, Chat in der Mitte, Diff rechts, Vorschau unten — wie es zum eigenen Workflow passt."
+  },
+  {
+    "id": "code-024",
+    "source": "claude-code",
+    "category": "Layout",
+    "name": "Drei Ansichtsmodi (Ausführlich/Normal/Zusammenfassung)",
+    "description": "Die Oberfläche lässt sich von voller Transparenz (jeder Tool-Aufruf sichtbar) bis zum Zusammenfassungsmodus (nur Ergebnisse) einstellen. Normal liegt dazwischen. Steuert, wie viel von den internen Prozessen der KI man sehen möchte — Entwickler wollen mehr, Endnutzer weniger."
+  },
+  {
+    "id": "code-025",
+    "source": "claude-code",
+    "category": "Layout",
+    "name": "Seiten-Chat (Abzweigende Gespräche)",
+    "description": "Cmd+; öffnet einen Seiten-Chat, um schnelle Fragen zu stellen oder Nebenpfade zu erkunden, ohne das Hauptgespräch zu unterbrechen. Man verzweigt, bekommt die Antwort und kehrt zum Hauptthread zurück — ohne den Kontext zu verlieren."
+  },
+  {
+    "id": "code-026",
+    "source": "claude-code",
+    "category": "Multi-Session",
+    "name": "Projektgruppierte Session-Sidebar",
+    "description": "Alle Sessions werden nach Projekt gruppiert in der Seitenleiste angezeigt, mit Status-Filtern (aktiv/ruhend/fertig) und Umgebungs-Tags. So kann man gleichzeitig ein Refactoring, einen Bugfix und eine Test-Sitzung über verschiedene Repositories verwalten."
+  },
+  {
+    "id": "code-027",
+    "source": "claude-code",
+    "category": "Multi-Session",
+    "name": "Hintergrund-Agent-Pläne als eigene Fenster",
+    "description": "Pläne und Hintergrundaufgaben öffnen sich in eigenen Fenstern, die den Plan und die Aufgabenausführung des Agenten zeigen — nicht versteckt im Terminal-Scroll. Jeder Plan ist ein eigenes, einsehbares und überprüfbares Objekt."
+  },
+  {
+    "id": "code-028",
+    "source": "claude-code",
+    "category": "Preview",
+    "name": "In-App Live-Vorschau",
+    "description": "Die laufende App direkt im Editor anschauen — ohne separates Browser-Fenster. Änderungen, die der Agent vornimmt, werden live in der Vorschau sichtbar. Spart das ständige Wechseln zwischen Editor und Browser."
+  },
+  {
+    "id": "code-029",
+    "source": "claude-code",
+    "category": "Code Review",
+    "name": "Code-Review-Button (Lokale Diff-Prüfung)",
+    "description": "Ein-Klick-Button, der lokale Änderungen durchsucht und Inline-Kommentare über echte Fehler hinterlässt, BEVOR man pusht. Wie einen Code-Reviewer zu haben, der die Arbeit prüft, bevor der Pull Request überhaupt existiert."
+  },
+  {
+    "id": "code-030",
+    "source": "claude-code",
+    "category": "Preview",
+    "name": "Erweiterte HTML- & PDF-Vorschau",
+    "description": "Eingebautes Vorschau-Panel, das HTML-Seiten und PDF-Dokumente direkt neben dem Chat rendert — ohne externen Viewer. Nützlich wenn die KI Dokumente erstellt oder analysiert und man das Ergebnis sofort sehen will."
+  },
+  {
+    "id": "code-031",
+    "source": "claude-code",
+    "category": "Multi-Session",
+    "name": "Routines (Geplante Agenten)",
+    "description": "Wiederkehrende geplante Aufgaben erstellen, die Agenten automatisch ausführen — tägliche Code-Gesundheitschecks, regelmäßige Test-Durchläufe, Dokumentations-Synchronisation. Routinen werden gespeichert und laufen nach Zeitplan — die KI arbeitet auch wenn man nicht da ist."
+  },
+  {
+    "id": "code-032",
+    "source": "claude-code",
+    "category": "Layout",
+    "name": "Verschiebbare Plan- & Aufgaben-Panels",
+    "description": "Plan und Aufgaben sind eigenständige, verschiebbare Panels — man kann sie überall im Gitter andocken. So sieht man den Plan des Agenten neben dem Chat und Diff gleichzeitig, ohne zwischen Tabs wechseln zu müssen. Alles Wichtige auf einen Blick."
+  }
+]

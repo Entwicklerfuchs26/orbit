@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Wallpaper</string>
+    <string name="title_activity_main">Wallpaper</string>
+    <string name="package_name">space.sternenhof.wallpaper</string>
+    <string name="custom_url_scheme">space.sternenhof.wallpaper</string>
+    <string name="live_wallpaper_label">SKWD Wall</string>
+    <string name="live_wallpaper_desc">Dein in der App gewähltes Wallpaper — mit animiertem Wechsel und Video-Unterstützung.</string>
+</resources>

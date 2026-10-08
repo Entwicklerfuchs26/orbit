@@ -1,0 +1,1094 @@
+[
+  {
+    "id": "owui-001",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Streaming Response with Auto-Scroll",
+    "description": "Antworten des Modells werden Wort für Wort live angezeigt, statt erst am Ende als Ganzes. Die Ansicht scrollt dabei automatisch mit, damit man immer den neuesten Text sieht. In den Einstellungen lässt sich das Auto-Scrollen abschalten, wenn man lieber weiter oben im Gespräch lesen möchte, während die KI noch schreibt."
+  },
+  {
+    "id": "owui-002",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Fade Effect for Streaming Text",
+    "description": "Ein optionaler Einblend-Effekt lässt den gestreamten Text sanft erscheinen statt abrupt aufzuploppen. Das gibt dem Chat ein flüssigeres, angenehmeres Gefühl beim Zuschauen. Kann in den Einstellungen ein- oder ausgeschaltet werden."
+  },
+  {
+    "id": "owui-003",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Multi-Model Side-by-Side",
+    "description": "Zwei verschiedene KI-Modelle gleichzeitig im selben Chat laufen lassen und deren Antworten direkt nebeneinander vergleichen. Die Antworten können in zwei Spalten oder als Tabs angezeigt werden. Praktisch um zu sehen, welches Modell für eine bestimmte Aufgabe besser geeignet ist."
+  },
+  {
+    "id": "owui-004",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Multi-Model Response Tabs",
+    "description": "Wenn mehrere Modelle gleichzeitig antworten, können deren Antworten als Tabs statt nebeneinander angezeigt werden. Spart Platz und eignet sich besser für schmale Bildschirme oder lange Antworten. Umschaltbar in den Einstellungen."
+  },
+  {
+    "id": "owui-005",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Chat Bubble UI",
+    "description": "Optionale Sprechblasen-Darstellung wie bei Messenger-Apps: Eigene Nachrichten rechts, KI-Antworten links. Eine Alternative zum Standard-Layout, bei dem alles untereinander in einer Spalte steht. Kann in den Einstellungen aktiviert werden."
+  },
+  {
+    "id": "owui-006",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Chat Background Image",
+    "description": "Ein eigenes Hintergrundbild für den Chat-Bereich festlegen, z.B. ein Wallpaper oder eine Textur. Wird über eine URL konfiguriert und unterstützt PNG, JPEG, WebP und GIF. Gibt dem Chat eine persönliche Note."
+  },
+  {
+    "id": "owui-007",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Widescreen Mode",
+    "description": "Erweitert den Chat-Bereich, damit er mehr horizontalen Platz auf dem Bildschirm nutzt. Besonders nützlich auf breiten Monitoren, wo der Chat sonst nur eine schmale Spalte in der Mitte einnimmt. Umschaltbar in den Einstellungen."
+  },
+  {
+    "id": "owui-008",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Chat Direction (LTR/RTL)",
+    "description": "Die Textrichtung im Chat kann auf Automatisch, Links-nach-Rechts oder Rechts-nach-Links gestellt werden. Wichtig für Sprachen wie Arabisch oder Hebräisch, die von rechts nach links geschrieben werden. Ermöglicht mehrsprachige Nutzung."
+  },
+  {
+    "id": "owui-009",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Temporary Chat",
+    "description": "Ein temporäres Gespräch starten, das nicht im Verlauf gespeichert wird. Praktisch für schnelle Fragen, die man nicht aufheben möchte. Kann als Standard-Verhalten eingestellt oder einzeln per /temporary-Befehl aktiviert werden."
+  },
+  {
+    "id": "owui-010",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Chat Overview Map",
+    "description": "Eine Übersichtskarte des gesamten Gesprächs, erreichbar über den Übersicht-Tab in den Chat-Steuerungen. Zeigt die Struktur der Konversation auf einen Blick, damit man sich in langen Gesprächen schnell zurechtfindet und zu bestimmten Stellen springen kann."
+  },
+  {
+    "id": "owui-011",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Fork Chat",
+    "description": "Ein Gespräch an beliebiger Stelle abzweigen und als eigenständige Kopie weiterführen. Der neue Chat enthält den Verlauf bis zu dieser Nachricht. Nützlich, wenn man einen anderen Weg ausprobieren möchte, ohne das Original zu verändern."
+  },
+  {
+    "id": "owui-012",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Reference Chats",
+    "description": "Ein anderes Gespräch als Klartext-Kontext an den aktuellen Chat anhängen, ohne es in Stücke zu zerlegen. So kann das Modell auf frühere Diskussionen Bezug nehmen, ohne dass man alles nochmal eintippen muss."
+  },
+  {
+    "id": "owui-013",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Message Queue",
+    "description": "Weiter tippen und Nachrichten abschicken, während die KI noch antwortet. Die Nachrichten werden in einer Warteschlange gesammelt und automatisch gesendet, sobald das Modell bereit ist. Man muss also nicht warten, bis die aktuelle Antwort fertig ist."
+  },
+  {
+    "id": "owui-014",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Follow-Up Prompts",
+    "description": "Nach jeder KI-Antwort werden automatisch passende Folgefragen als anklickbare Chips vorgeschlagen. Man kann sie direkt anklicken statt selbst tippen zu müssen. Die Vorschläge können im Chat bleiben oder ins Eingabefeld übernommen werden."
+  },
+  {
+    "id": "owui-015",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Prompt Suggestions (Starter Chips)",
+    "description": "In neuen, leeren Chats werden anklickbare Starter-Vorschläge angezeigt, z.B. 'Erkläre diesen Code Schritt für Schritt'. Können pro Modell konfiguriert und pro Sprache übersetzt werden. Helfen beim Einstieg ins Gespräch."
+  },
+  {
+    "id": "owui-016",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Floating Quick Action Buttons",
+    "description": "Frei schwebende Schnellzugriff-Buttons im Chat für häufig benutzte Aktionen. Können individuell konfiguriert und ein- oder ausgeblendet werden. Sparen Klicks bei wiederkehrenden Aufgaben."
+  },
+  {
+    "id": "owui-017",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Markdown Rendering",
+    "description": "Volle Markdown-Darstellung in Nutzer- und KI-Nachrichten: Überschriften, Listen, fett/kursiv, Links, Tabellen werden alle formatiert angezeigt. Kann unabhängig für Nutzer- und KI-Nachrichten ein- oder ausgeschaltet werden. Macht Antworten deutlich lesbarer."
+  },
+  {
+    "id": "owui-018",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "LaTeX Rendering",
+    "description": "Mathematische Formeln und Gleichungen werden direkt im Chat als hübsch formatierte Ausdrücke dargestellt, statt als roher LaTeX-Code. Ideal für technische und wissenschaftliche Gespräche, bei denen Formeln vorkommen."
+  },
+  {
+    "id": "owui-019",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Syntax-Highlighted Code Blocks",
+    "description": "Codeblöcke werden mit sprachspezifischer Syntaxhervorhebung angezeigt — Schlüsselwörter, Strings und Kommentare in verschiedenen Farben. Dazu gibt es einen Kopier-Button und ein Sprach-Label. Code-Blöcke können auf Wunsch immer eingeklappt dargestellt werden."
+  },
+  {
+    "id": "owui-020",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Mermaid Diagram Rendering",
+    "description": "Mermaid-Diagramm-Code in Nachrichten wird automatisch als visuelles Diagramm dargestellt (Flussdiagramme, Sequenzdiagramme, Gantt-Charts usw.). Man sieht das fertige Bild direkt im Chat statt nur den Quellcode."
+  },
+  {
+    "id": "owui-021",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Table Rendering",
+    "description": "Markdown-Tabellen werden als formatierte HTML-Tabellen mit sauberen Spalten und Zeilen dargestellt. Deutlich besser lesbar als die rohe Markdown-Syntax, besonders bei Datenvergleichen oder strukturierten Übersichten."
+  },
+  {
+    "id": "owui-022",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Writing & Content Blocks",
+    "description": "Antworten mit speziellen Inhaltsblöcken (Colon-Fence-Syntax) werden als gestylte Container dargestellt, ähnlich wie ein Dokument mit Abschnitten. Ermöglicht strukturierte, dokumentartige Ausgaben innerhalb des Chats."
+  },
+  {
+    "id": "owui-023",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Link Rendering (Safe Links)",
+    "description": "Links werden nur für sichere Protokolle (http, https, mailto, tel) als anklickbare Verweise dargestellt. Andere Protokolle erscheinen als Klartext aus Sicherheitsgründen. Schützt vor potenziell gefährlichen Links in KI-Antworten."
+  },
+  {
+    "id": "owui-024",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Citations & Source References",
+    "description": "Wenn RAG oder Websuche benutzt wird, erscheinen Quellenangaben neben der Antwort. Man kann nachvollziehen, woher die Information stammt, und direkt zur Originalquelle springen. Erhöht die Vertrauenswürdigkeit der Antworten."
+  },
+  {
+    "id": "owui-025",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Reasoning/Thinking Display",
+    "description": "Spezielle Darstellung für Modelle, die ihre Gedankenkette sichtbar machen (Thinking-Tags). Die Denkschritte werden in einklappbaren Abschnitten angezeigt, sodass man nachvollziehen kann, wie die KI zur Antwort gekommen ist, ohne dass es den Chat überfüllt."
+  },
+  {
+    "id": "owui-026",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Status Updates / Progress Indicators",
+    "description": "Fortschrittsanzeigen während das Modell arbeitet, z.B. bei Tool-Aufrufen oder Dokumentensuche. Zeigt an, was die KI gerade tut, statt nur einen Ladebalken zu zeigen. Man sieht z.B. 'Durchsuche Wissensdatenbank...' oder 'Führe Websuche aus...'."
+  },
+  {
+    "id": "owui-027",
+    "source": "openwebui",
+    "category": "Message Display",
+    "name": "Display Username vs 'You'",
+    "description": "Option, den eigenen Benutzernamen statt 'Du' bei eigenen Nachrichten anzuzeigen. Sinnvoll in geteilten Umgebungen oder wenn man Gespräche teilt, damit klar ist, wer geschrieben hat."
+  },
+  {
+    "id": "owui-028",
+    "source": "openwebui",
+    "category": "Message Editing",
+    "name": "Edit User Messages",
+    "description": "Bereits gesendete Nachrichten nachträglich bearbeiten und die KI-Antwort ab diesem Punkt neu generieren lassen. Nützlich, wenn man einen Tippfehler korrigieren oder die Frage umformulieren möchte, ohne ein neues Gespräch starten zu müssen."
+  },
+  {
+    "id": "owui-029",
+    "source": "openwebui",
+    "category": "Message Editing",
+    "name": "Structured Response Editing",
+    "description": "Einklappbare Editor-Felder für Tool-Aufrufe, Denkblöcke und Code-Ausgaben in KI-Nachrichten. Bei komplexen Nachrichten mit Tool-Calls kann man zwischen formatierter Ansicht und rohem JSON umschalten, um die Details zu inspizieren."
+  },
+  {
+    "id": "owui-030",
+    "source": "openwebui",
+    "category": "Message Editing",
+    "name": "Regenerate Response",
+    "description": "Die Antwort des Modells neu generieren lassen, wenn sie nicht zufriedenstellend war. Ein Menü bietet verschiedene Optionen für die Neugenerierung. So kann man mehrere Varianten ausprobieren, ohne die Frage nochmal stellen zu müssen."
+  },
+  {
+    "id": "owui-031",
+    "source": "openwebui",
+    "category": "Message Editing",
+    "name": "Copy Response to Clipboard",
+    "description": "Den Text einer KI-Antwort in die Zwischenablage kopieren, wahlweise als formatierten oder als reinen Text. Kann so eingestellt werden, dass jede Antwort automatisch kopiert wird. Spart den Umweg über Markieren und Rechtsklick."
+  },
+  {
+    "id": "owui-032",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Expandable Message Box",
+    "description": "Wenn der Text im Eingabefeld auf eine zweite Zeile umbricht, erscheint ein Button, der einen großen Editor mit Formatierungs-Toolbar öffnet. Ideal für längere Nachrichten oder wenn man vor dem Absenden noch formatieren möchte."
+  },
+  {
+    "id": "owui-033",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Rich Text Input",
+    "description": "Formatierungsmöglichkeiten direkt im Eingabefeld: fett, kursiv, Listen usw. über eine schwebende Formatierungs-Toolbar. Kann in den Einstellungen ein- oder ausgeschaltet werden. Macht es einfacher, strukturierte Nachrichten zu verfassen."
+  },
+  {
+    "id": "owui-034",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Prompt Autocomplete",
+    "description": "KI-gestützte Textvervollständigung, die beim Tippen inline Vorschläge anzeigt und hilft, Prompts schneller zu formulieren. Nutzt ein Task-Modell im Hintergrund. Ähnlich wie Autocomplete in einer IDE, nur für Chat-Eingaben."
+  },
+  {
+    "id": "owui-035",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Slash Commands (/)",
+    "description": "Eingebaute Befehle wie /compact, /status, /fork, /model, /settings, /temporary für schnelle Aktionen direkt aus dem Eingabefeld. Tippe / und es erscheint eine Liste verfügbarer Befehle. Spart Klicks durch die Menüs."
+  },
+  {
+    "id": "owui-036",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "@ Model Mentions",
+    "description": "Tippe @ um innerhalb eines Gesprächs das Modell zu wechseln oder in Kanal-Gesprächen gezielt ein Modell anzusprechen. Das Modell wird sofort aktiviert, ohne durch Dropdown-Menüs navigieren zu müssen."
+  },
+  {
+    "id": "owui-037",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "# URL/Document Mentions",
+    "description": "Tippe # gefolgt von einer URL, um eine Webseite direkt in den Chat zu ziehen, oder verweise auf hochgeladene Dokumente. Das Modell kann dann Fragen zu diesem Inhalt beantworten, ohne dass man den Text manuell kopieren muss."
+  },
+  {
+    "id": "owui-038",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "$ Skill Mentions",
+    "description": "Tippe $ um Skills (spezielle Fähigkeiten) spontan zu aktivieren und deren Anweisungen in den Gesprächskontext einzufügen. So kann das Modell on-the-fly spezialisiertes Wissen abrufen, ohne dass man es vorher konfigurieren muss."
+  },
+  {
+    "id": "owui-039",
+    "source": "openwebui",
+    "category": "Input",
+    "name": ": Emoji Picker",
+    "description": "Tippe : im Eingabefeld, um einen Emoji-Auswahldialog zu öffnen. Einfacher als die System-Emoji-Tastatur, da man direkt im Chat nach Emojis suchen kann."
+  },
+  {
+    "id": "owui-040",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Enter vs Ctrl+Enter Send",
+    "description": "Einstellbares Sendeverhalten: Enter zum Absenden (Standard) oder Ctrl+Enter zum Absenden (dann erzeugt Enter einen Zeilenumbruch). Wichtig für Nutzer, die oft mehrzeilige Nachrichten schreiben und versehentliches Absenden vermeiden wollen."
+  },
+  {
+    "id": "owui-041",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Paste Large Text as File",
+    "description": "Wenn man einen sehr langen Text einfügt, kann dieser automatisch als Dateianhang statt als Inline-Text behandelt werden. Verhindert, dass das Eingabefeld durch riesige Textblöcke unübersichtlich wird, und nutzt den Kontext effizienter."
+  },
+  {
+    "id": "owui-042",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Keyboard Shortcuts (Rebindable)",
+    "description": "Frei belegbare Tastenkürzel für häufige Aktionen, verwaltbar unter Einstellungen > Tastatur. Man kann die Kürzel nach eigenen Vorlieben anpassen, z.B. für neuen Chat, Suche oder Seitenleiste umschalten."
+  },
+  {
+    "id": "owui-043",
+    "source": "openwebui",
+    "category": "File Handling",
+    "name": "File Upload (Documents)",
+    "description": "PDFs, Textdateien und andere Dokumente hochladen, damit die KI sie analysieren kann. Unterstützt Drag-and-Drop — einfach die Datei in den Chat ziehen. Das Modell kann dann Fragen zum Inhalt beantworten oder Zusammenfassungen erstellen."
+  },
+  {
+    "id": "owui-044",
+    "source": "openwebui",
+    "category": "File Handling",
+    "name": "Image Upload & Analysis",
+    "description": "Bilder hochladen, damit Modelle mit Bilderkennungs-Fähigkeit (Vision) sie analysieren und besprechen können. Man kann z.B. ein Foto von einem Fehlerbildschirm schicken und fragen, was das Problem ist."
+  },
+  {
+    "id": "owui-045",
+    "source": "openwebui",
+    "category": "File Handling",
+    "name": "Upload Mode Toggle (Focused vs Full)",
+    "description": "Per Klick auf einen Anhang zwischen zwei Modi umschalten: 'Fokussierte Suche' (semantische Suche in Dokumentstücken — effizient bei großen Dateien) und 'Voller Kontext' (das gesamte Dokument wird komplett an das Modell übergeben — besser für kurze Dokumente)."
+  },
+  {
+    "id": "owui-046",
+    "source": "openwebui",
+    "category": "File Handling",
+    "name": "Image Compression",
+    "description": "Automatische Bildkomprimierung beim Hochladen mit einstellbaren Maßen. Kann pro Kontext aktiviert oder deaktiviert werden. Spart Token und beschleunigt die Verarbeitung, besonders bei hochauflösenden Fotos."
+  },
+  {
+    "id": "owui-047",
+    "source": "openwebui",
+    "category": "File Handling",
+    "name": "Cloud File Picking (Google Drive / OneDrive)",
+    "description": "Dateien direkt aus Google Drive oder OneDrive/SharePoint importieren, ohne sie erst herunterladen zu müssen. Native Integration für Firmenumgebungen, in denen Dokumente in der Cloud liegen."
+  },
+  {
+    "id": "owui-048",
+    "source": "openwebui",
+    "category": "Model Selection",
+    "name": "Model Selector Dropdown",
+    "description": "Durchsuchbares Dropdown-Menü am oberen Rand des Chats zur Auswahl des aktiven Modells. Zeigt Modellname, Beschreibung und Tags an. Tippt man einen Suchbegriff, werden die Ergebnisse live gefiltert."
+  },
+  {
+    "id": "owui-049",
+    "source": "openwebui",
+    "category": "Model Selection",
+    "name": "Pin Models to Sidebar",
+    "description": "Häufig benutzte Modelle als Schnellzugriff in der Seitenleiste anpinnen. Ein Klick genügt, um sofort einen neuen Chat mit dem bevorzugten Modell zu starten, ohne jedes Mal das Dropdown zu öffnen."
+  },
+  {
+    "id": "owui-050",
+    "source": "openwebui",
+    "category": "Model Selection",
+    "name": "Model Filter & Bulk Actions",
+    "description": "Modelle nach Status filtern (aktiviert, deaktiviert, sichtbar, versteckt, öffentlich, privat) und mehrere gleichzeitig aktivieren, deaktivieren oder ein-/ausblenden. Nützlich in Umgebungen mit vielen Modellen, um Ordnung zu halten."
+  },
+  {
+    "id": "owui-051",
+    "source": "openwebui",
+    "category": "Model Selection",
+    "name": "Drag-to-Reorder Models",
+    "description": "Modelle im Auswahl-Dropdown per Drag-and-Drop umsortieren (wenn keine Suche oder Filter aktiv sind). So kann man die wichtigsten Modelle nach oben ziehen für schnelleren Zugriff."
+  },
+  {
+    "id": "owui-052",
+    "source": "openwebui",
+    "category": "Model Selection",
+    "name": "/model Slash Command",
+    "description": "Per /model-Befehl im Eingabefeld das Modell wechseln oder anzeigen, welches gerade aktiv ist. Schneller als der Weg über das Dropdown, besonders für Poweruser."
+  },
+  {
+    "id": "owui-053",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Conversation List with Search",
+    "description": "Die Seitenleiste zeigt alle bisherigen Gespräche mit Suchfunktion. Man kann nach Stichworten suchen, um ein bestimmtes Gespräch wiederzufinden, statt endlos scrollen zu müssen."
+  },
+  {
+    "id": "owui-054",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Folders & Tags for Chats",
+    "description": "Gespräche in Ordner sortieren und mit Tags versehen für bessere Organisation. Ordner können in Projekt-Arbeitsbereiche umgewandelt werden, die eigene System-Prompts und Wissensdatenbanken haben."
+  },
+  {
+    "id": "owui-055",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Sidebar Hover Previews",
+    "description": "Beim Hovern über einen Chat in der Seitenleiste erscheint eine Vorschau der letzten Nachrichten. So erkennt man schnell, worum es in einem Gespräch ging, ohne es öffnen zu müssen. Bei langsamen Verbindungen standardmäßig deaktiviert."
+  },
+  {
+    "id": "owui-056",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Mobile Swipe Sidebar",
+    "description": "Auf Handy und Tablet kann die Seitenleiste durch Wischen nach rechts geöffnet und nach links geschlossen werden, mit visuellem Feedback. Fühlt sich natürlich an wie in einer nativen App."
+  },
+  {
+    "id": "owui-057",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Three-Dot Menu per Chat",
+    "description": "Ein immer sichtbares Drei-Punkte-Menü bei jedem Chat-Eintrag in der Seitenleiste. Bietet schnellen Zugriff auf Aktionen wie Umbenennen, Löschen, Teilen — besonders wichtig auf Mobilgeräten, wo langes Drücken umständlich ist."
+  },
+  {
+    "id": "owui-058",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Pinned Chats",
+    "description": "Wichtige Gespräche oben in der Seitenleiste anpinnen, damit sie immer sofort erreichbar sind und nicht von neuen Chats nach unten verdrängt werden."
+  },
+  {
+    "id": "owui-059",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Chat Title Auto-Generation",
+    "description": "Chat-Titel werden automatisch aus dem Gesprächsinhalt generiert, damit man nicht selbst benennen muss. Kann ausgeschaltet werden, wenn man lieber eigene Titel vergibt."
+  },
+  {
+    "id": "owui-060",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Chat Title in Browser Tab",
+    "description": "Option, den aktuellen Chat-Titel im Browser-Tab anzuzeigen. Erleichtert die Orientierung, wenn man mehrere Tabs offen hat, da man sofort sieht, welcher Tab welches Gespräch enthält."
+  },
+  {
+    "id": "owui-061",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Auto-Tag Generation",
+    "description": "Tags werden automatisch basierend auf dem Gesprächsinhalt erzeugt, z.B. 'Python', 'Rezept', 'Mathe'. Hilft bei der Organisation, ohne dass man selbst daran denken muss, Gespräche zu kategorisieren."
+  },
+  {
+    "id": "owui-062",
+    "source": "openwebui",
+    "category": "Sidebar & Navigation",
+    "name": "Landing Page Mode",
+    "description": "Auswahl, ob beim Öffnen der App eine Startseite mit Übersicht gezeigt wird oder ob man direkt in die Chat-Ansicht springt. Je nach Vorliebe und Nutzungsmuster einstellbar."
+  },
+  {
+    "id": "owui-063",
+    "source": "openwebui",
+    "category": "Sharing & Export",
+    "name": "Chat Sharing (Local & Community)",
+    "description": "Gespräche lokal innerhalb der eigenen Instanz oder über die Open WebUI Community-Plattform teilen. Datenschutz-Einstellungen bestimmen, was geteilt wird. Nützlich um Lösungen mit Kollegen zu teilen."
+  },
+  {
+    "id": "owui-064",
+    "source": "openwebui",
+    "category": "Sharing & Export",
+    "name": "Stylized PDF Export",
+    "description": "Chats als gestylte PDF-Dokumente exportieren, bei denen die Formatierung (Code-Blöcke, Überschriften, Listen) erhalten bleibt. Ideal um KI-Gespräche als Dokumentation oder Referenz zu archivieren."
+  },
+  {
+    "id": "owui-065",
+    "source": "openwebui",
+    "category": "Sharing & Export",
+    "name": "Copy Chat Link",
+    "description": "Einen teilbaren Link zu einem Chat generieren, der auch das verwendete Modell als Parameter enthält. So kann jemand anderes denselben Chat mit denselben Einstellungen öffnen."
+  },
+  {
+    "id": "owui-066",
+    "source": "openwebui",
+    "category": "Sharing & Export",
+    "name": "Model Export/Import (JSON)",
+    "description": "Modell-Voreinstellungen als JSON-Dateien exportieren und importieren, inklusive Hintergrundbilder. Ermöglicht einfaches Teilen von Agent-Konfigurationen zwischen Instanzen oder mit anderen Nutzern."
+  },
+  {
+    "id": "owui-067",
+    "source": "openwebui",
+    "category": "Voice & Audio",
+    "name": "Voice Mode (Hands-Free Conversation)",
+    "description": "Komplett freihändige Sprachkonversation: Sprachmodus-Button drücken, sprechen, und die KI-Antwort wird Satz für Satz vorgelesen. Das Gespräch wird trotzdem als lesbarer Text gespeichert. Ideal z.B. beim Kochen oder Autofahren."
+  },
+  {
+    "id": "owui-068",
+    "source": "openwebui",
+    "category": "Voice & Audio",
+    "name": "Speech-to-Text (STT)",
+    "description": "Nachrichten per Spracheingabe diktieren statt tippen. Unterstützt verschiedene STT-Engines: lokales Whisper (privat, kein Internet nötig), OpenAI, Azure, Deepgram, Mistral. Die erkannte Sprache wird als Text im Eingabefeld angezeigt."
+  },
+  {
+    "id": "owui-069",
+    "source": "openwebui",
+    "category": "Voice & Audio",
+    "name": "Text-to-Speech (TTS)",
+    "description": "KI-Antworten vorlesen lassen statt selbst zu lesen. Unterstützt verschiedene TTS-Engines: Azure, ElevenLabs, OpenAI, Transformers, WebAPI. Die Stimme kann pro Modell individuell gewählt werden."
+  },
+  {
+    "id": "owui-070",
+    "source": "openwebui",
+    "category": "Voice & Audio",
+    "name": "Voice Cloning",
+    "description": "Die Stimme der KI personalisieren — eigene Stimmcharakteristiken anpassen für individualisierte Audio-Antworten. So kann die KI z.B. mit einer bestimmten Stimmlage oder einem bestimmten Stil sprechen."
+  },
+  {
+    "id": "owui-071",
+    "source": "openwebui",
+    "category": "Voice & Audio",
+    "name": "Voice/Video Call",
+    "description": "Integrierte Sprach- und Videoanrufe mit dem Modell. Bei Vision-fähigen Modellen kann die Kamera als Eingabe genutzt werden — man zeigt etwas und fragt, was die KI sieht. Fühlt sich an wie ein Videogespräch."
+  },
+  {
+    "id": "owui-072",
+    "source": "openwebui",
+    "category": "Voice & Audio",
+    "name": "Voice Interruption",
+    "description": "Option, die KI mitten im Sprechen unterbrechen zu können. Nützlich wenn die Antwort in die falsche Richtung geht und man sofort korrigieren möchte, statt warten zu müssen. Umschaltbar in den Einstellungen."
+  },
+  {
+    "id": "owui-073",
+    "source": "openwebui",
+    "category": "Voice & Audio",
+    "name": "Emoji Display in Call",
+    "description": "Während Sprach-/Videoanrufen werden Emoji-Reaktionen angezeigt, die visuelles Feedback geben. Macht die Sprachinteraktion lebendiger und gibt einen Hinweis darauf, wie die KI den Kontext einschätzt."
+  },
+  {
+    "id": "owui-074",
+    "source": "openwebui",
+    "category": "Image Generation",
+    "name": "Inline Image Generation",
+    "description": "Bilder direkt im Chat aus Textbeschreibungen generieren. Im Eingabefeld den 'Bild'-Modus aktivieren, Prompt eintippen, absenden — das generierte Bild erscheint inline im Gespräch. Kein Wechsel zu einer separaten App nötig."
+  },
+  {
+    "id": "owui-075",
+    "source": "openwebui",
+    "category": "Image Generation",
+    "name": "Image Editing (Inpainting)",
+    "description": "Ein Bild hochladen und per Textbeschreibung Änderungen vornehmen, z.B. 'Ändere den Hintergrund auf Sonnenuntergang'. Das Modell generiert eine modifizierte Version. Braucht eine Edit-Engine wie ComfyUI oder Gemini."
+  },
+  {
+    "id": "owui-076",
+    "source": "openwebui",
+    "category": "Image Generation",
+    "name": "Image Compositing",
+    "description": "Mehrere Bilder hochladen und sie per Textbeschreibung zu einer zusammenhängenden Szene kombinieren. Praktisch für kreative Projekte, bei denen man Elemente aus verschiedenen Bildern zusammenführen möchte."
+  },
+  {
+    "id": "owui-077",
+    "source": "openwebui",
+    "category": "Image Generation",
+    "name": "Multiple Image Engines",
+    "description": "Unterstützt verschiedene Bildgenerierungs-Engines: DALL-E, Gemini, ComfyUI (lokal) und AUTOMATIC1111 (lokal). Verschiedene Checkpoint-Modelle ermöglichen unterschiedliche Stilvarianten — von fotorealistisch bis Illustration."
+  },
+  {
+    "id": "owui-078",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Knowledge Base Collections",
+    "description": "Benannte Dokumentensammlungen unter Workspace > Wissen anlegen. Dateien, Ordner, Webseiten oder Textinhalte hochladen und in verschachtelten Verzeichnissen organisieren. Die KI kann dann gezielt in diesen Sammlungen suchen und Fragen beantworten."
+  },
+  {
+    "id": "owui-079",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Hybrid Search (BM25 + Vector)",
+    "description": "Kombiniert klassische Stichwortsuche (BM25) mit semantischer Vektorsuche und Cross-Encoder-Reranking für bessere Suchergebnisse. Findet relevante Stellen auch wenn die exakten Begriffe nicht übereinstimmen, aber der Sinn passt."
+  },
+  {
+    "id": "owui-080",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Agentic Retrieval",
+    "description": "Modelle durchsuchen und kombinieren eigenständig die Wissensdatenbanken, wenn sie Informationen brauchen, ohne dass man es explizit anweisen muss. Die KI entscheidet selbst, wann und wo sie nachschlagen sollte."
+  },
+  {
+    "id": "owui-081",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Full Context Mode",
+    "description": "Ganze Dokumente komplett in den Kontext einfügen, ohne sie in Stücke zu zerlegen. Keine semantische Suche — das Modell sieht das vollständige Dokument. Ideal für kurze Dokumente, bei denen man sicher sein will, dass nichts übersehen wird."
+  },
+  {
+    "id": "owui-082",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Multiple Vector Databases",
+    "description": "Unterstützung für 13 verschiedene Vektordatenbanken: ChromaDB, PGVector, Qdrant, Milvus, Elasticsearch, Pinecone und weitere. Man kann die Datenbank wählen, die am besten zur eigenen Infrastruktur passt."
+  },
+  {
+    "id": "owui-083",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Multiple Extraction Engines",
+    "description": "8 verschiedene Optionen zum Einlesen von Dokumenten: Tika, Docling, Azure OCR, Mistral OCR und weitere. Verschiedene Engines eignen sich für verschiedene Dateitypen — OCR z.B. für gescannte PDFs."
+  },
+  {
+    "id": "owui-084",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Knowledge Base File Management UI",
+    "description": "Dateiverwaltung für die Wissensdatenbank mit sortierbarer Liste (Titel, Aktualisierungsdatum), Breadcrumb-Navigation, Drag-and-Drop in Ordner, Umbenennen direkt in der Liste, und Ordner erstellen/löschen. Wie ein kleiner Dateimanager."
+  },
+  {
+    "id": "owui-085",
+    "source": "openwebui",
+    "category": "Knowledge & RAG",
+    "name": "Incremental Sync (SHA-256)",
+    "description": "Intelligente Dateisynchronisation per SHA-256-Hash: nur neue oder geänderte Dateien werden hochgeladen, bestehende übersprungen. Die Ordnerstruktur bleibt erhalten. Spart Zeit und Bandbreite bei großen Dokumentensammlungen."
+  },
+  {
+    "id": "owui-086",
+    "source": "openwebui",
+    "category": "Web Search",
+    "name": "Web Search in Chat",
+    "description": "Die KI durchsucht in Echtzeit das Internet und liefert Antworten mit Quellenangaben. Unterstützt Dutzende Anbieter: SearXNG, Google PSE, Brave, Kagi, Tavily, Perplexity, Firecrawl. So sind die Antworten immer aktuell, nicht nur aus dem Trainigswissen."
+  },
+  {
+    "id": "owui-087",
+    "source": "openwebui",
+    "category": "Web Search",
+    "name": "Web Browsing (#URL)",
+    "description": "Jede beliebige Webseite in den Chat ziehen mit dem #-Befehl gefolgt von einer URL. Das Modell kann die Seite auch eigenständig abrufen, wenn es die Information braucht. So kann man z.B. über einen Blogartikel oder eine Dokumentationsseite diskutieren."
+  },
+  {
+    "id": "owui-088",
+    "source": "openwebui",
+    "category": "Web Search",
+    "name": "Save Search Results to Knowledge",
+    "description": "Ergebnisse aus der Websuche in die persönliche Wissensdatenbank speichern für spätere Nutzung. So baut man sich nach und nach eine Sammlung auf, die die KI bei künftigen Fragen durchsuchen kann."
+  },
+  {
+    "id": "owui-089",
+    "source": "openwebui",
+    "category": "Memory",
+    "name": "Persistent Memory Across Chats",
+    "description": "Die KI merkt sich Fakten über den Nutzer über mehrere Gespräche hinweg, z.B. bevorzugte Programmiersprache oder Arbeitskontext. In den Daten-Einstellungen kann man verwalten, was gespeichert bleibt und was gelöscht werden soll."
+  },
+  {
+    "id": "owui-090",
+    "source": "openwebui",
+    "category": "Memory",
+    "name": "Memory Injection per Model",
+    "description": "Gespeicherte Erinnerungen können pro Modell-Preset in den Kontext eingefügt werden. So weiß ein bestimmter Agent z.B. über Projektdetails Bescheid, während ein anderer Agent diese Infos nicht bekommt."
+  },
+  {
+    "id": "owui-091",
+    "source": "openwebui",
+    "category": "Memory",
+    "name": "Privacy / Data Controls",
+    "description": "Kontrolle darüber, welche Daten gespeichert, geteilt oder pro Anfrage übertragen werden. Erinnerungen, Verlauf und Privatsphäre-Einstellungen können individuell verwaltet werden. Wichtig für datensensible Umgebungen."
+  },
+  {
+    "id": "owui-092",
+    "source": "openwebui",
+    "category": "Notes",
+    "name": "Notes Workspace (Rich Editor)",
+    "description": "Ein eigener Arbeitsbereich für Inhalte außerhalb von Gesprächen — z.B. Notizen, Entwürfe, Sammlungen. Bietet einen Rich-Text-Editor mit Markdown und Formatierungs-Toolbar. Wie ein eingebauter Notizblock neben dem Chat."
+  },
+  {
+    "id": "owui-093",
+    "source": "openwebui",
+    "category": "Notes",
+    "name": "AI Enhance for Notes",
+    "description": "Text in einer Notiz markieren und per KI umschreiben oder verbessern lassen, direkt an Ort und Stelle. Ideal um Entwürfe zu polieren, Formulierungen zu verbessern oder Texte zu kürzen/erweitern."
+  },
+  {
+    "id": "owui-094",
+    "source": "openwebui",
+    "category": "Notes",
+    "name": "Notes as Chat Context",
+    "description": "Notizen an beliebige Chats anhängen, damit das Modell vollen Zugriff auf den Inhalt hat. Modelle können Notizen auch eigenständig durchsuchen, lesen und aktualisieren. So werden Notizen zu lebendigem Wissenskontext."
+  },
+  {
+    "id": "owui-095",
+    "source": "openwebui",
+    "category": "Channels",
+    "name": "Team Channels",
+    "description": "Echtzeit-Gruppenräume, in denen Team und KI-Modelle gemeinsam in einer Timeline arbeiten. Öffentliche, private, gruppenbasierte und Direktnachrichten-Kanäle verfügbar. Wie Slack oder Discord, aber mit eingebauter KI."
+  },
+  {
+    "id": "owui-096",
+    "source": "openwebui",
+    "category": "Channels",
+    "name": "@Model Tagging in Channels",
+    "description": "In Kanal-Gesprächen per @-Erwähnung jedes verfügbare KI-Modell spontan hinzuziehen. Man tippt z.B. @claude und das Modell antwortet im Kanal. So kann das Team gemeinsam mit verschiedenen Modellen arbeiten."
+  },
+  {
+    "id": "owui-097",
+    "source": "openwebui",
+    "category": "Channels",
+    "name": "Threads & Reactions in Channels",
+    "description": "Antwort-Threads, Pins und Emoji-Reaktionen innerhalb von Kanälen für strukturierte Teamdiskussionen. Hält Nebendiskussionen übersichtlich, ohne den Hauptkanal zu überladen."
+  },
+  {
+    "id": "owui-098",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Model Presets / Agent Builder",
+    "description": "Agent-Konfigurationen auf Basis von Grundmodellen erstellen: System-Prompt, Wissensdatenbanken, Tools, Skills, Parameter, Avatar und Hintergrundbild zuweisen. So baut man spezialisierte Assistenten, die sofort einsatzbereit sind."
+  },
+  {
+    "id": "owui-099",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Dynamic Variables in System Prompts",
+    "description": "Dynamische Variablen wie {{USER_NAME}}, {{CURRENT_DATE}}, {{CURRENT_TIME}}, {{USER_GROUPS}} werden automatisch in System-Prompts eingefügt. So kann der Agent z.B. den Nutzer beim Namen ansprechen oder das aktuelle Datum kennen."
+  },
+  {
+    "id": "owui-100",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Bound Tools per Model",
+    "description": "Bestimmte Tools fest an ein Modell-Preset binden, sodass Nutzer einen fertig konfigurierten Agenten bekommen, ohne selbst Tools aktivieren zu müssen. Der Agent hat seine Werkzeuge sofort dabei."
+  },
+  {
+    "id": "owui-101",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Bound Knowledge per Model",
+    "description": "Wissenssammlungen oder Dateien fest an ein Modell-Preset binden. Pro Bindung kann zwischen fokussierter Suche und vollem Kontext umgeschaltet werden. So hat ein spezialisierter Agent immer Zugriff auf sein Fachwissen."
+  },
+  {
+    "id": "owui-102",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Model Access Control",
+    "description": "Modelle auf bestimmte Nutzer oder Gruppen beschränken. Sichtbarkeit als privat oder öffentlich einstellen. Ermöglicht kuratierte Bereitstellungen, bei denen Basis-Modelle versteckt und nur fertige Agenten gezeigt werden."
+  },
+  {
+    "id": "owui-103",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Custom Model Avatar & Background",
+    "description": "Jedem Modell-Preset ein eigenes Avatar-Bild (auch animiertes GIF/WebP) und Hintergrundbild zuweisen. Gibt jedem Agenten eine eigene visuelle Identität, die im Chat sofort erkennbar ist."
+  },
+  {
+    "id": "owui-104",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Model Capabilities Toggles",
+    "description": "Pro Modell einzeln umschalten, welche Fähigkeiten verfügbar sind: Vision, Websuche, Code-Interpreter, Terminal, Bildgenerierung, Datei-Upload, Quellenangaben, Erinnerung und mehr. Feingranulare Kontrolle über das Verhalten jedes Agenten."
+  },
+  {
+    "id": "owui-105",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Advanced Parameters (Temperature, etc.)",
+    "description": "Pro Modell oder pro Chat die Generierungsparameter anpassen: Temperature (Kreativität), Top-P, Stop-Sequenzen und eigene Parameter. Für fortgeschrittene Nutzer, die das Antwortverhalten feintunen möchten."
+  },
+  {
+    "id": "owui-106",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Model Translations",
+    "description": "Pro Sprache eigene Varianten von Modellname, Beschreibung und Prompt-Vorschlägen hinterlegen. Nutzer sehen automatisch die Version in ihrer Sprache. Nützlich für mehrsprachige Teams."
+  },
+  {
+    "id": "owui-107",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Clone Model",
+    "description": "Eine bearbeitbare Kopie eines beliebigen Modell-Presets erstellen. Ideal zum Experimentieren — man kann Einstellungen ändern, ohne das Original zu verändern."
+  },
+  {
+    "id": "owui-108",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Share Model to Community",
+    "description": "Modell-Presets auf der Open WebUI Community-Plattform teilen, damit andere Nutzer sie nutzen können. So entstehen wiederverwendbare Agenten-Vorlagen."
+  },
+  {
+    "id": "owui-109",
+    "source": "openwebui",
+    "category": "Agents & Models",
+    "name": "Builtin Tools Selection",
+    "description": "Pro Modell festlegen, welche eingebauten Tools verfügbar sind: Zeit & Rechner, Nutzer fragen, Erinnerung, Chat-Verlauf, Notizen, Wissensdatenbank, Dateien, Kanäle, Benachrichtigungen, Websuche, Bildgenerierung, Code-Interpreter, Aufgabenverwaltung, Automationen, Kalender, Sub-Agenten."
+  },
+  {
+    "id": "owui-110",
+    "source": "openwebui",
+    "category": "Agentic Features",
+    "name": "Sub-agents",
+    "description": "Ein Modell kann fokussierte Teilaufgaben an parallele Sub-Agenten delegieren, die dasselbe Modell und dieselben Tools nutzen. Ermöglicht mehrstufige Workflows, bei denen mehrere Aufgaben gleichzeitig bearbeitet werden."
+  },
+  {
+    "id": "owui-111",
+    "source": "openwebui",
+    "category": "Agentic Features",
+    "name": "Task Management in Chat",
+    "description": "Agenten können strukturierte Aufgaben-/Todo-Listen im Chat pflegen, um mehrstufige Workflows zu verfolgen. Man sieht, welche Schritte erledigt sind und welche noch ausstehen."
+  },
+  {
+    "id": "owui-112",
+    "source": "openwebui",
+    "category": "Agentic Features",
+    "name": "Temporal Awareness (Time Tools)",
+    "description": "Modelle kennen die aktuelle Uhrzeit und das Datum und haben native Tools für präzise Zeitberechnungen. So können sie z.B. korrekt sagen 'Das war vor 3 Tagen' oder Deadlines berechnen."
+  },
+  {
+    "id": "owui-113",
+    "source": "openwebui",
+    "category": "Agentic Features",
+    "name": "Native Function Calling (Agentic Mode)",
+    "description": "Standardmäßiger agentischer Modus, in dem das Modell eigenständig entscheidet, wann es das Internet durchsuchen, Wissensdatenbanken abfragen oder Erinnerungen speichern soll. Kein manuelles Auslösen nötig — die KI handelt von sich aus."
+  },
+  {
+    "id": "owui-114",
+    "source": "openwebui",
+    "category": "Scheduling & Automation",
+    "name": "Automations (Recurring Prompts)",
+    "description": "Prompts auf wiederkehrenden Zeitplänen automatisch ausführen lassen (stündlich, täglich, wöchentlich, monatlich oder per eigener RRULE). Die Ausführungen erscheinen im Kalender. Ideal für regelmäßige Berichte, Zusammenfassungen oder Prüfungen."
+  },
+  {
+    "id": "owui-115",
+    "source": "openwebui",
+    "category": "Scheduling & Automation",
+    "name": "Timers (One-Shot)",
+    "description": "Einmalige Timer, die einen Prompt nach Ablauf in den Chat senden. Nützlich z.B. als Erinnerung oder um eine Aufgabe zeitversetzt ausführen zu lassen."
+  },
+  {
+    "id": "owui-116",
+    "source": "openwebui",
+    "category": "Scheduling & Automation",
+    "name": "Calendar Integration",
+    "description": "Eingebauter persönlicher und geteilter Kalender mit Monats-, Wochen- und Tagesansicht, wiederkehrenden Terminen, Farbcodierung, Teilnehmern und Erinnerungen. Verknüpft mit den Automationen für zeitgesteuerte KI-Aufgaben."
+  },
+  {
+    "id": "owui-117",
+    "source": "openwebui",
+    "category": "Scheduling & Automation",
+    "name": "Notifications / Webhooks",
+    "description": "Webhook-Ziele, die Nutzer benachrichtigen, wenn Chats abgeschlossen werden, fehlschlagen oder Kalender-Events auslösen. Konfigurierbare Benachrichtigungsziele, z.B. Slack, E-Mail oder eigene Dienste."
+  },
+  {
+    "id": "owui-118",
+    "source": "openwebui",
+    "category": "Code Execution",
+    "name": "Code Interpreter (Python)",
+    "description": "Python-Code direkt im Browser oder über das integrierte Terminal ausführen. Ergebnisse werden inline im Chat angezeigt. Die KI kann Code schreiben und sofort testen, z.B. für Datenanalyse oder Berechnungen."
+  },
+  {
+    "id": "owui-119",
+    "source": "openwebui",
+    "category": "Code Execution",
+    "name": "Open Terminal",
+    "description": "Voller Terminal-Zugang für KI-Agenten: echte Befehle ausführen, Dateien durchsuchen/hoch-/herunterladen in der Seitenleiste, und eine Live-Vorschau von Webseiten. Gibt der KI die gleiche Arbeitsumgebung wie einem Entwickler."
+  },
+  {
+    "id": "owui-120",
+    "source": "openwebui",
+    "category": "Code Execution",
+    "name": "Terminal File Browser",
+    "description": "Datei-Browser-Seitenleiste im Terminal zum Durchsuchen, Hochladen, Herunterladen und Bearbeiten von Dateien. Wie ein grafischer Dateimanager neben dem Terminal."
+  },
+  {
+    "id": "owui-121",
+    "source": "openwebui",
+    "category": "Code Execution",
+    "name": "Website Preview in Terminal",
+    "description": "Live-Vorschau von Web-Projekten, die innerhalb des Terminals laufen, direkt inline gerendert. Man kann z.B. eine Webseite im Terminal starten und sofort sehen, wie sie aussieht."
+  },
+  {
+    "id": "owui-122",
+    "source": "openwebui",
+    "category": "Artifacts",
+    "name": "Artifact Detection & Display",
+    "description": "Automatische Erkennung von Artifacts (HTML/interaktive Inhalte) in KI-Antworten und Darstellung in sicher abgeschotteten iframes. Die Sandbox-Berechtigungen sind konfigurierbar. So können z.B. kleine Webapps oder interaktive Visualisierungen direkt im Chat laufen."
+  },
+  {
+    "id": "owui-123",
+    "source": "openwebui",
+    "category": "Artifacts",
+    "name": "Persistent Artifact Storage",
+    "description": "Eingebauter Key-Value-Speicher für Artifacts, der Tagebücher, Tracker, Bestenlisten und kollaborative Tools mit persönlichen und geteilten Datenbereichen ermöglicht. Artifacts können so Daten über Sitzungen hinweg behalten."
+  },
+  {
+    "id": "owui-124",
+    "source": "openwebui",
+    "category": "Extensibility",
+    "name": "Tools (Python Scripts)",
+    "description": "Python-Skripte, die die Fähigkeiten des Modells erweitern — z.B. auf Datenbanken zugreifen, APIs abfragen oder Berechnungen durchführen. Ein eingebauter Code-Editor erlaubt das Erstellen und Bearbeiten von Tools direkt in der Oberfläche."
+  },
+  {
+    "id": "owui-125",
+    "source": "openwebui",
+    "category": "Extensibility",
+    "name": "Skills (Markdown Instructions)",
+    "description": "Markdown-Anleitungen, die Modellen spezialisierte Herangehensweisen für bestimmte Aufgaben beibringen. Werden bei Bedarf geladen und geben dem Modell Expertenwissen für z.B. Code-Review, Textbearbeitung oder Datenanalyse."
+  },
+  {
+    "id": "owui-126",
+    "source": "openwebui",
+    "category": "Extensibility",
+    "name": "Pipelines (Plugin Framework)",
+    "description": "Modulares Plugin-Framework mit Filtern, Actions und Pipes, um eigene Logik in den Anfrage-/Antwort-Ablauf einzufügen. Z.B. Nachrichten vor dem Senden automatisch anpassen oder Antworten nachbearbeiten."
+  },
+  {
+    "id": "owui-127",
+    "source": "openwebui",
+    "category": "Extensibility",
+    "name": "MCP Support (Model Context Protocol)",
+    "description": "Native Unterstützung für MCP-Server (Model Context Protocol) als Tool-Anbieter über Streamable HTTP. So können externe Dienste als Tools angebunden werden, die das Modell nutzen kann."
+  },
+  {
+    "id": "owui-128",
+    "source": "openwebui",
+    "category": "Extensibility",
+    "name": "OpenAPI Tool Servers",
+    "description": "Automatisches Entdecken und Verbinden von Tools über jeden OpenAPI-kompatiblen Endpunkt. Bestehende REST-APIs können so direkt als Tools genutzt werden, ohne speziellen MCP-Server."
+  },
+  {
+    "id": "owui-129",
+    "source": "openwebui",
+    "category": "Extensibility",
+    "name": "Prompt Templates with Variables",
+    "description": "Wiederverwendbare Prompt-Vorlagen als Slash-Befehle mit typisierten Eingabevariablen und Versionierung. Statt immer denselben langen Prompt zu tippen, einmal eine Vorlage erstellen und dann nur die Variablen ausfüllen."
+  },
+  {
+    "id": "owui-130",
+    "source": "openwebui",
+    "category": "Theming & Appearance",
+    "name": "Theme Selection (Light/Dark/System/High Contrast)",
+    "description": "Eingebaute Themes: Hell, Dunkel, System (folgt dem Betriebssystem) und Hoher Kontrast. Wird pro Nutzer in den Einstellungen gewählt. Der Hohe-Kontrast-Modus ist besonders für Barrierefreiheit wichtig."
+  },
+  {
+    "id": "owui-131",
+    "source": "openwebui",
+    "category": "Theming & Appearance",
+    "name": "UI Scale",
+    "description": "Einstellbare Text-/UI-Skalierung von 1.0 bis 1.5 für bessere Lesbarkeit oder persönliche Vorlieben. Skaliert die gesamte Oberfläche gleichmäßig, nicht nur den Text."
+  },
+  {
+    "id": "owui-132",
+    "source": "openwebui",
+    "category": "Theming & Appearance",
+    "name": "Custom Font Family",
+    "description": "Eine eigene Schriftart für die gesamte Oberfläche wählen. Man kann z.B. eine gut lesbare Schrift wie Atkinson Hyperlegible oder eine persönliche Lieblingsschrift einstellen."
+  },
+  {
+    "id": "owui-133",
+    "source": "openwebui",
+    "category": "Theming & Appearance",
+    "name": "Enterprise White-Labeling",
+    "description": "Das Standard-Branding durch eigenes Firmenlogo, Farben und visuellen Stil ersetzen (Enterprise-Lizenz). So sieht Open WebUI aus wie ein firmeneigenes Produkt."
+  },
+  {
+    "id": "owui-134",
+    "source": "openwebui",
+    "category": "Theming & Appearance",
+    "name": "Haptic Feedback (Android)",
+    "description": "Vibrations-Feedback auf Android-Geräten bei Touch-Interaktionen. Gibt ein physisches Gefühl beim Tippen und Navigieren, ähnlich wie in nativen Android-Apps."
+  },
+  {
+    "id": "owui-135",
+    "source": "openwebui",
+    "category": "Responsive Design",
+    "name": "Progressive Web App (PWA)",
+    "description": "Installierbar als PWA für eine native App-ähnliche Erfahrung auf Handy und Desktop. Auf dem Startbildschirm erscheint ein eigenes Icon, die App läuft im Vollbild ohne Browser-Leiste. Offline-Zugang bei lokaler Installation."
+  },
+  {
+    "id": "owui-136",
+    "source": "openwebui",
+    "category": "Responsive Design",
+    "name": "Responsive Layout (Desktop/Mobile)",
+    "description": "Nahtlose Nutzung auf Desktop, Laptop und Handy mit automatisch angepasstem Layout. Die Oberfläche reorganisiert sich je nach Bildschirmbreite, damit alles immer gut nutzbar bleibt."
+  },
+  {
+    "id": "owui-137",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "Usage Analytics Dashboard",
+    "description": "Admin-Dashboard zum Verfolgen von Nachrichtenvolumen, Token-Verbrauch und Kosten über alle Nutzer und Modelle hinweg. Zeigt, welche Modelle am meisten genutzt werden und wo die Kosten entstehen."
+  },
+  {
+    "id": "owui-138",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "Model Evaluation Arena (A/B Testing)",
+    "description": "Eingebaute Modell-Arena mit A/B-Tests und ELO-basierter Bestenliste zum Vergleich der Modellqualität. Nutzer bewerten blind, welche Antwort besser ist — so entsteht eine datenbasierte Rangliste."
+  },
+  {
+    "id": "owui-139",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "System Banners",
+    "description": "Anpassbare systemweite Ankündigungsbanner, die allen Nutzern angezeigt werden. Nützlich für Wartungshinweise, neue Features oder wichtige Mitteilungen an alle."
+  },
+  {
+    "id": "owui-140",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "Default Interface Settings (Admin)",
+    "description": "Instanzweite Standardwerte für alle Oberflächen-Optionen festlegen. Neue Accounts starten mit den vom Admin definierten Voreinstellungen; Nutzer können sie individuell überschreiben."
+  },
+  {
+    "id": "owui-141",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "RBAC (Roles, Groups, Permissions)",
+    "description": "Fein abgestufte rollenbasierte Zugriffskontrolle: Rollen, Gruppen und Berechtigungen pro Ressource definieren. So bekommt z.B. das Entwickler-Team Zugriff auf Code-Modelle, aber nicht auf die Admin-Einstellungen."
+  },
+  {
+    "id": "owui-142",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "SSO / OIDC / LDAP Authentication",
+    "description": "Verbund-Authentifizierung mit jedem Identitätsanbieter über SSO, OIDC oder LDAP. Nutzer melden sich mit ihrem bestehenden Firmen-Account an, ohne ein separates Passwort erstellen zu müssen."
+  },
+  {
+    "id": "owui-143",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "API Keys for Users",
+    "description": "Programmatischer Zugriff über API-Schlüssel für Skripte, Bots und Integrationen. Ermöglicht die Nutzung von Open WebUI als Backend für eigene Anwendungen."
+  },
+  {
+    "id": "owui-144",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "Signup Webhooks",
+    "description": "Webhooks, die bei Nutzerregistrierung, abgeschlossenen Chats und anderen Ereignissen ausgelöst werden. Ermöglicht Benachrichtigungen an externe Systeme, z.B. ein Willkommens-Bot oder ein Monitoring-Dashboard."
+  },
+  {
+    "id": "owui-145",
+    "source": "openwebui",
+    "category": "Admin",
+    "name": "Update Toast & Changelog",
+    "description": "Toast-Benachrichtigungen bei neuen Updates und ein 'Was ist neu'-Dialog beim Login mit Versionshinweisen. So bleiben Nutzer über neue Funktionen informiert, ohne selbst nach Änderungen suchen zu müssen."
+  },
+  {
+    "id": "owui-146",
+    "source": "openwebui",
+    "category": "Connections",
+    "name": "Direct Model Endpoints",
+    "description": "Den Client direkt auf eigene OpenAI-kompatible Modell-Endpunkte zeigen lassen, ohne serverseitige Konfiguration. Ermöglicht schnelles Anbinden eigener Modelle ohne Admin-Zugang."
+  },
+  {
+    "id": "owui-147",
+    "source": "openwebui",
+    "category": "Connections",
+    "name": "Multiple API Provider Support",
+    "description": "Gleichzeitig mit Ollama, OpenAI, LMStudio, GroqCloud, Mistral, OpenRouter, vLLM und jeder OpenAI-kompatiblen API verbinden. Alle Modelle erscheinen in einem gemeinsamen Dropdown — man kann nahtlos zwischen Anbietern wechseln."
+  },
+  {
+    "id": "owui-148",
+    "source": "openwebui",
+    "category": "Localization",
+    "name": "Multilingual Interface (i18n)",
+    "description": "Die gesamte Oberfläche ist in vielen Sprachen verfügbar, mit von der Community beigetragenen Übersetzungen. Jeder Nutzer kann seine bevorzugte Sprache in den Einstellungen wählen."
+  },
+  {
+    "id": "owui-149",
+    "source": "openwebui",
+    "category": "Projects",
+    "name": "Folder-to-Project Workspaces",
+    "description": "Ordner in Projekt-Arbeitsbereiche umwandeln mit eigenen System-Prompts und angehängten Wissensdatenbanken, die für alle Chats innerhalb des Projekts gelten. So hat jedes Projekt seinen eigenen Kontext und seine eigenen Einstellungen."
+  },
+  {
+    "id": "owui-150",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "URL Parameters for Chat Setup",
+    "description": "Chat-Sitzungen über URL-Parameter vorkonfigurieren: Modell, Tools und Features direkt per Link festlegen. Nützlich für vorgefertigte Einstiegspunkte, z.B. ein Link 'Chat mit GPT-4 + Websuche aktiviert'."
+  },
+  {
+    "id": "owui-151",
+    "source": "openwebui",
+    "category": "Chat Interface",
+    "name": "Chat Parameters (System Prompt Levels)",
+    "description": "System-Prompts und erweiterte Parameter auf verschiedenen Ebenen steuern: global, pro Modell und pro Chat. Platzhalter-Variablen werden automatisch ausgefüllt. So lassen sich allgemeine Anweisungen und chatspezifische Ergänzungen kombinieren."
+  },
+  {
+    "id": "owui-152",
+    "source": "openwebui",
+    "category": "Agentic Features",
+    "name": "Autonomous Chat History Search",
+    "description": "Modelle können eigenständig den bisherigen Gesprächsverlauf des Nutzers durchsuchen, um relevanten Kontext zu finden. So kann die KI sich an frühere Gespräche 'erinnern', ohne dass man alles nochmal erzählen muss."
+  },
+  {
+    "id": "owui-153",
+    "source": "openwebui",
+    "category": "Agentic Features",
+    "name": "Ask User Tool",
+    "description": "Eingebautes Tool, mit dem das Modell die Verarbeitung pausieren und dem Nutzer eine Klärungsfrage stellen kann. Statt einfach zu raten, fragt die KI nach, wenn ihr Informationen fehlen — wie ein menschlicher Assistent."
+  },
+  {
+    "id": "owui-154",
+    "source": "openwebui",
+    "category": "Input",
+    "name": "Formatting Toolbar",
+    "description": "Schwebende Formatierungs-Toolbar für die Rich-Text-Eingabe mit Optionen für fett, kursiv, Listen usw. Kann ein- oder ausgeblendet werden. Macht Formatierung auch ohne Markdown-Kenntnisse zugänglich."
+  },
+  {
+    "id": "owui-155",
+    "source": "openwebui",
+    "category": "Misc",
+    "name": "User Location Access",
+    "description": "Optionale Standortfreigabe, damit Modelle den Aufenthaltsort des Nutzers kennen und kontextbezogene Antworten geben können. Z.B. für Wetterabfragen, lokale Empfehlungen oder zeitzonenbezogene Berechnungen."
+  },
+  {
+    "id": "owui-156",
+    "source": "openwebui",
+    "category": "Misc",
+    "name": "Copy Formatted Text",
+    "description": "Beim Kopieren von Text aus KI-Antworten bleibt die Formatierung erhalten (Rich Text) statt nur Klartext zu kopieren. So kann man formatierte Antworten direkt in andere Anwendungen einfügen, ohne die Formatierung zu verlieren."
+  }
+]

@@ -1,0 +1,520 @@
+[
+  {
+    "id": "niagara-001",
+    "source": "niagara",
+    "category": "Home Screen",
+    "name": "Single Unified Home Screen",
+    "description": "Vereint App-Übersicht und Startbildschirm in einer einzigen vertikalen Liste — keine mehreren Seiten, kein Icon-Raster. Alles ist auf einer Seite erreichbar: Favoriten oben, darunter alle Apps alphabetisch. Deutlich aufgeräumter als herkömmliche Launcher mit mehreren Home-Screens."
+  },
+  {
+    "id": "niagara-002",
+    "source": "niagara",
+    "category": "Home Screen",
+    "name": "Favorites List (max 8)",
+    "description": "Bis zu 8 Lieblings-Apps werden oben auf dem Startbildschirm prominent angezeigt und umgehen die alphabetische Sortierung. Du wählst selbst, welche Apps angepinnt werden — ideal für die Apps, die du am häufigsten brauchst, damit sie immer sofort erreichbar sind."
+  },
+  {
+    "id": "niagara-003",
+    "source": "niagara",
+    "category": "Home Screen",
+    "name": "Alphabetical App List",
+    "description": "Alle installierten Apps werden unterhalb der Favoriten alphabetisch in einer scrollbaren vertikalen Liste angezeigt — kein Icon-Raster, sondern saubere Zeilen mit Icon und Name. Dadurch findet man jede App schnell, ohne sich durch mehrere Seiten wischen zu müssen."
+  },
+  {
+    "id": "niagara-004",
+    "source": "niagara",
+    "category": "Navigation",
+    "name": "Wave Alphabet / Edge Scroll",
+    "description": "Wenn du am rechten (oder linken) Bildschirmrand entlang gleitest, erscheint ein Buchstaben-Index. Damit springst du mit einer einzigen Geste direkt zu einem bestimmten Buchstabenbereich in der App-Liste. Besonders praktisch für Einhand-Bedienung auf großen Handys."
+  },
+  {
+    "id": "niagara-005",
+    "source": "niagara",
+    "category": "Navigation",
+    "name": "Left-Hand Mode",
+    "description": "Der Buchstaben-Index kann auf die linke Bildschirmseite verschoben werden, ideal für Linkshänder. Das Scrollen funktioniert auf beiden Seiten des Bildschirms, sodass jeder bequem navigieren kann."
+  },
+  {
+    "id": "niagara-006",
+    "source": "niagara",
+    "category": "Navigation",
+    "name": "One-Handed Thumb Navigation",
+    "description": "Die gesamte Benutzeroberfläche ist für die Bedienung mit einer Hand auf großen Handys optimiert. Alle wichtigen Elemente befinden sich im Daumen-Erreichungsbereich, sodass du dich nicht strecken musst, um eine App zu öffnen."
+  },
+  {
+    "id": "niagara-007",
+    "source": "niagara",
+    "category": "Search",
+    "name": "App Search by Typing",
+    "description": "Sofortige Suche nach Apps durch einfaches Tippen: Sobald du anfängst zu schreiben, werden die Ergebnisse live gefiltert. Die Suchleiste erscheint, wenn du nach oben wischst oder einfach losschreibst. Besonders schnell, wenn du weißt, welche App du willst."
+  },
+  {
+    "id": "niagara-008",
+    "source": "niagara",
+    "category": "Search",
+    "name": "Contact Search",
+    "description": "Kontakte können direkt vom Startbildschirm aus gesucht werden, ohne die Kontakte-App zu öffnen. Personen finden und sofort anrufen oder eine Nachricht schreiben — alles in einem Schritt. Nur in der Pro-Version verfügbar."
+  },
+  {
+    "id": "niagara-009",
+    "source": "niagara",
+    "category": "Search",
+    "name": "Web Search Suggestions",
+    "description": "Während du in der Suchleiste tippst, erscheinen Web-Suchvorschläge. Unterstützt verschiedene Suchmaschinen wie Google und Bing. So kannst du direkt vom Startbildschirm aus im Internet suchen, ohne erst einen Browser zu öffnen."
+  },
+  {
+    "id": "niagara-010",
+    "source": "niagara",
+    "category": "Search",
+    "name": "Integrated Calculator",
+    "description": "Rechenausdrücke direkt in die Suchleiste eingeben und sofort ein Ergebnis bekommen — keine separate Taschenrechner-App nötig. Einfach z.B. '15*3+7' eingeben und das Ergebnis erscheint sofort."
+  },
+  {
+    "id": "niagara-011",
+    "source": "niagara",
+    "category": "Search",
+    "name": "Direct Call/Message from Search",
+    "description": "Aus den Suchergebnissen heraus direkt anrufen oder Nachrichten senden, ohne erst die Kontakte- oder Telefon-App zu öffnen. Kontakt suchen, antippen, fertig. Nur in der Pro-Version verfügbar."
+  },
+  {
+    "id": "niagara-012",
+    "source": "niagara",
+    "category": "Gestures",
+    "name": "Swipe Right on App — Shortcuts/Notifications",
+    "description": "Nach rechts wischen auf einer App zeigt Schnellzugriffe (Shortcuts), Benachrichtigungen oder verwandte Popup-Inhalte an. So erreichst du App-Funktionen direkt, ohne die App erst komplett zu öffnen — z.B. direkt eine bestimmte WhatsApp-Gruppe öffnen."
+  },
+  {
+    "id": "niagara-013",
+    "source": "niagara",
+    "category": "Gestures",
+    "name": "Swipe Left on App — Dismiss Notification",
+    "description": "Nach links wischen auf einer App verwirft deren Benachrichtigung direkt vom Startbildschirm aus. Kein Öffnen der Benachrichtigungsleiste nötig — einfach wegwischen und es ist erledigt."
+  },
+  {
+    "id": "niagara-014",
+    "source": "niagara",
+    "category": "Gestures",
+    "name": "Swipe Down — Notification Tray",
+    "description": "Von irgendwo auf dem Startbildschirm nach unten wischen öffnet die Android-Benachrichtigungsleiste. Funktioniert überall auf dem Bildschirm, nicht nur am oberen Rand — dadurch auch mit einer Hand bequem erreichbar."
+  },
+  {
+    "id": "niagara-015",
+    "source": "niagara",
+    "category": "Gestures",
+    "name": "Double-Tap to Lock Screen",
+    "description": "Doppeltippen auf den Buchstabenbereich schaltet den Bildschirm sofort aus und sperrt das Gerät. Erfordert die Pro-Version und Android 9+. Nutzt den Accessibility-Service von Android, sammelt dabei aber keine Daten."
+  },
+  {
+    "id": "niagara-016",
+    "source": "niagara",
+    "category": "Gestures",
+    "name": "Swipe Up — Search Activation",
+    "description": "Vom unteren Bildschirmrand nach oben wischen aktiviert die Suchleiste. Eine intuitive Geste, die auch mit einer Hand leicht auszuführen ist und die Suche sofort öffnet."
+  },
+  {
+    "id": "niagara-017",
+    "source": "niagara",
+    "category": "Notifications",
+    "name": "Embedded Notification Previews",
+    "description": "Benachrichtigungen erscheinen als kleine Textvorschau direkt neben der zugehörigen App auf dem Startbildschirm. Du kannst Nachrichten lesen, ohne irgendetwas zu öffnen — der Inhalt wird einfach neben dem App-Namen angezeigt. Ein Kernmerkmal, das Niagara von anderen Launchern unterscheidet."
+  },
+  {
+    "id": "niagara-018",
+    "source": "niagara",
+    "category": "Notifications",
+    "name": "Expandable Notification Bubbles",
+    "description": "Tippst du auf eine Benachrichtigungsvorschau, klappt sie zu einer größeren Blase auf, die den vollständigen Nachrichteninhalt, Aktionsschaltflächen und eine Antwort-Option zeigt. So bekommst du alle Details, ohne die App öffnen zu müssen."
+  },
+  {
+    "id": "niagara-019",
+    "source": "niagara",
+    "category": "Notifications",
+    "name": "Quick Reply from Home Screen",
+    "description": "Direkt vom Startbildschirm aus auf Nachrichten antworten, ohne die Messaging-App zu öffnen. Die Antwort wird in der aufgeklappten Benachrichtigungs-Blase geschrieben — spart Zeit und unterbricht den Arbeitsfluss nicht."
+  },
+  {
+    "id": "niagara-020",
+    "source": "niagara",
+    "category": "Notifications",
+    "name": "Notification Filtering",
+    "description": "Statt herkömmlicher Benachrichtigungs-Punkte (Badges) zeigt Niagara den tatsächlichen Inhalt der Benachrichtigung. So siehst du nicht nur 'Es gibt 3 neue Nachrichten', sondern direkt den Text — deutlich informativer als ein bloßer Zähler."
+  },
+  {
+    "id": "niagara-021",
+    "source": "niagara",
+    "category": "Widgets",
+    "name": "Built-in Clock Widget",
+    "description": "Minimalistisches Uhr-Widget oben auf dem Startbildschirm, das Uhrzeit und Datum anzeigt. In der Pro-Version stehen sechs verschiedene Uhrstile zur Auswahl. Passt sich dezent ins Gesamtbild ein, ohne viel Platz einzunehmen."
+  },
+  {
+    "id": "niagara-022",
+    "source": "niagara",
+    "category": "Widgets",
+    "name": "Calendar Agenda Widget",
+    "description": "Integrierter Kalender, der bevorstehende Termine und Erinnerungen anzeigt. Tippe auf das Uhr-Widget, um die Tagesansicht mit anstehenden Events aufzuklappen. Nur in der Pro-Version verfügbar — praktisch, um den nächsten Termin im Blick zu behalten."
+  },
+  {
+    "id": "niagara-023",
+    "source": "niagara",
+    "category": "Widgets",
+    "name": "Weather Widget",
+    "description": "Eingebaute Wetteranzeige mit OpenWeather-Daten: aktuelles Wetter, 24-Stunden-Vorhersage und 7-Tage-Ausblick. Aktualisiert sich automatisch alle 30 Minuten. Standort kann automatisch erkannt oder fest eingestellt werden. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-024",
+    "source": "niagara",
+    "category": "Widgets",
+    "name": "Media Player Widget",
+    "description": "Eingebaute Mediensteuerung, die automatisch erscheint, wenn Musik, Videos oder Podcasts abgespielt werden, und wieder verschwindet, wenn die Wiedergabe stoppt. Zeigt Play/Pause, Vor/Zurück-Tasten direkt auf dem Startbildschirm an. Benötigt Benachrichtigungszugriff."
+  },
+  {
+    "id": "niagara-025",
+    "source": "niagara",
+    "category": "Widgets",
+    "name": "Widget Stacks (Carousel)",
+    "description": "Bis zu 4 Widgets können als Karussell oben auf dem Startbildschirm gestapelt werden. Zwischen ihnen wischen und trotzdem ein minimalistisches Aussehen behalten. Nur in der Pro-Version — ideal, um mehrere Infos auf engem Raum unterzubringen."
+  },
+  {
+    "id": "niagara-026",
+    "source": "niagara",
+    "category": "Widgets",
+    "name": "Third-Party Widget Support",
+    "description": "Widgets von beliebigen installierten Apps können hinzugefügt werden. Die eingebaute Uhr lässt sich per langem Drücken durch jedes andere Widget ersetzen. So lässt sich der Startbildschirm mit den eigenen Lieblings-Widgets bestücken."
+  },
+  {
+    "id": "niagara-027",
+    "source": "niagara",
+    "category": "Widgets",
+    "name": "Pop-up Widgets",
+    "description": "Widgets können in Popups versteckt werden, die per langem Drücken auf Apps oder den Niagara-Button erscheinen. Hält den Startbildschirm sauber, während die Informationen trotzdem schnell erreichbar bleiben. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-028",
+    "source": "niagara",
+    "category": "Organization",
+    "name": "Pop-up Folders",
+    "description": "Vielseitige Ordner, die Apps, Shortcuts, Benachrichtigungen und Widgets enthalten können. Auf einer Favoriten-App nach rechts wischen zeigt die gruppierten verwandten Apps an. Flexibler als herkömmliche Ordner, weil verschiedene Inhaltstypen kombiniert werden. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-029",
+    "source": "niagara",
+    "category": "Organization",
+    "name": "App List Pop-ups",
+    "description": "Apps lassen sich in ausklappbare Popup-Listen organisieren, die an Favoriten angehängt sind. Durch Wischen nach rechts auf einer App öffnet sich die Liste. Nur in der Pro-Version — praktisch, um zusammengehörige Apps zu gruppieren, z.B. alle Social-Media-Apps unter einer Favoriten-App."
+  },
+  {
+    "id": "niagara-030",
+    "source": "niagara",
+    "category": "Organization",
+    "name": "Hide Apps",
+    "description": "Unerwünschte Apps (Bloatware, vorinstallierte System-Apps) aus der App-Liste entfernen. Versteckte Apps sind nur noch über die Suche oder in den Einstellungen erreichbar. Ideal, um den Startbildschirm von Apps zu befreien, die man nie nutzt aber nicht deinstallieren kann."
+  },
+  {
+    "id": "niagara-031",
+    "source": "niagara",
+    "category": "Organization",
+    "name": "Frequently-Used Apps Suggestions",
+    "description": "Nach einer Eingewöhnungszeit erscheinen die am häufigsten verwendeten Apps automatisch unten in den Favoriten als Vorschläge. Langes Drücken auf einen Vorschlag blendet ihn aus. Die Liste passt sich selbstlernend an dein Nutzungsverhalten an."
+  },
+  {
+    "id": "niagara-032",
+    "source": "niagara",
+    "category": "Organization",
+    "name": "App Shortcuts (Android 7.1+)",
+    "description": "Unterstützung für Android App-Shortcuts — Schnellzugriffe auf bestimmte App-Funktionen, erreichbar durch Wischen nach rechts auf einer App. Zum Beispiel direkt einen bestimmten Chat öffnen oder ein neues Dokument erstellen, ohne den Umweg über den App-Hauptbildschirm."
+  },
+  {
+    "id": "niagara-033",
+    "source": "niagara",
+    "category": "Organization",
+    "name": "Rename Apps",
+    "description": "Apps können individuell umbenannt werden: Lang auf die App drücken und den Namen antippen. Praktisch, um Apps persönlichere oder kürzere Namen zu geben — z.B. 'Insta' statt 'Instagram' oder Beschreibungen wie 'Arbeit-Mail' statt 'Outlook'."
+  },
+  {
+    "id": "niagara-034",
+    "source": "niagara",
+    "category": "Organization",
+    "name": "Long-Press App Management",
+    "description": "Langes Drücken auf eine App öffnet ein Menü zum Hinzufügen/Entfernen/Verschieben in den Favoriten, zum Bearbeiten des Icons, zum Umbenennen oder zum Zugriff auf die App-Informationen. Alles zur App-Verwaltung an einem Ort."
+  },
+  {
+    "id": "niagara-035",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Themes System",
+    "description": "Zentrale Theme-Verwaltung mit einem Tipp. 3 kostenlose Themes plus 18+ Premium-Themes von natürlich inspiriert bis minimalistisch. Themes sind bearbeitbare Ausgangspunkte, keine starren Voreinstellungen — du kannst jedes Theme weiter anpassen."
+  },
+  {
+    "id": "niagara-036",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Community Themes",
+    "description": "Hunderte von Nutzern erstellte Themes können aus der Discord-Community heruntergeladen werden. Die .nlt-Dateien einfach importieren und anwenden. Nur in der Pro-Version — so bekommt man Zugang zu einer riesigen Auswahl an Gestaltungsmöglichkeiten."
+  },
+  {
+    "id": "niagara-037",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Niagara Studio (Theme Creator)",
+    "description": "Eigene Themes erstellen und mit anderen teilen. Tiefgehende Anpassung von Hintergrundbild, Uhrstil, Schriftart, Icons und Farben. Ein visueller Editor, mit dem man das Aussehen des Launchers komplett selbst gestalten kann."
+  },
+  {
+    "id": "niagara-038",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Theme Sharing",
+    "description": "Eigene Themes als .nlt-Dateien exportieren und mit anderen Nutzern teilen. So können Themes zwischen Geräten übertragen oder in der Community veröffentlicht werden."
+  },
+  {
+    "id": "niagara-039",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Anycons Icon Packs (9 styles)",
+    "description": "Integriertes Icon-Pack-System mit 9 Stilen: Material, Sticker, Dots, Outline, Outline Chroma, Watercolor, Marble, Bright, Stellar. Eine ML-basierte Kategorisierung stellt sicher, dass wirklich jede App ein passendes Icon bekommt — auch obskure Apps. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-040",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Third-Party Icon Pack Support",
+    "description": "Beliebige Icon-Packs von Drittanbietern aus dem Play Store verwenden. So kannst du den visuellen Stil deines Launchers komplett verändern, indem du ein Icon-Pack wählst, das zu deinem Geschmack passt. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-041",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Individual App Icon Editing",
+    "description": "Icons für einzelne Apps individuell ändern: Lang auf die App drücken, dann das Icon antippen. Die neuen Icons müssen aus einem installierten Icon-Pack stammen (keine eigenen Bilder aus der Galerie möglich). Gut, um einzelne Apps visuell hervorzuheben."
+  },
+  {
+    "id": "niagara-042",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Icon Shape Picker",
+    "description": "Auswahl der App-Icon-Form: Kreis, Squircle (abgerundetes Quadrat), Rounded Square und weitere. Einstellbar unter Einstellungen > Aussehen > App-Icons. Gibt dem Startbildschirm ein einheitliches Erscheinungsbild."
+  },
+  {
+    "id": "niagara-043",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Icon Assistant",
+    "description": "Intelligentes Werkzeug mit automatischer Wiederherstellung, Schnellbearbeitung und automatischem Ersetzen von Icons. Die ML-basierte Kategorisierung lernt kontinuierlich dazu und verbessert sich. Hilft dabei, Icons konsistent und ansprechend zu halten."
+  },
+  {
+    "id": "niagara-044",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Niagara Dots Icon Pack",
+    "description": "Minimalistisches eingebautes Icon-Pack, das jede App unterstützt — reduziert die visuelle Unordnung auf das absolute Minimum. Jede App wird als simpler farbiger Punkt dargestellt. Ideal für Nutzer, die maximale Reduktion wollen."
+  },
+  {
+    "id": "niagara-045",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Custom Fonts",
+    "description": "Die im Launcher verwendete Schriftart kann geändert werden. Enthält die markante geometrische Schriftart 'Niagara Neo'. Nur in der Pro-Version — eine andere Schriftart verändert das gesamte Erscheinungsbild des Startbildschirms deutlich."
+  },
+  {
+    "id": "niagara-046",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Font Size Adjustment",
+    "description": "Die Textgröße auf dem Startbildschirm kann angepasst werden — größer für bessere Lesbarkeit oder kleiner für eine kompaktere Darstellung. Besonders nützlich für Menschen mit Sehschwäche oder wenn man einfach mehr auf den Bildschirm passen lassen will."
+  },
+  {
+    "id": "niagara-047",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Personalized Clock Styles",
+    "description": "Sechs eingebaute Uhrstile zur Auswahl. Die Uhr kann auch durch ein beliebiges Widget eines Drittanbieters ersetzt werden. Antippen der Uhr öffnet die System-Uhr oder den Kalender. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-048",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Date Display Customization",
+    "description": "Auswählen, welche Datumselemente auf dem Startbildschirm angezeigt oder ausgeblendet werden sollen. So lässt sich festlegen, ob Wochentag, Monat, Jahr oder nur das Nötigste angezeigt wird."
+  },
+  {
+    "id": "niagara-049",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Built-in Wallpaper Collection",
+    "description": "Kuratierte Hintergrundbilder-Sammlung mit handgezeichneten Illustrationen (nicht nur Fotos). Natur-inspirierte und künstlerische Designs mit einem einfachen Auswahl-Werkzeug. Speziell für den minimalistischen Stil von Niagara abgestimmt."
+  },
+  {
+    "id": "niagara-050",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Material You / Dynamic Colors",
+    "description": "Die Oberflächenfarben passen sich automatisch an das Hintergrundbild an, basierend auf Androids Material-You-Farbpalette. Funktioniert rückportiert auch auf älteren Android-Versionen, nicht nur ab Android 12+. Wenn die automatisch erkannten Farben nicht zum Hintergrundbild passen, gibt es ein intelligentes Fallback."
+  },
+  {
+    "id": "niagara-051",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Accent Color Override",
+    "description": "Manuell eine eigene Akzentfarbe festlegen über Einstellungen > Themes > Aktuelles Theme bearbeiten > Farbpaletten-Symbol. Überschreibt die automatisch erkannte Hintergrundfarbe, falls die automatische Erkennung nicht gefällt."
+  },
+  {
+    "id": "niagara-052",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Hide Status Bar",
+    "description": "Die Android-Statusleiste oben am Bildschirm (mit Uhrzeit, WLAN, Akku-Anzeige) kann ausgeblendet werden. Gibt dem Startbildschirm ein saubereres, immersiveres Aussehen. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-053",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Hide Alphabet Index",
+    "description": "Den seitlichen Buchstaben-Index ein- oder ausschalten. Wer ihn nicht braucht, kann ihn ausblenden für ein noch minimalistischeres Erscheinungsbild. Die Navigationsleiste am Rand verschwindet dann komplett."
+  },
+  {
+    "id": "niagara-054",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Element Show/Hide Toggle",
+    "description": "Einzeln festlegen, welche UI-Elemente auf dem Startbildschirm sichtbar sein sollen: Uhr, Datum, Wetter, Buchstaben-Index und mehr. So lässt sich der Startbildschirm genau auf die eigenen Bedürfnisse zuschneiden — von voll ausgestattet bis extrem reduziert."
+  },
+  {
+    "id": "niagara-055",
+    "source": "niagara",
+    "category": "Niagara Button",
+    "name": "Niagara Button (Google Button Replacement)",
+    "description": "Anpassbare Schaltfläche, die den Google-Button ersetzt. Einer beliebigen App, einem Shortcut, einem Ordner oder einer Aktion kann per Tippen zugewiesen werden. Unterstützt auch eine Wisch-nach-oben-Geste für eine zweite Aktion. Shortcuts und Ordner nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-056",
+    "source": "niagara",
+    "category": "Niagara Button",
+    "name": "Niagara Button Quick Actions",
+    "description": "Vom Niagara-Button aus den Taschenrechner starten, eine WhatsApp-Unterhaltung beginnen, Popup-Ordner öffnen oder beliebige andere benutzerdefinierte Aktionen ausführen. Ein vielseitiger Schnellzugriff, der sich an den eigenen Workflow anpassen lässt."
+  },
+  {
+    "id": "niagara-057",
+    "source": "niagara",
+    "category": "Digital Wellbeing",
+    "name": "Usage Breaker (App Timer)",
+    "description": "Apps auswählen, die man zu viel nutzt, und sanfte Erinnerungen erhalten: Nach einer eingestellten Zeit zeigt der Launcher die Sitzungsdauer und ermutigt zu einer Pause. Kein harter Blocker, sondern ein achtsamer Hinweis. Nur in der Pro-Version."
+  },
+  {
+    "id": "niagara-058",
+    "source": "niagara",
+    "category": "Digital Wellbeing",
+    "name": "App Usage Tracking",
+    "description": "Verfolgt die Nutzungszeit pro App mithilfe der integrierten Android-Nutzungserfassung. Fokussiert sich auf 'potenziell unerwünschte Handynutzung' statt auf reine Bildschirmzeit — misst also die Apps, die am ehesten zur Ablenkung beitragen."
+  },
+  {
+    "id": "niagara-059",
+    "source": "niagara",
+    "category": "Media",
+    "name": "Headset Auto-Detection / Plug and Play",
+    "description": "Startet automatisch deine Musik-App, wenn Kopfhörer oder Lautsprecher verbunden werden. Unterstützt Bluetooth, BLE-Headsets, Hörgeräte und USB-Kopfhörer. So ist die Musik sofort bereit, sobald du deine Kopfhörer einsteckst oder verbindest."
+  },
+  {
+    "id": "niagara-060",
+    "source": "niagara",
+    "category": "Integration",
+    "name": "KLWP/KWGT Integration",
+    "description": "Exportiert Variablen an KLWP/KWGT (bekannte Android-Widget-Customization-Apps) für fortgeschrittene Live-Wallpaper- und Widget-Anpassungen. Die Variablen umfassen Bildschirmzustand, Kalendertermine, Medienplayer-Status und 6 Farbpaletten-Werte. Unterstützt auch das niagara:// URL-Schema."
+  },
+  {
+    "id": "niagara-061",
+    "source": "niagara",
+    "category": "Integration",
+    "name": "KLWP Color Variables",
+    "description": "Exportiert Farbvariablen (Hintergrundfarbe, Text-auf-Hintergrund-Farbe, Textfarbe, Akzentfarbe, Oberflächenfarbe, Text-auf-Oberfläche-Farbe) an KLWP/KWGT. Damit können selbst gebaute Widgets farblich perfekt zum Niagara-Theme passen."
+  },
+  {
+    "id": "niagara-062",
+    "source": "niagara",
+    "category": "Backup",
+    "name": "Backup & Restore",
+    "description": "Erstellt .nlb-Sicherungsdateien mit Favoriten, Icons, Popup-Ordnern, App-Namen und Einstellungen. Auf neuen Geräten wiederherstellen — unabhängig von Androids Cloud-Backups (die Niagara als unzuverlässig einstuft). Seit einem Update wird auch die Widget-Platzierung gesichert."
+  },
+  {
+    "id": "niagara-063",
+    "source": "niagara",
+    "category": "Backup",
+    "name": "Quick Share Transfer",
+    "description": "Sicherungsdateien zwischen Geräten über Androids eingebaute Quick-Share-Funktion (ab Android 6) übertragen. Einfach die .nlb-Datei per Quick Share an das andere Gerät senden — kein Cloud-Upload nötig."
+  },
+  {
+    "id": "niagara-064",
+    "source": "niagara",
+    "category": "Performance",
+    "name": "Lightweight / Low Resource Usage",
+    "description": "Minimaler RAM- und CPU-Verbrauch. Funktioniert auch gut auf älteren Handys und Tablets mit begrenzten Ressourcen. Der Launcher fühlt sich dadurch schnell und flüssig an, selbst auf schwächerer Hardware."
+  },
+  {
+    "id": "niagara-065",
+    "source": "niagara",
+    "category": "Performance",
+    "name": "Wide Android Compatibility",
+    "description": "Unterstützt Android ab Version 5.0 (Lollipop) und neuer. Funktioniert auf einer riesigen Bandbreite von Geräten, einschließlich älterer Hardware. Dadurch kann man den Launcher auch auf alten Handys nutzen, die noch im Einsatz sind."
+  },
+  {
+    "id": "niagara-066",
+    "source": "niagara",
+    "category": "Privacy",
+    "name": "Ad-Free Experience",
+    "description": "Komplett werbefrei, sowohl in der kostenlosen als auch in der Pro-Version. Kein Tracking, keine Werbe-Anzeigen, keine gesponserten Inhalte. Man wird nicht mit Werbung belästigt, egal welche Version man nutzt."
+  },
+  {
+    "id": "niagara-067",
+    "source": "niagara",
+    "category": "Privacy",
+    "name": "Optional Accessibility Service",
+    "description": "Der Accessibility-Service (für Doppeltipp-Bildschirmsperre) ist optional und standardmäßig deaktiviert. Es wird ausdrücklich betont, dass keine Daten gesammelt oder weitergegeben werden. Man muss ihn nur einschalten, wenn man die Doppeltipp-Sperre nutzen will."
+  },
+  {
+    "id": "niagara-068",
+    "source": "niagara",
+    "category": "Pricing",
+    "name": "Freemium Model",
+    "description": "Kostenlose Version mit allen Kernfunktionen. Pro schaltet erweiterte Anpassung, Widgets, Themes und Digital-Wellbeing-Funktionen frei. Preis: ca. 14€/Jahr oder 45€ einmalig für eine lebenslange Lizenz."
+  },
+  {
+    "id": "niagara-069",
+    "source": "niagara",
+    "category": "Pricing",
+    "name": "Referral Program",
+    "description": "Empfehlungsprogramm: Einen Freund einladen und dieser bekommt 50 Tage kostenlosen Zugang zu Niagara Pro. Eine einfache Möglichkeit, den Launcher weiterzuempfehlen."
+  },
+  {
+    "id": "niagara-070",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Settings Organization (Features + Look)",
+    "description": "Einstellungen sind übersichtlich aufgeteilt in 'Funktionen' (Suche, Benachrichtigungen, Widgets, Shortcuts) und 'Aussehen' (Buchstaben-Index, Statusleiste, Themes, Icons). Durch diese klare Trennung findet man schnell die gewünschte Einstellung."
+  },
+  {
+    "id": "niagara-071",
+    "source": "niagara",
+    "category": "Home Screen",
+    "name": "Two-Column Layout Option",
+    "description": "Optionales zweispaltiges Layout für Geräte mit großem Bildschirm und Tablets. Verteilt den Inhalt über zwei Spalten, um die breitere Bildschirmfläche besser auszunutzen. Sinnvoll bei Tablets oder faltbaren Handys im aufgeklappten Zustand."
+  },
+  {
+    "id": "niagara-072",
+    "source": "niagara",
+    "category": "Customization",
+    "name": "Anycon Color Customization",
+    "description": "Jeder Anycon-Stil unterstützt Farbanpassung: Theme-Farben einstellen, Linienstärke anpassen (bei Material/Outline) und zwischen Original- oder themenbasierten Farbpaletten wählen. So lassen sich die Icon-Packs noch genauer an den eigenen Stil anpassen."
+  },
+  {
+    "id": "niagara-073",
+    "source": "niagara",
+    "category": "Updates",
+    "name": "Frequent Updates & Active Development",
+    "description": "Regelmäßige saisonale Updates (Frühling, Sommer, Winter, Artistic). Kleines Team (ehemals Studenten, mittlerweile Absolventen) entwickelt aktiv weiter. Aktive Discord-Community für Feedback und Themenaustausch. Der Launcher wird ständig verbessert."
+  },
+  {
+    "id": "niagara-074",
+    "source": "niagara",
+    "category": "Updates",
+    "name": "Company: Mellowdrop Studio",
+    "description": "Niagara Launcher wird von Mellowdrop Studio (ehemals Bitpit) entwickelt, gegründet von Peter Huber. Ein kleines unabhängiges Studio, kein Großkonzern — man unterstützt mit dem Kauf der Pro-Version direkt die Entwickler."
+  }
+]

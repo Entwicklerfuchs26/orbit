@@ -1,0 +1,282 @@
+[
+  {
+    "id": "cgui-001",
+    "source": "chatgpt",
+    "category": "Collaborative Editing",
+    "name": "Canvas — Side-by-Side Editor",
+    "description": "Geteilter Bildschirm: links der Chat, rechts ein vollwertiger Dokumenten-Editor. Man kann Inhalte ins Dokument schreiben oder einfügen und dann per Chat gezielt Änderungen an einzelnen Abschnitten anfordern. Nicht nur eine Vorschau wie bei Artifacts — sondern eine echte, gemeinsam nutzbare Bearbeitungsfläche für Texte und Code."
+  },
+  {
+    "id": "cgui-002",
+    "source": "chatgpt",
+    "category": "Collaborative Editing",
+    "name": "Canvas — Echtzeit-Zusammenarbeit mit mehreren Nutzern",
+    "description": "Mehrere Personen können gleichzeitig am selben Canvas-Dokument arbeiten, Inline-Kommentare an Absätzen oder Code-Blöcken hinterlassen und Abschnitte an Teammitglieder zuweisen. Ähnlich wie bei Google Docs, aber direkt in der KI-Oberfläche integriert."
+  },
+  {
+    "id": "cgui-003",
+    "source": "chatgpt",
+    "category": "Collaborative Editing",
+    "name": "Canvas — Versionshistorie & Diff",
+    "description": "Zeigt Unterschiede zwischen verschiedenen Dokumentversionen an und erlaubt es, zu früheren Entwürfen zurückzukehren. Man sieht genau, was sich geändert hat und wer die Änderung vorgenommen hat — hilfreich um Überarbeitungen nachzuvollziehen."
+  },
+  {
+    "id": "cgui-004",
+    "source": "chatgpt",
+    "category": "Collaborative Editing",
+    "name": "Canvas — Export als PDF/Word/ausführbarer Code",
+    "description": "Canvas-Inhalte lassen sich als PDF, Word-Dokument oder als ausführbaren Code mit Syntax-Highlighting exportieren. Das Exportformat passt sich automatisch dem Inhaltstyp an — Text wird als Dokument, Code als lauffähige Datei ausgegeben."
+  },
+  {
+    "id": "cgui-005",
+    "source": "chatgpt",
+    "category": "Collaborative Editing",
+    "name": "Canvas — Inhaltsvorlagen",
+    "description": "Vorgefertigte Vorlagen für Blogbeiträge, E-Mails, Code-Reviews und Projekt-Briefs, um Canvas-Sitzungen schnell zu starten. Statt bei null anzufangen, wählt man eine Vorlage und passt sie an — spart Zeit beim Einstieg."
+  },
+  {
+    "id": "cgui-006",
+    "source": "chatgpt",
+    "category": "Deep Research",
+    "name": "Deep Research — Autonomer Recherche-Agent",
+    "description": "Ein autonomer Recherche-Agent, der 5–30 Minuten lang selbstständig arbeitet: er stellt nacheinander Web-Suchanfragen, liest Seiten durch und fasst Ergebnisse zusammen. Während der Arbeit zeigt ein Live-Aktivitäts-Panel die Denkschritte und durchsuchten Webseiten an. Vor der Ausführung kann man den Recherche-Plan überprüfen und anpassen."
+  },
+  {
+    "id": "cgui-007",
+    "source": "chatgpt",
+    "category": "Deep Research",
+    "name": "Deep Research — Strukturierte Berichte",
+    "description": "Erzeugt formatierte Berichte mit mehreren Abschnitten, Quellenangaben und strukturierten Erkenntnissen — nicht einfach eine Chat-Antwort, sondern ein richtiges, ablieferbares Dokument. Quellen werden direkt zugeordnet, sodass man jede Aussage nachprüfen kann."
+  },
+  {
+    "id": "cgui-008",
+    "source": "chatgpt",
+    "category": "Deep Research",
+    "name": "Deep Research — MCP-Datenquellen-Anbindung",
+    "description": "Deep Research kann über MCP-Server mit internen Dokumentationen, Wissensdatenbanken oder eigenen Datenquellen verbunden werden. Diese werden dann neben dem öffentlichen Web als Recherche-Quellen genutzt — so kann die KI auch firmeninterne Informationen durchsuchen."
+  },
+  {
+    "id": "cgui-009",
+    "source": "chatgpt",
+    "category": "Voice",
+    "name": "Advanced Voice — Live-Video-Teilen",
+    "description": "Man richtet die Handy-Kamera auf etwas in der echten Welt, während man sich mit ChatGPT unterhält — die KI sieht in Echtzeit, was die Kamera zeigt, und reagiert darauf. Zum Beispiel: Kamera auf ein kaputtes Gerät richten und fragen 'Was ist hier das Problem?' — die KI erkennt das Bild und antwortet kontextbezogen."
+  },
+  {
+    "id": "cgui-010",
+    "source": "chatgpt",
+    "category": "Voice",
+    "name": "Advanced Voice — Bildschirmfreigabe",
+    "description": "Den Handybildschirm während eines Sprachgesprächs teilen, um Folien, Dokumente oder Apps zu erklären. Das Modell sieht, was auf dem Bildschirm angezeigt wird, und kann gezielt darauf eingehen — nützlich für Präsentationen oder Debugging."
+  },
+  {
+    "id": "cgui-011",
+    "source": "chatgpt",
+    "category": "Voice",
+    "name": "Advanced Voice — Extrem niedrige Latenz",
+    "description": "Die Sprachantwort kommt im Durchschnitt nach nur 232 Millisekunden — ein fast sofortiges Gesprächsgefühl, schneller als die typische menschliche Reaktionszeit. Das macht Sprachunterhaltungen flüssig und natürlich, ohne störende Pausen."
+  },
+  {
+    "id": "cgui-012",
+    "source": "chatgpt",
+    "category": "Projects",
+    "name": "Projects — Geteilte Team-Arbeitsbereiche",
+    "description": "Projekte können per E-Mail mit Teammitgliedern geteilt werden, mit zwei Berechtigungsstufen: 'Kann chatten' (anschauen und mitdiskutieren) und 'Kann bearbeiten' (Einstellungen ändern und Dateien hochladen). Echte Zusammenarbeit mehrerer Personen in einem gemeinsamen Arbeitsbereich."
+  },
+  {
+    "id": "cgui-013",
+    "source": "chatgpt",
+    "category": "Projects",
+    "name": "Projects — Deep Research + Canvas zusammen",
+    "description": "Innerhalb eines Projekts hat Deep Research Zugriff auf alle Projektdateien und Anweisungen, und Canvas-Bearbeitung ist integriert. Man kann recherchieren, schreiben und bearbeiten in einem einzigen, zusammenhängenden Arbeitsbereich — ohne zwischen verschiedenen Tools zu wechseln."
+  },
+  {
+    "id": "cgui-014",
+    "source": "chatgpt",
+    "category": "Memory",
+    "name": "Memory — Zwei-Schichten-System",
+    "description": "Zwei unabhängige Gedächtnis-Schalter: 'Gespeicherte Erinnerungen nutzen' (einzelne Fakten, die man ansehen, bearbeiten und löschen kann) und 'Chat-Verlauf nutzen' (implizite Kontinuität über Gespräche hinweg). Jeder Schalter kann unabhängig ein- und ausgeschaltet werden — volle Kontrolle darüber, was die KI sich merkt."
+  },
+  {
+    "id": "cgui-015",
+    "source": "chatgpt",
+    "category": "Agent",
+    "name": "Agent Mode — Autonome Mehrstufen-Ausführung",
+    "description": "Die KI nutzt einen eigenen virtuellen Computer, um selbstständig Webseiten zu besuchen, Buttons zu klicken, Formulare auszufüllen, Code auszuführen und Dateien zu bearbeiten. Läuft 5–30 Minuten unbeaufsichtigt und liefert fertige Ergebnisse ab — ein echter digitaler Assistent, der komplexe Aufgaben eigenständig erledigt."
+  },
+  {
+    "id": "cgui-016",
+    "source": "chatgpt",
+    "category": "Agent",
+    "name": "Operator — Browser-Automatisierung für die echte Welt",
+    "description": "Ein dedizierter Cloud-Browser, der echte Webseiten physisch navigiert: Flüge buchen, Preise vergleichen, Formulare ausfüllen, Daten extrahieren. Nutzt visuelle HTML-Analyse mit echten Mausklicks und Tastatureingaben. Bei CAPTCHAs gibt es einen 'Menschliche Übernahme'-Modus, wo man kurz einspringen kann."
+  },
+  {
+    "id": "cgui-017",
+    "source": "chatgpt",
+    "category": "Agent",
+    "name": "Codex — Multi-Agent-Coding-Kommandozentrale",
+    "description": "Mehrere Programmieraufgaben gleichzeitig zuweisen, jede läuft parallel in einer eigenen Sandbox. Die Agenten lesen und verändern Code über ganze Repositories hinweg, führen Tests aus, beheben Fehler, erstellen Branches und öffnen Pull Requests. Die Oberfläche zeigt Aufgabenkarten mit Fortschrittsanzeige."
+  },
+  {
+    "id": "cgui-018",
+    "source": "chatgpt",
+    "category": "Image Generation",
+    "name": "Native multimodale Bildgenerierung",
+    "description": "GPT-4o erzeugt Bilder nativ innerhalb von Gesprächen — nicht über einen separaten DALL-E-Aufruf, sondern als Teil seiner multimodalen Ausgabe. Versteht komplexe Beschreibungen mit besonders hoher Genauigkeit und kann Text in Bildern korrekt darstellen."
+  },
+  {
+    "id": "cgui-019",
+    "source": "claude-ai",
+    "category": "Artifacts",
+    "name": "Artifacts — Live-Interaktive Vorschau",
+    "description": "Erzeugtes HTML, React, SVG und Mermaid werden als voll interaktive Live-Vorschau in einem rechten Seitenpanel dargestellt. Apps laufen sicher in Sandbox-iframes mit echter Interaktivität — nicht nur Code-Anzeige, sondern funktionierende Anwendungen, die man direkt ausprobieren kann."
+  },
+  {
+    "id": "cgui-020",
+    "source": "claude-ai",
+    "category": "Artifacts",
+    "name": "Artifacts — Markieren-und-Bearbeiten",
+    "description": "Text in einem Artifact markieren, auf 'Mit Claude bearbeiten' klicken und die gewünschte Änderung beschreiben — Claude bearbeitet nur den markierten Teil und lässt den Rest unverändert. Man muss nicht umständlich beschreiben, welchen Absatz man meint — einfach markieren und anweisen."
+  },
+  {
+    "id": "cgui-021",
+    "source": "claude-ai",
+    "category": "Artifacts",
+    "name": "Artifacts — Vorschau/Code-Umschalter",
+    "description": "Oben im Artifact-Panel kann man zwischen gerendeter Vorschau und dem zugrunde liegenden Quellcode umschalten. So sieht man das Ergebnis und kann gleichzeitig den Code inspizieren oder kopieren — beides direkt nebeneinander."
+  },
+  {
+    "id": "cgui-022",
+    "source": "claude-ai",
+    "category": "Artifacts",
+    "name": "Artifacts — Gezielte Edits statt komplette Neugenerierung",
+    "description": "Claude entscheidet intelligent, ob eine gezielte Textersetzung für kleine Änderungen reicht (3–4x schneller) oder ob eine komplette Neugenerierung nötig ist. Keine unnötige Wartezeit durch überflüssiges Neu-Erzeugen des gesamten Inhalts."
+  },
+  {
+    "id": "cgui-023",
+    "source": "claude-ai",
+    "category": "Thinking",
+    "name": "Extended Thinking — Adaptive Denkschritte-Anzeige",
+    "description": "Claude entscheidet selbstständig, ob und wie tief es nachdenken muss. Denkschritte werden in einklappbaren Abschnitten angezeigt. Bei einfachen Anfragen wird das Nachdenken komplett übersprungen, um schneller zu antworten. Ein visueller Indikator zeigt die Denktiefe an."
+  },
+  {
+    "id": "cgui-024",
+    "source": "claude-ai",
+    "category": "Style",
+    "name": "Ausgabestile / Tonfall-Voreinstellungen",
+    "description": "Pro Chat einstellbarer Tonfall, Stimme, Wortwahl und Detailgrad. Wird mit kontoweiten und projektspezifischen Anweisungen kombiniert. So bestimmt man, wie Claude kommuniziert, ohne System-Prompts umschreiben zu müssen — z.B. 'förmlich und knapp' oder 'locker und ausführlich'."
+  },
+  {
+    "id": "cgui-025",
+    "source": "claude-ai",
+    "category": "Projects",
+    "name": "Projects — Drei-Schichten-Anweisungssystem",
+    "description": "Kontoweite Anweisungen + projektspezifische Anweisungen + chatspezifische Stile — drei unabhängige Ebenen, die sich überlagern. Projektanweisungen gelten automatisch für jeden Chat in diesem Projekt. So muss man grundlegende Vorgaben nicht in jedem Gespräch wiederholen."
+  },
+  {
+    "id": "cgui-026",
+    "source": "claude-ai",
+    "category": "Research",
+    "name": "Research Mode — Mehrstufige Quellen-Synthese",
+    "description": "Automatisierte Web-Recherche über mehrere Schritte, die Belege aus verschiedenen Quellen zusammenträgt und verifizierte Berichte mit transparenten Quellenangaben erstellt. Verfügbar für Pro/Max/Team/Enterprise-Abonnements."
+  },
+  {
+    "id": "cgui-027",
+    "source": "claude-ai",
+    "category": "Connectors",
+    "name": "414+ MCP-Connectoren im Verzeichnis",
+    "description": "Ein Verzeichnis mit über 414 Ein-Klick-Integrationen: Projektmanagement (Linear, Asana, monday.com), Kreativ-Tools (Figma, Canva) und mehr. Drei Typen: Verzeichnis-Connectoren, interaktive Apps (zeigen Live-Oberflächen direkt in Claude an) und eigene MCP-Server-URLs."
+  },
+  {
+    "id": "cgui-028",
+    "source": "claude-ai",
+    "category": "Connectors",
+    "name": "Interaktive Apps direkt im Chat",
+    "description": "Manche Connectoren zeigen live-interaktive Oberflächen direkt in Claude an — Slack, Figma, Canva, Asana erscheinen als eingebettete, bedienbare Widgets, nicht nur als API-Anbindungen. Man kann damit arbeiten, ohne die Chat-Oberfläche zu verlassen."
+  },
+  {
+    "id": "cgui-029",
+    "source": "claude-ai",
+    "category": "Computer Use",
+    "name": "Computer Use — Desktop-Steuerung per Screenshots",
+    "description": "Claude macht Screenshots vom Desktop, analysiert sie mit Bilderkennung und gibt präzise Maus-/Tastatur-Aktionen zurück. Navigiert selbstständig durch Browser und Desktop-Programme. Aktuell nur auf macOS über Claude Desktop verfügbar — das Modell kann deinen Computer fernsteuern."
+  },
+  {
+    "id": "cgui-030",
+    "source": "claude-ai",
+    "category": "Memory",
+    "name": "Memory — Dauerhaftes Gedächtnis auch im Free-Tier",
+    "description": "Dauerhaftes Gedächtnis ist auch in der kostenlosen Version verfügbar (seit März 2026). Merkt sich Name, Kommunikationsstil, Schreibvorlieben und Projektkontext über Gespräche hinweg — ohne dass man jedes Mal neu erklären muss, wer man ist und woran man arbeitet."
+  },
+  {
+    "id": "cgui-031",
+    "source": "lobechat",
+    "category": "Agents",
+    "name": "Agent-Gruppen — Multi-Agent-Zusammenarbeit",
+    "description": "Teams aus spezialisierten Agenten orchestrieren, die parallel an Aufgaben arbeiten — jeder mit eigener Wissensbasis, Persönlichkeit und Tool-Zugriff. Nicht nur einzelne Chats, sondern koordinierte Zusammenarbeit mehrerer KI-Agenten an einem gemeinsamen Ziel."
+  },
+  {
+    "id": "cgui-032",
+    "source": "lobechat",
+    "category": "Agents",
+    "name": "Agent-Erstellung per natürlicher Sprache",
+    "description": "Beschreibe einfach, was du brauchst — System-Prompt, Modell, Tools und Wissensbasis werden automatisch aus der Beschreibung konfiguriert. Kein manuelles Zusammenbauen nötig: 'Ich brauche einen Agenten der NixOS-Configs reviewed' → fertig."
+  },
+  {
+    "id": "cgui-033",
+    "source": "lobechat",
+    "category": "Marketplace",
+    "name": "Agent-Marktplatz — Community-Agenten",
+    "description": "Vorgefertigte Agenten aus der Community durchsuchen und installieren — mit spezialisierten Persönlichkeiten, Wissen und Tool-Konfigurationen. Eine umfangreiche Bibliothek fertiger Assistenten für Arbeit, Lernen und spezielle Anwendungsfälle."
+  },
+  {
+    "id": "cgui-034",
+    "source": "lobechat",
+    "category": "Marketplace",
+    "name": "Plugin-Marktplatz — 100+ Plugins",
+    "description": "Plugins für Web-Suche, Bildgenerierung, PDF-Analyse, Code-Ausführung, Wetter und mehr aus einem visuellen Marktplatz installieren, ohne Konfigurationsdateien anfassen zu müssen. Ein-Klick-Installation direkt in der Oberfläche."
+  },
+  {
+    "id": "cgui-035",
+    "source": "lobechat",
+    "category": "Topics",
+    "name": "Themenbasierte Gesprächsverwaltung",
+    "description": "Jedes Agent-Gespräch wird in 'Themen' organisiert — nach Zeitgruppen sortiert, mit Favoriten immer oben. Man kann Themen suchen, umbenennen, als Favorit markieren und aufräumen — unabhängig voneinander. Wechsel zwischen gruppierter und flacher Listenansicht möglich."
+  },
+  {
+    "id": "cgui-036",
+    "source": "lobechat",
+    "category": "UI Design",
+    "name": "Modell-zuerst — Schnelles Umschalten",
+    "description": "Die gesamte Bedienung ist darauf ausgelegt, schnell zwischen verschiedenen KI-Anbietern innerhalb eines Gesprächs wechseln zu können — damit jedes Modell das tut, was es am besten kann. Die Modellauswahl ist das zentrale Bedienkonzept, nicht ein nachträgliches Feature."
+  },
+  {
+    "id": "cgui-037",
+    "source": "lobechat",
+    "category": "MCP",
+    "name": "10.000+ Skills über MCP",
+    "description": "Native MCP-Integration, die Agenten mit über 10.000 Skills verbindet — externe Tools, Datenbanken und Dienste, die über das Model Context Protocol erreichbar sind. Riesige Erweiterbarkeit ohne eigene Entwicklung."
+  },
+  {
+    "id": "cgui-038",
+    "source": "lobechat",
+    "category": "Collaboration",
+    "name": "Pages — Kollaboratives Schreiben",
+    "description": "Ein eigener Bereich für gemeinsames, längeres Schreiben, getrennt vom Chat. Gedacht für Texte, die über eine einzelne Chat-Antwort hinausgehen — Berichte, Dokumentationen, Artikel. KI-Unterstützung direkt im Editor."
+  },
+  {
+    "id": "cgui-039",
+    "source": "lobechat",
+    "category": "Design",
+    "name": "Herausragendes Open-Source-UI-Design",
+    "description": "Gilt weithin als die am besten gestaltete Open-Source-Chat-Oberfläche — mit durchdachtem Design, flüssigen Animationen und mobilfreundlichem, responsivem Layout. Setzt den visuellen Maßstab für selbst gehostete KI-Frontends."
+  },
+  {
+    "id": "cgui-040",
+    "source": "lobechat",
+    "category": "Agents",
+    "name": "SKILL.md Agent-Skills-Standard",
+    "description": "Unterstützt Agent-Skills im offenen SKILL.md-Format, kompatibel mit Claude Skills. Ein standardisiertes Format, um Agenten spezialisierte Herangehensweisen an Aufgaben beizubringen — wiederverwendbar und austauschbar zwischen verschiedenen Plattformen."
+  }
+]

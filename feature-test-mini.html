@@ -1,0 +1,170 @@
+<title>Feature Test Mini</title>
+<style>
+:root {
+  --bg: #F5F4F1; --surface: #FFF; --text: #1A1D27; --text-muted: #6B7280;
+  --border: #E2E1DD; --accent: #3B7BF7; --yes: #2EAE65; --no: #D94444; --maybe: #E5A118;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0E1118; --surface: #171B24; --text: #E4E5E9; --text-muted: #8B8FA3;
+    --border: #2A2E3A; --accent: #5B93F7;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1118; --surface: #171B24; --text: #E4E5E9; --text-muted: #8B8FA3;
+  --border: #2A2E3A; --accent: #5B93F7;
+}
+:root[data-theme="light"] {
+  --bg: #F5F4F1; --surface: #FFF; --text: #1A1D27; --text-muted: #6B7280;
+  --border: #E2E1DD; --accent: #3B7BF7;
+}
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 16px; }
+.banner { background: var(--accent); color: #fff; padding: 12px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 18px; margin-bottom: 16px; }
+#log { background: #1a1a2e; color: #0f0; font-family: monospace; font-size: 12px; padding: 8px; border-radius: 6px; min-height: 40px; margin-bottom: 16px; white-space: pre-wrap; max-height: 120px; overflow-y: auto; }
+.cat-header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; margin-bottom: 4px; font-weight: 600; font-size: 14px; }
+.feature { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-bottom: 4px; }
+.feature.voted-yes { border-left: 3px solid var(--yes); }
+.feature.voted-no { border-left: 3px solid var(--no); }
+.feature.voted-maybe { border-left: 3px solid var(--maybe); }
+.feature-name { font-weight: 600; font-size: 14px; margin: 0 0 4px; }
+.feature-desc { font-size: 13px; color: var(--text-muted); margin: 0 0 8px; }
+.btn-row { display: flex; gap: 4px; }
+.btn { padding: 6px 14px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; }
+.btn.active-yes { background: var(--yes); color: #fff; border-color: var(--yes); }
+.btn.active-no { background: var(--no); color: #fff; border-color: var(--no); }
+.btn.active-maybe { background: var(--maybe); color: #fff; border-color: var(--maybe); }
+.stars { display: flex; gap: 2px; margin-top: 8px; }
+.star { background: none; border: none; font-size: 18px; color: var(--border); cursor: pointer; padding: 4px; }
+.star.filled { color: var(--accent); }
+.expand-btn { background: none; border: none; color: var(--accent); font-size: 13px; cursor: pointer; text-decoration: underline; padding: 0; margin-bottom: 12px; }
+</style>
+
+<div class="banner">MINI TEST v1</div>
+<div id="log">Log bereit...</div>
+<button class="expand-btn" id="btnExpand">Alle aufklappen</button>
+<button class="expand-btn" id="btnCollapse" style="margin-left:12px">Alle zuklappen</button>
+<div id="list"></div>
+
+<script>
+var features = [
+  { id: 'test-1', cat: 'Navigation', name: 'Wave Alphabet', desc: 'Buchstaben-Index am Rand' },
+  { id: 'test-2', cat: 'Navigation', name: 'Left-Hand Mode', desc: "Index auf linke Seite verschieben" },
+  { id: 'test-3', cat: 'Agents & Models', name: 'Multi-Model Chat', desc: "Mehrere KI-Modelle in einem Chat mit 'Vergleichsmodus'" },
+];
+
+var state = { votes: {}, open: { 'Navigation': true, 'Agents & Models': true } };
+
+function log(msg) {
+  var el = document.getElementById('log');
+  el.textContent = msg + '\n' + el.textContent.slice(0, 500);
+}
+
+function vote(id, v) {
+  log('vote: ' + id + ' -> ' + v);
+  state.votes[id] = state.votes[id] || {};
+  state.votes[id].vote = v;
+  render();
+}
+
+function setPrio(id, p) {
+  log('prio: ' + id + ' -> ' + p);
+  state.votes[id] = state.votes[id] || {};
+  state.votes[id].prio = p;
+  render();
+}
+
+function toggleCat(cat) {
+  log('toggle: ' + cat);
+  state.open[cat] = !state.open[cat];
+  render();
+}
+
+function render() {
+  var grouped = {};
+  features.forEach(function(f) {
+    if (!grouped[f.cat]) grouped[f.cat] = [];
+    grouped[f.cat].push(f);
+  });
+
+  var html = '';
+  Object.keys(grouped).sort().forEach(function(cat) {
+    var isOpen = state.open[cat];
+    html += '<div class="cat-header" data-cat="' + cat + '">' + (isOpen ? '▼' : '▶') + ' ' + cat + '</div>';
+    if (isOpen) {
+      grouped[cat].forEach(function(f) {
+        var v = (state.votes[f.id] || {});
+        var cls = v.vote ? 'voted-' + v.vote : '';
+        var prio = v.prio || 0;
+        html += '<div class="feature ' + cls + '">';
+        html += '<p class="feature-name">' + f.name + '</p>';
+        html += '<p class="feature-desc">' + f.desc + '</p>';
+        html += '<div class="btn-row">';
+        html += '<button class="btn ' + (v.vote === 'yes' ? 'active-yes' : '') + '" data-id="' + f.id + '" data-vote="yes">✓ Ja</button>';
+        html += '<button class="btn ' + (v.vote === 'maybe' ? 'active-maybe' : '') + '" data-id="' + f.id + '" data-vote="maybe">? Vielleicht</button>';
+        html += '<button class="btn ' + (v.vote === 'no' ? 'active-no' : '') + '" data-id="' + f.id + '" data-vote="no">✗ Nein</button>';
+        html += '</div>';
+        if (v.vote === 'yes' || v.vote === 'maybe') {
+          html += '<div class="stars">';
+          for (var i = 1; i <= 5; i++) {
+            html += '<button class="star ' + (prio >= i ? 'filled' : '') + '" data-id="' + f.id + '" data-prio="' + i + '">★</button>';
+          }
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+    }
+  });
+
+  document.getElementById('list').innerHTML = html;
+  log('render ok, ' + features.length + ' features');
+}
+
+render();
+
+document.getElementById('btnExpand').addEventListener('click', function() {
+  log('expand all');
+  features.forEach(function(f) { state.open[f.cat] = true; });
+  render();
+});
+
+document.getElementById('btnCollapse').addEventListener('click', function() {
+  log('collapse all');
+  features.forEach(function(f) { state.open[f.cat] = false; });
+  render();
+});
+
+document.getElementById('list').addEventListener('click', function(e) {
+  var el = e.target;
+
+  if (el.dataset && el.dataset.vote) {
+    vote(el.dataset.id, el.dataset.vote);
+    return;
+  }
+  if (el.dataset && el.dataset.prio) {
+    setPrio(el.dataset.id, parseInt(el.dataset.prio));
+    return;
+  }
+  if (el.dataset && el.dataset.cat) {
+    toggleCat(el.dataset.cat);
+    return;
+  }
+
+  var parent = el.parentElement;
+  while (parent && parent !== this) {
+    if (parent.dataset && parent.dataset.vote) {
+      vote(parent.dataset.id, parent.dataset.vote);
+      return;
+    }
+    if (parent.dataset && parent.dataset.prio) {
+      setPrio(parent.dataset.id, parseInt(parent.dataset.prio));
+      return;
+    }
+    if (parent.dataset && parent.dataset.cat) {
+      toggleCat(parent.dataset.cat);
+      return;
+    }
+    parent = parent.parentElement;
+  }
+});
+</script>
