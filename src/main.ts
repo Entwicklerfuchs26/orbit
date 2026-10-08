@@ -8,12 +8,12 @@ import type { PluginModule } from '@core/loader';
 // GitHub links / a registry at runtime.
 import WelcomePlugin, { manifest as welcomeManifest } from './plugins/welcome/index';
 import ThemePlugin, { manifest as themeManifest } from './plugins/theme/index';
-import WallpaperPlugin, { manifest as wallpaperManifest } from './plugins/wallpaper/index';
+import SkwdWallPlugin, { manifest as skwdWallManifest } from './plugins/skwd-wall/index';
 
 const modules: PluginModule[] = [
   { manifest: welcomeManifest, default: WelcomePlugin },
   { manifest: themeManifest, default: ThemePlugin },
-  { manifest: wallpaperManifest, default: WallpaperPlugin },
+  { manifest: skwdWallManifest, default: SkwdWallPlugin },
 ];
 
 async function main() {
@@ -24,16 +24,25 @@ async function main() {
   // reload (this was wiping uploaded wallpapers).
   app.config.load();
 
-  // First-run seed: welcome + wallpaper (the star). Theme-color plugin stays
+  // Migration: the wallpaper plugin was renamed 'wallpaper' → 'skwd-wall'.
+  // Carry over existing saved state (library, settings) so nothing is lost.
+  const cfg = app.config.getAll();
+  if (cfg.plugins['wallpaper'] && !cfg.plugins['skwd-wall']) {
+    cfg.plugins['skwd-wall'] = cfg.plugins['wallpaper'];
+    delete cfg.plugins['wallpaper'];
+    app.config.save();
+  }
+
+  // First-run seed: welcome + SKWD Wall (the star). Theme-color plugin stays
   // registered but off by default to avoid two theming sources fighting.
   if (Object.keys(app.config.getAll().plugins).length === 0) {
     app.config.enablePlugin('welcome');
-    app.config.enablePlugin('wallpaper');
+    app.config.enablePlugin('skwd-wall');
   }
-  // Dev convenience: ensure the new wallpaper plugin is on for existing testers
-  // whose config predates it.
-  if (app.config.getPluginConfig('wallpaper') === undefined) {
-    app.config.enablePlugin('wallpaper');
+  // Dev convenience: ensure the plugin is on for existing testers whose config
+  // predates it.
+  if (app.config.getPluginConfig('skwd-wall') === undefined) {
+    app.config.enablePlugin('skwd-wall');
   }
 
   await app.boot(modules);

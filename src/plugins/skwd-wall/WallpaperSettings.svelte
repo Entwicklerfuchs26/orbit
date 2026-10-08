@@ -6,7 +6,7 @@
   import ImagePicker from './ImagePicker.svelte';
   import { SCHEME_CHARACTERS, FINISHES } from '../theme/palette';
   import { VIEW_MODES, FILL_MODES, TRANSITIONS } from './types';
-  import { isNativeApp, openLiveWallpaperPicker, isLiveWallpaperActive } from '../../native/wallpaper';
+  import { isNativeApp, openLiveWallpaperPicker, isLiveWallpaperActive } from '../../platform/wallpaper';
 
   const native = isNativeApp();
 

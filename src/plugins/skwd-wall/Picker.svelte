@@ -9,7 +9,7 @@
   import { colorFamily, lightness, rainbowKey } from './color';
   import { applyEffect, EFFECTS, type EffectType } from './effects';
   import WallpaperSettings from './WallpaperSettings.svelte';
-  import { isNativeApp, setSystemWallpaper } from '../../native/wallpaper';
+  import { isNativeApp, setSystemWallpaper } from '../../platform/wallpaper';
   import {
     searchWallhaven,
     downloadWallhaven,

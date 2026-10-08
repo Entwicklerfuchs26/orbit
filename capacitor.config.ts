@@ -7,7 +7,7 @@ const devUrl = process.env.CAP_SERVER_URL;
 
 const config: CapacitorConfig = {
   appId: 'space.sternenhof.wallpaper',
-  appName: 'Wallpaper',
+  appName: 'Orbit',
   webDir: 'dist',
   ...(devUrl ? { server: { url: devUrl, cleartext: true } } : {}),
 };

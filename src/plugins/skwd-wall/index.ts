@@ -6,10 +6,10 @@ import Picker from './Picker.svelte';
 import WallpaperSettings from './WallpaperSettings.svelte';
 
 export const manifest: PluginManifest = {
-  id: 'wallpaper',
-  name: 'Wallpaper',
+  id: 'skwd-wall',
+  name: 'SKWD Wall',
   version: '0.1.0',
-  description: 'Wallpaper-Picker im SKWD-Wall-Look. Eigene Bilder, Ansichts-Modi, Farbschema automatisch aus dem Bild. Läuft überall; echtes OS-Wallpaper-Setzen kommt am Handy.',
+  description: 'SKWD-Wall aufs Handy: Wallpaper-Picker (eigene Bilder + Wallhaven), Ansichts-Modi, Farbschema automatisch aus dem Bild, Übergänge, Live-Wallpaper (nativ). Läuft überall.',
   author: 'Sojus',
   main: 'index.ts',
   type: 'gui',

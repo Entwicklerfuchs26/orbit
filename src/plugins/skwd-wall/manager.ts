@@ -22,9 +22,9 @@ import {
   setLiveWallpaperMedia,
   setLivePool,
   setLiveTransition,
-} from '../../native/wallpaper';
+} from '../../platform/wallpaper';
 
-const PLUGIN_ID = 'wallpaper';
+const PLUGIN_ID = 'skwd-wall';
 
 /**
  * Owns the wallpaper library + the active selection. Metadata persists to
