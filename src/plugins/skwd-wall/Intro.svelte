@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { App } from '@core/index';
   import type { WallpaperManager } from './manager';
+  import type { ViewMode, TransitionType } from './types';
+  import { VIEW_MODES, TRANSITIONS } from './types';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
 
@@ -11,7 +13,7 @@
   }
   let { app, manager, onDone }: Props = $props();
 
-  type Step = { kind: 'info' | 'mobile' | 'done'; kicker: string; title: string; body: string };
+  type Step = { kind: 'info' | 'view' | 'transition' | 'mobile' | 'done'; kicker: string; title: string; body: string };
 
   const steps: Step[] = [
     {
@@ -33,10 +35,16 @@
       body: 'Eigene Fotos und Videos, Millionen Motive aus Wallhaven oder ein ganzer Ordner deines Geräts – alles an einem Ort. Ordner werden verknüpft, nicht kopiert.',
     },
     {
-      kind: 'info',
-      kicker: 'Ansicht & Farbe',
-      title: 'Sieben Ansichten, ein Gespür für Farbe',
-      body: 'Blättere durch wandfüllende Raster, Waben und Fächer. Das aktive Bild färbt die ganze App automatisch – ein Design, das sich mit deinem Hintergrund wandelt.',
+      kind: 'view',
+      kicker: 'Ansicht',
+      title: 'Wähle deinen Look',
+      body: 'Wie soll deine Galerie aussehen? Vom klassischen Raster über Wabenmuster bis zum Kartenfächer – jederzeit änderbar.',
+    },
+    {
+      kind: 'transition',
+      kicker: 'Animation',
+      title: 'Übergänge beim Wechsel',
+      body: 'Wie soll der Wechsel zwischen Wallpapern aussehen? Lass den Zufall entscheiden oder wähle einen festen Effekt.',
     },
     {
       kind: 'mobile',
@@ -60,6 +68,22 @@
   // Interactive setup state, applied immediately to the plugin.
   let mobileOn = $state(manager.state.get().deviceMobile);
   let liveOn = $state(manager.state.get().liveWallpaper);
+  let viewMode = $state(manager.state.get().viewMode);
+  let randomShader = $state(manager.state.get().randomShader);
+  let transitionType = $state(manager.state.get().transitionType);
+
+  function setView(m: ViewMode) {
+    viewMode = m;
+    manager.setViewMode(m);
+  }
+  function setRandomShader(on: boolean) {
+    randomShader = on;
+    manager.setField('randomShader', on);
+  }
+  function setTransition(t: TransitionType) {
+    transitionType = t;
+    manager.setTransitionType(t);
+  }
 
   function setMobile(on: boolean) {
     mobileOn = on;
@@ -149,7 +173,7 @@
             <path d="M64 105 C110 105 120 105 150 110" class="flow" style="animation-delay:600ms" />
             <path d="M64 152 C110 152 120 110 150 120" class="flow" style="animation-delay:1200ms" />
           </svg>
-        {:else if i === 3}
+        {:else if step.kind === 'view'}
           <svg viewBox="0 0 260 210" class="il">
             <g class="float">
               <rect x="92" y="54" width="76" height="104" rx="12" class="card c3" fill="url(#skwdGradSoft)" />
@@ -161,6 +185,15 @@
               {#each [0, 1, 2, 3, 4] as k}
                 <circle cx={96 + k * 17} cy="176" r="7" class="swatch s{k}" style="animation-delay:{k * 120}ms" />
               {/each}
+            </g>
+          </svg>
+        {:else if step.kind === 'transition'}
+          <!-- Two frames cross-blending -->
+          <svg viewBox="0 0 260 210" class="il">
+            <rect x="48" y="55" width="100" height="100" rx="14" fill="url(#skwdGradSoft)" class="xf a" />
+            <rect x="112" y="55" width="100" height="100" rx="14" fill="url(#skwdGrad)" class="xf b" />
+            <g class="float">
+              <path d="M126 105 h18 m-6 -6 l6 6 l-6 6" class="arrow" />
             </g>
           </svg>
         {:else if step.kind === 'mobile'}
@@ -199,6 +232,33 @@
         <span class="kicker">{pad(i)} · {step.kicker}</span>
         <h1>{step.title}</h1>
         <p>{step.body}</p>
+
+        {#if step.kind === 'view'}
+          <div class="chips-grid">
+            {#each VIEW_MODES as v (v.value)}
+              <button class="chip-opt" class:sel={viewMode === v.value} onclick={() => setView(v.value)}>{v.label}</button>
+            {/each}
+          </div>
+        {/if}
+
+        {#if step.kind === 'transition'}
+          <div class="toggles">
+            <button class="toggle" class:on={randomShader} onclick={() => setRandomShader(!randomShader)}>
+              <span class="t-text">
+                <span class="t-title">Zufällige Übergänge</span>
+                <span class="t-desc">Bei jedem Wechsel ein anderer Effekt – immer für Abwechslung.</span>
+              </span>
+              <span class="sw" aria-hidden="true"><span class="knob"></span></span>
+            </button>
+            {#if !randomShader}
+              <select class="sel-input" value={transitionType} onchange={(e) => setTransition(e.currentTarget.value as TransitionType)}>
+                {#each TRANSITIONS as t (t.value)}
+                  <option value={t.value}>{t.label}{t.gpu ? ' ✦' : ''}</option>
+                {/each}
+              </select>
+            {/if}
+          </div>
+        {/if}
 
         {#if step.kind === 'mobile'}
           <div class="toggles">
@@ -282,6 +342,20 @@
   h1 { margin: 0 0 12px; font-size: clamp(1.4rem, 6.5vw, 1.9rem); line-height: 1.12; letter-spacing: -0.02em; font-weight: 800; }
   p { margin: 0 auto; max-width: 30rem; color: var(--text-muted, #c7c9d1); line-height: 1.55; font-size: 0.95rem; }
 
+  .chips-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 18px auto 0; max-width: 30rem; }
+  .chip-opt {
+    background: color-mix(in srgb, var(--text, #fff) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text, #fff) 12%, transparent);
+    color: var(--text, #fff); border-radius: 999px; padding: 9px 16px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, transform 0.1s;
+  }
+  .chip-opt:active { transform: scale(0.96); }
+  .chip-opt.sel { background: var(--accent, #6aa0ff); color: #fff; border-color: transparent; }
+  .sel-input {
+    width: 100%; margin-top: 2px; background: color-mix(in srgb, var(--text, #fff) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text, #fff) 14%, transparent); color: var(--text, #fff);
+    border-radius: 14px; padding: 13px 14px; font-size: 0.95rem;
+  }
   .toggles { display: flex; flex-direction: column; gap: 10px; margin: 18px auto 0; max-width: 30rem; text-align: left; }
   .toggle {
     display: flex; align-items: center; gap: 14px;
@@ -338,6 +412,12 @@
   .switch-knob { fill: color-mix(in srgb, var(--text, #fff) 35%, transparent); transition: fill 0.25s; }
   .switch-knob.on { fill: var(--accent, #6aa0ff); animation: livepulse 1.8s ease-in-out infinite; }
   .check { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 70; stroke-dashoffset: 70; animation: draw 0.6s 0.2s cubic-bezier(.2,.8,.2,1) forwards; }
+  .xf { stroke: color-mix(in srgb, var(--text, #fff) 16%, transparent); stroke-width: 1.5; }
+  .xf.a { animation: xfa 3s ease-in-out infinite; }
+  .xf.b { animation: xfb 3s ease-in-out infinite; }
+  .arrow { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  @keyframes xfa { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  @keyframes xfb { 0%,100% { opacity: 0.25; } 50% { opacity: 1; } }
 
   .float { animation: floaty 5s ease-in-out infinite; transform-origin: center; }
   .spin { animation: spin 22s linear infinite; }
@@ -357,7 +437,8 @@
   @keyframes draw { to { stroke-dashoffset: 0; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .float, .spin, .chip, .slidein, .ping, .wave, .tile, .flow, .switch-knob, .aurora, .swatches circle, .check { animation: none !important; }
+    .float, .spin, .chip, .slidein, .ping, .wave, .tile, .flow, .switch-knob, .aurora, .swatches circle, .check, .xf { animation: none !important; }
+    .xf.b { opacity: 1; }
     .tile, .chip, .swatches circle { opacity: 1; }
     .check { stroke-dashoffset: 0; }
   }
