@@ -6,6 +6,33 @@ Ein universeller Plugin-Loader für KI-Anwendungen — wie NixOS, aber für GUIs
 Der Kern kann nichts außer Plugins laden. Alles andere (Chat, Notizen, Themes,
 Nextcloud, Projektmanagement, Avatar) sind Plugins.
 
+> **Hinweis:** Dieses Dokument beschreibt die **Vision**. Der real gebaute Stand
+> steht in Abschnitt 0. Wo Vision und Ist abweichen, gilt für die Bauarbeit das Ist
+> + `CONVENTIONS.md`.
+
+---
+
+## 0. Ist-Zustand (Stand 09.10.2026)
+
+- **Stack entschieden:** TypeScript + **Svelte 5** (Runes) + Vite 6, Mobile via
+  **Capacitor 8** (Android live), Desktop (Tauri) vorgesehen.
+- **Kern** (`src/core`): Plugin-Loader, deklarative Config (localStorage), Commands,
+  Workspace/Tabs, Theme (Material You), Store/Reaktivität, **Settings-Framework**
+  (`settings.ts` + `shell/SettingsView.svelte`, Kategorie-Reiter).
+- **Shell** (`src/shell`): Sidebar, Tabs, ViewHost, Kommandopalette, Settings.
+- **Erstes Plugin `skwd-wall`: feature-komplett** (ohne Sync) — 7 Ansichtsmodi aus
+  dem SKWD-Quellcode adaptiert, Theming, Hinzufügen per Upload/Wallhaven/**Ordner**
+  (nativ SAF + Web FS-Access, mit Thumbnails + faulem Laden), System- +
+  Live-Wallpaper (nativer GL-Dienst), Papierkorb, Zeitplan, Auto-Wechsel.
+- **Native Capabilities im Kern-APK:** `WallpaperPlugin` (statisch + GL-Live) und
+  `FolderAccessPlugin` (SAF). Grundsatz: nativer Code ist nicht downloadbar → er
+  gehört in den Kern und wird als generische Capability für alle Plugins angeboten
+  (beim Kern-Umbau sauber als API herauslösen).
+- **Offen / als Nächstes (Kern-Phase):** Standard-Startseite, Onboarding,
+  Plugin-Store (JS-Plugins, evtl. GitHub), eigenständige teilbare APK (bringt kein
+  Plugin mit), danach PC↔Handy-Sync. Deklarative Plugin-Verwaltung auf dem PC
+  (NixOS/Home-Manager) ist angedacht.
+
 ## Schichtenmodell
 
 ```
@@ -234,9 +261,9 @@ Nur die Shell und das vorinstallierte Bundle unterscheiden sich.
 | Komponente        | Technologie                                      |
 |-------------------|--------------------------------------------------|
 | Sprache           | TypeScript                                        |
-| UI-Framework      | Noch offen (Svelte, Solid oder React)             |
-| Desktop-Shell     | Tauri 2 (Rust)                                    |
-| Mobile-Shell      | Capacitor                                         |
+| UI-Framework      | **Svelte 5** (Runes) + Vite 6                     |
+| Desktop-Shell     | Tauri 2 (Rust) — vorgesehen                        |
+| Mobile-Shell      | Capacitor 8 (Android live)                        |
 | Plugin-API        | Obsidian-kompatible Patterns                      |
 | Farbextraktion    | @material/material-color-utilities                |
 | Design-System     | CSS Custom Properties / Design Tokens             |

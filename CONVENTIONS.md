@@ -35,17 +35,36 @@ src/
 
 ## Einstellungen / State (das wichtigste Muster)
 
-Immer diese drei Schichten, reaktiv:
+Einstellungen sind **deklarativ** — Orbit-Standard. Nicht pro Feld Svelte-Markup
+bauen, sondern drei Schichten:
 
 1. **Typ + Default** in `types.ts` (ein Feld in `*State` + `DEFAULT_STATE`).
-2. **Setter** im `manager.ts`: `set…(v) { this.state.update(s => ({...s, feld:v})); this.persist(); /* ggf. apply */ }`.
-3. **UI** in `*Settings.svelte`: `const st = useStore(manager.state)` lesen,
-   `manager.set…(v)` schreiben. Nie State direkt mutieren.
+2. **Schema-Eintrag** in `*Settings.svelte`: ein `SettingDef` (`src/core/settings.ts`)
+   vom Typ `toggle | slider | segment | select | text | color | button | heading |
+   custom`, gruppiert in `SettingSection` (optional `category` → Reiter). Gerendert
+   vom generischen `src/shell/SettingsView.svelte` (Kategorie-Reiter, scroll-sicherer
+   Eigen-Slider nur auf horizontales Ziehen, 320 ms Settle-Guard gegen Fehl-Taps).
+3. **Schreiben** über den generischen `manager.setField(key, value)` (persistiert +
+   führt Seiteneffekte per `switch` aus). Echte Sonderfälle (Presets, Papierkorb,
+   Ordner-Liste …) als `custom`-Snippet via `custom={{ … }}`.
 
+- Lesen in Settings/Views: `const st = useStore(manager.state)`. Nie State direkt mutieren.
 - Persistenz: `app.config.set(PLUGIN_ID, 'state', …)` (localStorage). Bild-/Blob-
   Daten in IndexedDB (`storage.ts`), nicht in Config.
-- **Migration:** wird ein `id`/Key umbenannt, in `main.ts` alten Config-Key auf
-  neuen umziehen (siehe `wallpaper`→`skwd-wall`), sonst gehen Nutzerdaten verloren.
+- **Migration:** wird ein `id`/Key umbenannt, in `main.ts`/Konstruktor alten Config-Key
+  auf neuen umziehen (siehe `wallpaper`→`skwd-wall`), sonst gehen Nutzerdaten verloren.
+
+## Speicher / Medien
+
+- **IndexedDB** (`storage.ts`): hochgeladene Bild-/Video-Blobs, per Item-id.
+- **Externe Ordner** (`folders.ts`): echte Verzeichnisse referenziert (nicht kopiert).
+  Web = File System Access API (`showDirectoryPicker`, Handle in IDB, Re-Permission
+  nach Reload); nativ = `FolderAccess`-Plugin (SAF, Dauerberechtigung).
+- **Thumbnails**: Galerie zeigt kleine, heruntergerechnete Bilder (`folderThumbUrl`;
+  nativ `inSampleSize`, Web `createImageBitmap`); **Anwenden** (System-/Live-
+  Wallpaper) nutzt volle Auflösung (`manager.fullUrl`, frischer Object-URL → Caller
+  revoked). Laden ist **faul**: `use:ensure` (IntersectionObserver) lädt nur sichtbare
+  Items, `releaseUrl` gibt sie außer Sicht wieder frei → beschränkter Speicher.
 
 ## Reaktivität (Svelte 5)
 
@@ -56,10 +75,18 @@ Immer diese drei Schichten, reaktiv:
 
 - Bridge-Funktionen in `src/platform/*.ts`; Aufrufer gaten mit `isNativeApp()`.
 - **Nie** große Medien als base64 über die Capacitor-Bridge (friert den Thread
-  ein → ANR). Bilder vorher runterskalieren; große Dateien gechunkt übertragen.
-- Android-Code in `android/app/src/main/java/space/sternenhof/wallpaper/`.
+  ein → ANR). Bilder vorher runterskalieren; große Dateien gechunkt übertragen;
+  Thumbnails nativ heruntersampeln.
+- Android-Code in `android/app/src/main/java/space/sternenhof/wallpaper/`
+  (`WallpaperPlugin`, `FolderAccessPlugin`), registriert in `MainActivity`.
   Nach nativen Änderungen: APK neu bauen; nach reinen Web-Änderungen reicht
   App-Reload (Dev-APK lädt vom Vite-Server).
+- **Native Fähigkeiten gehören in den Kern, nicht ins Plugin.** Nativer Code lässt
+  sich nicht als Plugin herunterladen → er lebt im Kern-APK und wird als
+  **generische Capability** (Datei/Ordner, Wallpaper, Live-Wallpaper) angeboten,
+  die jedes Plugin über die Kern-API nutzen kann. (Beim Kern-Umbau: skwd-wall von
+  den aktuell direkt genutzten nativen Plugins auf eine saubere Kern-Capability-API
+  umstellen.)
 
 ## Qualität
 

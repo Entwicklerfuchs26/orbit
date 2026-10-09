@@ -1,6 +1,6 @@
 # Feature- & Test-Checkliste
 
-Stand: 08.10.2026. App über Live-Reload testen (`http://192.168.1.40:5173/` bzw. installierte App).
+Stand: 09.10.2026. App über Live-Reload testen (`http://192.168.1.40:5173/` bzw. installierte App).
 Nach Web-Änderungen reicht **App neu laden**.
 
 **Workflow:** Jede neue Testliste kommt hier rein. `- [x]` = von Jonas bestätigt. `- [ ]` = noch offen (Jonas hakt selbst ab).
@@ -217,23 +217,23 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
-### 24. Thumbnails + Einrichtungs-Buttons (neue APK)
+### 24. Thumbnails + Einrichtungs-Buttons ✓ bestätigt
 *Ordner-Bilder werden jetzt als verkleinerte Thumbnails angezeigt (wie SKWD) — kein
 4K im Speicher mehr. **Neue APK** (native Thumbnail-Methode).*
-- [ ] **Ordner-Scrollen flüssig**: große Ordner ruckeln nicht mehr (Galerie zeigt kleine Thumbnails, nativ heruntergerechnet)
-- [ ] **Als Hintergrund setzen** nutzt weiterhin die **volle Auflösung** (Thumbnail nur in der Galerie) — Wallpaper ist scharf
-- [ ] **Leerer Zustand / erstes Mal**: unter „Wallpaper hochladen" stehen jetzt auch **„Ordner verknüpfen"** und **„Online suchen"** — alle drei Wege direkt bei der Einrichtung
-- [ ] Live-Wallpaper / Auto-Wechsel aus einem Ordner weiterhin in voller Qualität
+- [x] **Ordner-Scrollen flüssig**: große Ordner ruckeln nicht mehr (Galerie zeigt kleine Thumbnails, nativ heruntergerechnet)
+- [x] **Als Hintergrund setzen** nutzt weiterhin die **volle Auflösung** (Thumbnail nur in der Galerie) — Wallpaper ist scharf
+- [x] **Leerer Zustand / erstes Mal**: unter „Wallpaper hochladen" stehen jetzt auch **„Ordner verknüpfen"** und **„Online suchen"** — alle drei Wege direkt bei der Einrichtung
+- [x] Live-Wallpaper / Auto-Wechsel aus einem Ordner weiterhin in voller Qualität
 
-### 23. Speicher-Backend Teil 2: nativer Ordnerzugriff am Handy (SAF) — braucht APK-Rebuild
+### 23. Speicher-Backend Teil 2: nativer Ordnerzugriff (SAF) ✓ bestätigt
 *Native Android-Ordnerwahl (Storage Access Framework). **Neuer nativer Code → APK
 muss neu gebaut + installiert werden** (Web-Reload reicht NICHT). Bis dahin scheitert
 das Ordner-Wählen am Handy still.*
-- [ ] Nach APK-Rebuild: Einstellungen → Quellen → Ordner → **„＋ Bilder-Ordner"** öffnet Androids Ordner-Auswahl
-- [ ] Gewählter Ordner: Bilder/Videos erscheinen in der Galerie (direkt vom Ordner, nichts kopiert)
-- [ ] Nur sichtbare Bilder werden geladen (großer Ordner ruckelt/überlastet nicht)
-- [ ] Zugriff bleibt nach App-Neustart erhalten (SAF-Dauerberechtigung) — „Verbinden" sollte sofort grün sein
-- [ ] Video-Ordner analog
+- [x] Nach APK-Rebuild: Einstellungen → Quellen → Ordner → **„＋ Bilder-Ordner"** öffnet Androids Ordner-Auswahl
+- [x] Gewählter Ordner: Bilder/Videos erscheinen in der Galerie (direkt vom Ordner, nichts kopiert)
+- [x] Nur sichtbare Bilder werden geladen (großer Ordner ruckelt/überlastet nicht)
+- [x] Zugriff bleibt nach App-Neustart erhalten (SAF-Dauerberechtigung) — „Verbinden" sollte sofort grün sein
+- [x] Video-Ordner analog
 
 ### 22. Speicher-Backend: Ordner direkt nutzen (Teil 1, Web/PC — bitte testen)
 *Einstellungen → Quellen → **Ordner**. Erster Teil der Speicher-Arbeit: echte
@@ -248,31 +248,31 @@ Handy folgt der native Ordner-Zugriff (SAF) als eigener Block.*
 - [x] **Einstellungen & „Wallpaper hinzufügen": weniger Leerraum oben** — die Überschrift sitzt jetzt direkt unter der SKWD-Wall-Leiste (doppelte Safe-Area war schuld)
 - [x] **Card Hand → „Fächer verschieben (horizontal)"** — schiebt den ganzen Kartenfächer nach links/rechts
 
-### 20. Fehlbedienung + 2 neue View-Regler (bitte testen)
-- [ ] **Öffnen der Einstellungen schaltet nichts aus Versehen** — die ersten ~0,3 s nach dem Öffnen reagieren Schalter/Regler nicht (das Zahnrad liegt über dem „Suchleiste immer"-Schalter)
-- [ ] **Regler verstellt sich beim Scrollen NICHT mehr** — Finger auf den Schiebebalken + hoch/runter ziehen = die Liste scrollt, der Wert bleibt; nur **seitliches** Ziehen oder gezieltes Tippen ändert ihn
-- [ ] **Sandy → „Kleine Bilder" Links/Rechts** — stellt ein, auf welcher Seite die Thumbnail-Spalte sitzt
-- [ ] **Hex → „Ausblenden ab Rand"** (bei Bogen an) — regelt, ab wo die Waben oben/unten anfangen auszublenden (kleiner = früher/weiter innen)
+### 20. Fehlbedienung + 2 neue View-Regler ✓ bestätigt
+- [x] **Öffnen der Einstellungen schaltet nichts aus Versehen** — die ersten ~0,3 s nach dem Öffnen reagieren Schalter/Regler nicht (das Zahnrad liegt über dem „Suchleiste immer"-Schalter)
+- [x] **Regler verstellt sich beim Scrollen NICHT mehr** — Finger auf den Schiebebalken + hoch/runter ziehen = die Liste scrollt, der Wert bleibt; nur **seitliches** Ziehen oder gezieltes Tippen ändert ihn
+- [x] **Sandy → „Kleine Bilder" Links/Rechts** — stellt ein, auf welcher Seite die Thumbnail-Spalte sitzt
+- [x] **Hex → „Ausblenden ab Rand"** (bei Bogen an) — regelt, ab wo die Waben oben/unten anfangen auszublenden (kleiner = früher/weiter innen)
 
-### 19. Durchblättern + Einstellungen scroll-sicher (bitte testen)
-- [ ] **Slices/Depth/Sandy/Hand/Collection: durchblättern** — vertikal wischen (Handy) bzw. Mausrad (PC) blättert schnell durch die Bilder; der Fokus/Mitte wandert mit
-- [ ] Danach **Antippen wählt aus** (wird zum aktiven Wallpaper); nach einem Wisch löst das Loslassen NICHT versehentlich eine Auswahl aus
-- [ ] **Suchleiste ausblenden**: wenn „Suchleiste immer zeigen" an ist, hat die angedockte Leiste oben ein **×** — einmal tippen schaltet sie dauerhaft aus
-- [ ] **Einstellungen scroll-sicher**: durch die Einstellungen scrollen, ohne dass Regler beim Berühren sofort verspringen (Regler reagieren nur auf seitliches Ziehen, vertikal = scrollen)
+### 19. Durchblättern + Einstellungen scroll-sicher ✓ bestätigt
+- [x] **Slices/Depth/Sandy/Hand/Collection: durchblättern** — vertikal wischen (Handy) bzw. Mausrad (PC) blättert schnell durch die Bilder; der Fokus/Mitte wandert mit
+- [x] Danach **Antippen wählt aus** (wird zum aktiven Wallpaper); nach einem Wisch löst das Loslassen NICHT versehentlich eine Auswahl aus
+- [x] **Suchleiste ausblenden**: wenn „Suchleiste immer zeigen" an ist, hat die angedockte Leiste oben ein **×** — einmal tippen schaltet sie dauerhaft aus
+- [x] **Einstellungen scroll-sicher**: durch die Einstellungen scrollen, ohne dass Regler beim Berühren sofort verspringen (Regler reagieren nur auf seitliches Ziehen, vertikal = scrollen)
 
-### 18. Ansichten komplett neu aus SKWD-Quellcode (bitte testen)
+### 18. Ansichten komplett neu aus SKWD-Quellcode ✓ bestätigt
 *Alle Modi außer Wall sind auf das **aktive Bild zentriert** (wie im SKWD-Original):
 Nachbar antippen = wird zur Mitte, der Rest gleitet animiert nach. **Alles gleitet
 vertikal (oben↔unten)**, nie horizontal. Reine Web-Änderung → nur neu laden.*
-- [ ] **FREEZE weg**: In allen Modi (bes. Slices) öffnet die Swipe-Leiste wieder normal, nichts eingefroren
-- [ ] **Hex: Streifen verschieben** (Ansicht → Regler) schiebt das ganze Wabenmuster horizontal zum Zentrieren
-- [ ] **Slices**: aktives Bild groß in der Mitte, Nachbarn schmale Bänder **darüber/darunter**, Ränder blenden aus; Nachbar antippen = gleitet **vertikal** in die Mitte
-- [ ] **Depth**: Tiefenstapel **vertikal** — aktives Bild groß mittig, nach oben/unten logarithmisch kleiner
-- [ ] **Sandy**: großes Hero-Bild in der Mitte + **vertikale** Thumbnail-Spalte am Rand (gegenüber der Swipe-Leiste)
-- [ ] **Hand**: Kartenfächer **vertikal** um das aktive Bild (Karten biegen seitlich aus)
-- [ ] **Collection**: gekippter Kartenstapel, aktives Bild steht aufrecht groß vorn
-- [ ] **Wall**: unverändert (sauberes Raster)
-- [ ] Modus-Regler passen: Wall-Spalten · Hand-Fächerung · Hex (Spalten/Größe/Bogen/Verschieben); tote Regler (Slices-Neigung/Höhe/Featured, Depth-Neigung) sind raus
+- [x] **FREEZE weg**: In allen Modi (bes. Slices) öffnet die Swipe-Leiste wieder normal, nichts eingefroren
+- [x] **Hex: Streifen verschieben** (Ansicht → Regler) schiebt das ganze Wabenmuster horizontal zum Zentrieren
+- [x] **Slices**: aktives Bild groß in der Mitte, Nachbarn schmale Bänder **darüber/darunter**, Ränder blenden aus; Nachbar antippen = gleitet **vertikal** in die Mitte
+- [x] **Depth**: Tiefenstapel **vertikal** — aktives Bild groß mittig, nach oben/unten logarithmisch kleiner
+- [x] **Sandy**: großes Hero-Bild in der Mitte + **vertikale** Thumbnail-Spalte am Rand (gegenüber der Swipe-Leiste)
+- [x] **Hand**: Kartenfächer **vertikal** um das aktive Bild (Karten biegen seitlich aus)
+- [x] **Collection**: gekippter Kartenstapel, aktives Bild steht aufrecht groß vorn
+- [x] **Wall**: unverändert (sauberes Raster)
+- [x] Modus-Regler passen: Wall-Spalten · Hand-Fächerung · Hex (Spalten/Größe/Bogen/Verschieben); tote Regler (Slices-Neigung/Höhe/Featured, Depth-Neigung) sind raus
 
 ---
 
@@ -285,26 +285,33 @@ vertikal (oben↔unten)**, nie horizontal. Reine Web-Änderung → nur neu laden
   ganz kurz ein Mini-Ruckler, danach smooth. Jonas will aktuell keine bewegten
   Wallpaper, aber das In-App-Video-Rendering soll später entruckelt werden.
 
-## Plan / Roadmap (SKWD aufs Handy → dann Sync)
-**A. Rest SKWD-Features (Web-Arbeit, autonom, kein Rot/Hardware):**
-- [x] Geräte-Bereich (Schiebe-Schalter Handy + Live-Wallpaper)
-- [x] Layout-Feintuning pro Modus (Wall-Spalten, Slices-Neigung/Höhe, Hex-Größe, Depth-Neigung, Hand-Fächerung) → Test offen in §11
+## Plan / Roadmap
 
-Großer Block „SKWD komplett (Web)" — in dieser Reihenfolge abarbeiten, jede
-Teilaufgabe mit eigener Testliste hier in FEATURES.md, Build nach jedem Schritt grün:
-- [x] **A1 Tag-Filter-Chips** — gebaut (Test §13/A1)
-- [x] **A2 Sammlungen / Playlists** — gebaut (Test §13/A2)
-- [x] **A3 Zeit-Scheduling** — gebaut (Test §13/A3)
-- [x] **A4 Theme-Designer-Ausbau** — gebaut (Test §13/A4)
-- [x] **A5 Politur & Konsistenz** — gebaut: ~35 tote CSS-Regeln raus (Warnungen 56→19), „Filter zurücksetzen" löst auch Sammlung, a11y-Kleinkram (Test §13/A5)
+### ✅ „Plugin fertig" erreicht (skwd-wall, ohne Sync) — Stand 09.10.2026
+- [x] Rest SKWD-Features: Geräte, Layout-Feintuning, Tag-Filter, Sammlungen,
+  Zeitplan, Theme-Designer, Politur (A1–A5)
+- [x] **Ansichten komplett neu aus SKWD-Quellcode** (§18) — zentriert, vertikal,
+  durchblätterbar (§19); Fehlbedienung entschärft + Pro-Modus-Regler (§20/§21)
+- [x] **Nativer Live-Wallpaper** (GL `WallpaperService`)
+- [x] **Einstellungen kategorisiert** (Reiter) — Orbit-weiter Standard
+- [x] **Datei-/Speicher-Backend**: Upload (IndexedDB) + echte Ordner einbinden
+  (Web FS-Access §22 + nativ Android SAF §23) mit Thumbnails + faulem Laden (§24)
+- [x] **Einrichtung**: 3 Wege direkt im Leerzustand (Hochladen · Ordner · Online)
 
-Autonomie: komplett Sojus. Jonas nur hinterher testen (Testlisten hier). Nichts „Rot".
+### ▶ Nächste Phase: Kern
+- [ ] Native Fähigkeiten als **generische Kern-Capabilities** herauslösen
+  (FolderAccess/Wallpaper) statt skwd-spezifisch
+- [ ] **Plugin als Standard-Startseite** festlegen
+- [ ] **Onboarding**-Dialog (Erstinstallation)
+- [ ] **Plugin-Store** (JS-Plugins, evtl. über GitHub) — Mechanismus noch zu klären
+- [ ] **Eigenständige APK** — losgelöst vom Dev-Server, bringt KEIN Plugin mit
+  (Plugins lädt man erst), Wallhaven-Zugriff eigenständig
+- [ ] Offene Fragen (mit Jonas): Plugins, die die **In-App-Navigation** ändern;
+  Plugins **von außen** erreichbar (Homescreen-Geste → öffnet ein Plugin);
+  **deklarative Plugin-Verwaltung am PC** (NixOS/Home-Manager)
 
-**B. Nativer Block:**
-- [ ] **Live-Wallpaper** (Kotlin `WallpaperService` + GL) — echte animierte System-Hintergründe; Schalter unter Geräte → Handy
-
-**C. Danach:**
-- [ ] **Sync PC ↔ Handy** (Sets/Wallpaper/Einstellungen synchronisieren)
-- [ ] Desktop-Variante (Tauri): Windows / macOS / (Linux); Web geht immer
-- [ ] Eigenständige APK ohne Dev-Server (Wallhaven braucht dann eigenen Proxy)
+### Später
+- [ ] **Sync PC ↔ Handy**
+- [ ] Desktop-Variante (Tauri)
+- [ ] In-App-Video-Ruckeln entruckeln; Standard-Speicherpfad (Uploads in Ordner schreiben)
 - [ ] App-Name festlegen (Platzhalter „KI-OS")

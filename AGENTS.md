@@ -26,14 +26,33 @@ GL-Live-Wallpaper).
   direkt aus dem Build-Output — **nicht** nach `static/` kopieren, sonst wandert
   sie ins Bundle).
 
+## Kern-Muster (so, nicht anders)
+
+- **Einstellungen = deklarativ.** Nicht pro Feld eine Svelte-Zeile bauen: ein Feld
+  in `types.ts` (`*State` + `DEFAULT_STATE`) + ein Eintrag im Schema in
+  `*Settings.svelte` (`SettingDef`: toggle/slider/segment/select/text/color/button/
+  custom, optional `category` für Reiter) + `manager.setField(key, value)`.
+  Gerendert vom generischen `src/shell/SettingsView.svelte` (Kategorie-Reiter,
+  scroll-sicherer Slider, Settle-Guard). Nur echte Sonderfälle als `custom`-Snippet.
+- **Speicher.** Bild-/Blob-Daten in IndexedDB (`storage.ts`). Externe Ordner
+  (referenziert, nicht kopiert) über `folders.ts` — Web = File System Access API,
+  nativ = `FolderAccess`-Plugin (SAF). Galerie zeigt Thumbnails (`folderThumbUrl`),
+  Anwenden nutzt volle Auflösung (`manager.fullUrl`), Laden ist faul
+  (IntersectionObserver `use:ensure`, Freigabe außer Sicht).
+- **Native Fähigkeiten gehören in den Kern.** Nativer Code (Android/iOS) ist NICHT
+  als Plugin downloadbar → er lebt im Kern-APK und wird als **generische Capability**
+  (Datei/Ordner, Wallpaper, Live-Wallpaper) angeboten, die jedes Plugin nutzen kann —
+  nicht plugin-spezifisch hardcoden.
+
 ## Harte Regeln
 
 - **Reine Web-Änderung** → nur App-Reload. **Native Änderung** (Java/Manifest) →
   APK neu bauen + reinstallieren (Android setzt dabei das Live-Wallpaper zurück →
   neu auswählen).
-- Nie große Medien als base64 über die Bridge (→ ANR).
+- Nie große Medien als base64 über die Bridge (→ ANR). Thumbnails nativ
+  heruntersampeln (`inSampleSize`), nicht voll decodieren.
 - Beim Umbenennen von Plugin-IDs/Keys: Config-Migration in `main.ts` (sonst
-  Datenverlust).
+  Datenverlust). Neue native Capability → in `MainActivity` registrieren.
 - Nach jedem fertigen Block: **sofort Cloud-Push** an Jonas (`PushNotification`),
   nicht Home Assistant.
 
