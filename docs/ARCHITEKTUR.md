@@ -26,14 +26,32 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
    nur iOS, Desktop/Web eigene). macOS schleppt keine Android-APIs mit. Plugins
    fragen Capabilities über die Kern-API ab (`hasCapability('folders')`…) und
    deklarieren benötigte Plattformen/Capabilities.
-3. **Plugin-Store: kein gehosteter Upload-Server (vorerst).** Eigener Bereich
-   **„Plugins"** als eigener Punkt neben den Orbit-Einstellungen. Funktionen:
-   Plugins installieren + updaten; pro Plugin **Screenshots**, Beschreibung,
-   Download-/Aufruf-Zahlen (wenn machbar), **Zielplattform** (welches OS/Handy).
-   Backend-Mechanismus bewusst simpel (z. B. GitHub-Repo/Manifest-Liste) — kein
-   eigener Upload-Server/Mietserver. **APK bringt KEIN Plugin mit**; man lädt sie
-   erst aus dem Plugins-Bereich.
-4. **Deklarative Plugin-Verwaltung am PC (NixOS/Home-Manager): angestrebt.** Kleine
+3. **Plugin-Store: kein gehosteter Upload-Server (vorerst), aber quellen-
+   abstrahiert (09.10.2026 präzisiert).** Eigener Bereich **„Plugins"** als eigener
+   Punkt neben den Orbit-Einstellungen. Funktionen: Plugins installieren + updaten;
+   pro Plugin **Screenshots**, Beschreibung, Download-/Aufruf-Zahlen (wenn machbar),
+   **Zielplattform** (welches OS/Handy). **Mechanismus = Option 3 (beides):** eine
+   kuratierte **Manifest-Liste** (GitHub-JSON, Jonas pflegt) für den durchsuchbaren
+   Store PLUS ein **Direkt-GitHub-Link**-Feld für eigene/Test-Plugins. Kein eigener
+   Upload-/Mietserver. **Die Plugin-Quelle ist abstrahiert (`PluginSource`), damit
+   später per Update eine echte Orbit-Webseite als weitere Quelle dazukommt** —
+   eine Seite, auf der man Plugins auch OHNE installiertes Orbit ansehen (und
+   irgendwann kaufen) kann. **APK bringt KEIN Feature-Plugin mit**; man lädt sie erst
+   aus dem Plugins-Bereich.
+4. **Eingebaute Plugins raus, nur ein Start-Plugin bleibt (09.10.2026).** Die bisher
+   statisch eingebauten Feature-Plugins (SKWD Wall, Design, Welcome-Demo) werden aus
+   dem Kern-APK herausgelöst und wandern in den Store (eigene Repos/Katalog-Einträge).
+   Fest im APK bleibt höchstens ein **Start-/Willkommens-Plugin**, das Orbit erklärt
+   (Onboarding/„Startmenü") — und das ist **deinstallierbar**. Voraussetzung dafür ist
+   der funktionierende Nachlade-Weg (Punkt 5), sonst Henne-Ei: erst Remote-Laden
+   solide, dann eingebaute Plugins entfernen.
+5. **Remote-Laden fremd-gebauter Plugins (technische Kern-Hürde).** Der Kern muss
+   extern gebaute Plugins zur Laufzeit laden (ESM-`import` der ausgelieferten
+   `main.js`) UND ihnen die **Kern-API zur Laufzeit** bereitstellen (globaler
+   Orbit-API-Shim), damit ein Plugin NICHT seine eigene Kopie des Kerns mitschleppt.
+   Plugins werden gegen die Kern-API als „external" gebaut. Das ist das eigentliche
+   Stück Arbeit von Block 4/5.
+6. **Deklarative Plugin-Verwaltung am PC (NixOS/Home-Manager): angestrebt.** Kleine
    Config-Quellen-Abstraktion (localStorage-Default + Datei `~/.config/orbit/
    config.json`), die ein Home-Manager-Modul schreiben kann.
 
