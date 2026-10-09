@@ -725,7 +725,7 @@
         <button class="upload-cta" onclick={clearFilters}>Filter zurücksetzen</button>
       </div>
     {:else if mode === 'geometric'}
-      <div class="hexwrap" style="width:{hexWrapW}px;height:{hexWrapH}px">
+      <div class="hexwrap" style="width:{hexWrapW}px;height:{hexWrapH}px;transform:translateX({wpState.value.hexOffsetX}px)">
         {#each items as item, i (item.id)}
           <button class="tile hex" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{hexStyle(i)}{bg(item.id)}" title={item.name}>

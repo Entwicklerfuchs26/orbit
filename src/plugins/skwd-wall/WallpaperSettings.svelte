@@ -77,6 +77,7 @@
         { key: 'hexSize', type: 'slider', label: 'Wabengröße (0 = Auto nach Spalten)', min: 0, max: 160, step: 4, unit: 'px', show: () => vm === 'geometric' },
         { key: 'hexArc', type: 'toggle', label: 'Bogen beim Scrollen', desc: 'Waben krümmen sich beim Hoch-/Runterscrollen und blenden oben/unten aus.', show: () => vm === 'geometric' },
         { key: 'hexArcIntensity', type: 'slider', label: 'Bogen-Intensität', min: 0, max: 30, step: 1, show: () => vm === 'geometric' && s.hexArc },
+        { key: 'hexOffsetX', type: 'slider', label: 'Streifen verschieben (horizontal)', desc: 'Ganzen Waben-Streifen nach links/rechts schieben zum Zentrieren.', min: -200, max: 200, step: 5, unit: 'px', show: () => vm === 'geometric' },
         { key: 'depthTilt', type: 'slider', label: 'Neigung', min: 0, max: 20, step: 1, unit: '°', show: () => vm === 'depth' },
         { key: 'handSpread', type: 'slider', label: 'Fächerung', min: 2, max: 16, step: 1, unit: '°', show: () => vm === 'hand' },
         { type: 'custom', customId: 'presets' },

@@ -251,6 +251,8 @@ export interface WallpaperState {
   hexScrollStep: number;
   hexArc: boolean;
   hexArcIntensity: number;
+  /** Geometric: horizontal shift of the whole honeycomb strip (px). */
+  hexOffsetX: number;
   /** Slices: show a larger featured tile in the centre. */
   slicesFeatured: boolean;
   /** Depth: perspective tilt angle in degrees. */
@@ -337,6 +339,7 @@ export const DEFAULT_STATE: WallpaperState = {
   hexScrollStep: 1,
   hexArc: true,
   hexArcIntensity: 12,
+  hexOffsetX: 0,
   slicesFeatured: true,
   depthTilt: 8,
   handSpread: 7,
