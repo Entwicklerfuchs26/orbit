@@ -257,6 +257,8 @@ export interface WallpaperState {
   hexFadeStart: number;
   /** Sandy: which side the thumbnail column sits on. */
   sandySide: MenuSide;
+  /** Card hand: horizontal shift of the whole fan (px). */
+  handOffsetX: number;
   /** Slices: show a larger featured tile in the centre. */
   slicesFeatured: boolean;
   /** Depth: perspective tilt angle in degrees. */
@@ -346,6 +348,7 @@ export const DEFAULT_STATE: WallpaperState = {
   hexOffsetX: 0,
   hexFadeStart: 70,
   sandySide: 'left',
+  handOffsetX: 0,
   slicesFeatured: true,
   depthTilt: 8,
   handSpread: 7,

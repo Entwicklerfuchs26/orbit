@@ -217,6 +217,10 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
+### 21. Platz oben + Card-Hand-Verschieben (bitte testen)
+- [ ] **Einstellungen & „Wallpaper hinzufügen": weniger Leerraum oben** — die Überschrift sitzt jetzt direkt unter der SKWD-Wall-Leiste (doppelte Safe-Area war schuld)
+- [ ] **Card Hand → „Fächer verschieben (horizontal)"** — schiebt den ganzen Kartenfächer nach links/rechts
+
 ### 20. Fehlbedienung + 2 neue View-Regler (bitte testen)
 - [ ] **Öffnen der Einstellungen schaltet nichts aus Versehen** — die ersten ~0,3 s nach dem Öffnen reagieren Schalter/Regler nicht (das Zahnrad liegt über dem „Suchleiste immer"-Schalter)
 - [ ] **Regler verstellt sich beim Scrollen NICHT mehr** — Finger auf den Schiebebalken + hoch/runter ziehen = die Liste scrollt, der Wert bleibt; nur **seitliches** Ziehen oder gezieltes Tippen ändert ihn

@@ -554,7 +554,7 @@
     const x = Math.pow(an, 1.7) * 12; // sideways bow
     const roll = n * (wpState.value.handSpread * 0.5);
     const sc = (n === 0 ? 1.08 : 1) * (1700 / (1700 + an * 90));
-    return `left:${cx}px;top:${cy}px;transform:translate(-50%,-50%) translate(${x}px,${y}px) rotate(${roll}deg) scale(${sc});z-index:${20 - an};opacity:${an > 6 ? 0 : 1};`;
+    return `left:${cx + wpState.value.handOffsetX}px;top:${cy}px;transform:translate(-50%,-50%) translate(${x}px,${y}px) rotate(${roll}deg) scale(${sc});z-index:${20 - an};opacity:${an > 6 ? 0 : 1};`;
   }
 
   // COLLECTION — vertical tilted deck; the current card sits big & upright in
@@ -1425,7 +1425,9 @@
 
   /* ---- Fullscreen settings window ---- */
   .settings-full { position: absolute; inset: 0; z-index: 46; background: var(--bg); display: flex; flex-direction: column; }
-  .settings-head { display: flex; align-items: center; justify-content: space-between; padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-4) var(--space-4); border-bottom: 1px solid var(--border); font-weight: 700; font-size: 1.05rem; }
+  /* Shell already pads for the top safe-area; this overlay sits below the tab bar,
+     so use a tight top padding (no second safe-area inset) to reclaim space. */
+  .settings-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border); font-weight: 700; font-size: 1.05rem; }
   .settings-body { flex: 1; overflow-y: auto; padding: var(--space-4); max-width: 640px; margin: 0 auto; width: 100%; }
 
   /* ---- Add overlay (upload + Wallhaven) ---- */

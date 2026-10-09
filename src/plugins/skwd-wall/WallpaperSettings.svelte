@@ -78,6 +78,7 @@
         { key: 'hexOffsetX', type: 'slider', label: 'Streifen verschieben (horizontal)', desc: 'Ganzen Waben-Streifen nach links/rechts schieben zum Zentrieren.', min: -200, max: 200, step: 5, unit: 'px', show: () => vm === 'geometric' },
         { key: 'sandySide', type: 'segment', label: 'Kleine Bilder', options: [{ value: 'left', label: 'Links' }, { value: 'right', label: 'Rechts' }], show: () => vm === 'sandy' },
         { key: 'handSpread', type: 'slider', label: 'Fächerung', min: 2, max: 16, step: 1, show: () => vm === 'hand' },
+        { key: 'handOffsetX', type: 'slider', label: 'Fächer verschieben (horizontal)', desc: 'Ganzen Kartenfächer nach links/rechts schieben.', min: -200, max: 200, step: 5, unit: 'px', show: () => vm === 'hand' },
         { type: 'custom', customId: 'presets' },
       ],
     },
