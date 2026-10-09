@@ -764,10 +764,6 @@
     }
   }
 
-  // "Always show search bar": keep the search panel open.
-  $effect(() => {
-    if (wpState.value.alwaysSearchBar && !activePanel) activePanel = 'search';
-  });
 </script>
 
 {#snippet tileInner(item: WallpaperItem)}
@@ -942,9 +938,11 @@
   </div>
 
   <!-- Search panel (needs a text field, so it stays a small panel) -->
-  {#if activePanel === 'search'}
-    <div class="panel-backdrop" onclick={closePanel} role="presentation"></div>
-    <div class="side-panel" data-side={side}>
+  {#if activePanel === 'search' || wpState.value.alwaysSearchBar}
+    {#if activePanel === 'search' && !wpState.value.alwaysSearchBar}
+      <div class="panel-backdrop" onclick={closePanel} role="presentation"></div>
+    {/if}
+    <div class="side-panel" class:docked={wpState.value.alwaysSearchBar} data-side={side}>
       <div class="sp-head"><Icon name="search" size={16} /> Suche &amp; Tags</div>
       <input class="sp-input" placeholder="Name oder Tag…" bind:value={search} spellcheck="false" />
       {#if allTags.length}
@@ -1320,6 +1318,12 @@
   }
   .side-panel[data-side='right'] { right: 68px; }
   .side-panel[data-side='left'] { left: 68px; }
+  /* Docked (alwaysSearchBar): compact top bar, no backdrop, gallery stays tappable. */
+  .side-panel.docked[data-side='right'],
+  .side-panel.docked[data-side='left'] {
+    top: 12px; left: 50%; right: auto; transform: translateX(-50%);
+    width: min(86%, 420px); max-height: 46%;
+  }
   .sp-head { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); }
   .sp-input { padding: var(--space-3); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); font-size: 0.95rem; outline: none; }
   .sp-taglabel { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); }
