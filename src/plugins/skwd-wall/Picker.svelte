@@ -296,6 +296,28 @@
     onLong: () => void;
     onTap: () => void;
   }
+  // Lazy-load folder-backed thumbnails as they scroll into view (bounds native
+  // SAF reads to what's actually on screen).
+  function ensure(node: HTMLElement, id: string) {
+    let currentId = id;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) void manager.ensureUrl(currentId);
+      },
+      { rootMargin: '250px' },
+    );
+    io.observe(node);
+    return {
+      update(nid: string) {
+        currentId = nid;
+        void manager.ensureUrl(nid);
+      },
+      destroy() {
+        io.disconnect();
+      },
+    };
+  }
+
   function longpress(node: HTMLElement, opts: LongPressOpts) {
     let current = opts;
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -882,7 +904,7 @@
     {:else if mode === 'geometric'}
       <div class="hexwrap" style="width:{hexWrapW}px;height:{hexWrapH}px;transform:translateX({wpState.value.hexOffsetX}px)">
         {#each items as item, i (item.id)}
-          <button class="tile hex" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+          <button class="tile hex" class:active={item.id === activeId} use:ensure={item.id} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{hexStyle(i)}{bg(item.id)}" title={item.name}>
             {@render tileInner(item)}
           </button>
@@ -891,7 +913,7 @@
     {:else if mode === 'slices'}
       <div class="stage slices" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
-          <button class="tile slice" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+          <button class="tile slice" class:active={item.id === activeId} use:ensure={item.id} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{slicesTf(i)}{bg(item.id)}" title={item.name}>
             {@render tileInner(item)}
           </button>
@@ -900,7 +922,7 @@
     {:else if mode === 'depth'}
       <div class="stage depth" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
-          <button class="tile depthcard" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+          <button class="tile depthcard" class:active={item.id === activeId} use:ensure={item.id} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{depthTf(i)}{bg(item.id)}" title={item.name}>
             {@render tileInner(item)}
           </button>
@@ -909,19 +931,20 @@
     {:else if mode === 'sandy'}
       <div class="stage sandy" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         <button class="tile sandy-hero" class:active={items[centerIndex].id === activeId}
+          use:ensure={items[centerIndex].id}
           use:longpress={{ onLong: () => openDetail(items[centerIndex]), onTap: () => select(items[centerIndex].id) }}
           style="left:{cx + (wpState.value.sandySide === 'left' ? 28 : -28)}px;top:{cy}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[centerIndex].id)}" title={items[centerIndex].name}>
           {@render tileInner(items[centerIndex])}
         </button>
         {#each items as item, i (item.id)}
-          <button class="tile sandy-thumb" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+          <button class="tile sandy-thumb" class:active={item.id === activeId} use:ensure={item.id} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{sandyStripTf(i)}{bg(item.id)}" title={item.name}></button>
         {/each}
       </div>
     {:else if mode === 'hand'}
       <div class="stage hand" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
-          <button class="tile fan" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+          <button class="tile fan" class:active={item.id === activeId} use:ensure={item.id} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{handTf(i)}{bg(item.id)}" title={item.name}>
             {@render tileInner(item)}
           </button>
@@ -930,7 +953,7 @@
     {:else if mode === 'collection'}
       <div class="stage collection" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
-          <button class="tile stack" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+          <button class="tile stack" class:active={item.id === activeId} use:ensure={item.id} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{collTf(i)}{bg(item.id)}" title={item.name}>
             {@render tileInner(item)}
           </button>
@@ -940,7 +963,7 @@
       <div class="gallery">
         {#each items as item (item.id)}
           <button class="tile" class:active={item.id === activeId}
-            use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }} style={bg(item.id)} title={item.name}>
+            use:ensure={item.id} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }} style={bg(item.id)} title={item.name}>
             {@render tileInner(item)}
           </button>
         {/each}

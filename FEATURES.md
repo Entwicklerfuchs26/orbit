@@ -217,6 +217,16 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
+### 23. Speicher-Backend Teil 2: nativer Ordnerzugriff am Handy (SAF) — braucht APK-Rebuild
+*Native Android-Ordnerwahl (Storage Access Framework). **Neuer nativer Code → APK
+muss neu gebaut + installiert werden** (Web-Reload reicht NICHT). Bis dahin scheitert
+das Ordner-Wählen am Handy still.*
+- [ ] Nach APK-Rebuild: Einstellungen → Quellen → Ordner → **„＋ Bilder-Ordner"** öffnet Androids Ordner-Auswahl
+- [ ] Gewählter Ordner: Bilder/Videos erscheinen in der Galerie (direkt vom Ordner, nichts kopiert)
+- [ ] Nur sichtbare Bilder werden geladen (großer Ordner ruckelt/überlastet nicht)
+- [ ] Zugriff bleibt nach App-Neustart erhalten (SAF-Dauerberechtigung) — „Verbinden" sollte sofort grün sein
+- [ ] Video-Ordner analog
+
 ### 22. Speicher-Backend: Ordner direkt nutzen (Teil 1, Web/PC — bitte testen)
 *Einstellungen → Quellen → **Ordner**. Erster Teil der Speicher-Arbeit: echte
 Ordner einbinden, OHNE hochzuladen. Funktioniert am **PC (Chrome/Edge)**; auf dem

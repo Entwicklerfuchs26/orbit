@@ -229,16 +229,38 @@ export class WallpaperManager {
   private async refreshUrls(): Promise<void> {
     const map: Record<string, string> = {};
     const s = this.state.get();
-    // Resolve library items AND trashed items (so the trash view shows thumbnails).
-    // Folder-sourced items resolve against their external directory; the rest
-    // are IndexedDB blobs.
+    // Eagerly resolve IndexedDB blobs (fast, local). Folder-sourced items are
+    // resolved LAZILY via ensureUrl() when a tile scrolls into view, so a huge
+    // external folder never reads every file at once. The active item is
+    // resolved eagerly regardless (theme + live wallpaper need it now).
     for (const item of [...s.items, ...s.trashedItems]) {
+      if (!item.folderId) {
+        const url = await imageUrl(item.id);
+        if (url) map[item.id] = url;
+      }
+    }
+    this.urls.set(map);
+    const activeId = s.activeId;
+    if (activeId) void this.ensureUrl(activeId);
+  }
+
+  private resolving = new Set<string>();
+
+  /** Resolve a single item's object URL on demand (idempotent). */
+  async ensureUrl(id: string): Promise<void> {
+    if (this.urls.get()[id] || this.resolving.has(id)) return;
+    const all = [...this.state.get().items, ...this.state.get().trashedItems];
+    const item = all.find((it) => it.id === id);
+    if (!item) return;
+    this.resolving.add(id);
+    try {
       const url = item.folderId
         ? await folderFileUrl(item.folderId, item.fileName ?? item.name)
         : await imageUrl(item.id);
-      if (url) map[item.id] = url;
+      if (url) this.urls.update((m) => ({ ...m, [id]: url }));
+    } finally {
+      this.resolving.delete(id);
     }
-    this.urls.set(map);
   }
 
   getUrl(id: string): string | undefined {
@@ -484,7 +506,7 @@ export class WallpaperManager {
       name: f.name.replace(/\.[^.]+$/, ''),
       kind: f.kind,
       folderId: picked.id,
-      fileName: f.name,
+      fileName: f.locator,
     }));
     const source: FolderSource = { id: picked.id, name: picked.name, kind, connected: true, count: files.length };
     this.state.update((s) => {
@@ -551,7 +573,7 @@ export class WallpaperManager {
           name: file.name.replace(/\.[^.]+$/, ''),
           kind: file.kind,
           folderId: f.id,
-          fileName: file.name,
+          fileName: file.locator,
         }));
       }
       this.state.update((s) => ({

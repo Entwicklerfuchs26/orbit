@@ -7,6 +7,7 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(WallpaperPlugin.class);
+        registerPlugin(FolderAccessPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }
