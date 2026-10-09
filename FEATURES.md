@@ -217,6 +217,12 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
+### 19. Durchblättern + Einstellungen scroll-sicher (bitte testen)
+- [ ] **Slices/Depth/Sandy/Hand/Collection: durchblättern** — vertikal wischen (Handy) bzw. Mausrad (PC) blättert schnell durch die Bilder; der Fokus/Mitte wandert mit
+- [ ] Danach **Antippen wählt aus** (wird zum aktiven Wallpaper); nach einem Wisch löst das Loslassen NICHT versehentlich eine Auswahl aus
+- [ ] **Suchleiste ausblenden**: wenn „Suchleiste immer zeigen" an ist, hat die angedockte Leiste oben ein **×** — einmal tippen schaltet sie dauerhaft aus
+- [ ] **Einstellungen scroll-sicher**: durch die Einstellungen scrollen, ohne dass Regler beim Berühren sofort verspringen (Regler reagieren nur auf seitliches Ziehen, vertikal = scrollen)
+
 ### 18. Ansichten komplett neu aus SKWD-Quellcode (bitte testen)
 *Alle Modi außer Wall sind auf das **aktive Bild zentriert** (wie im SKWD-Original):
 Nachbar antippen = wird zur Mitte, der Rest gleitet animiert nach. **Alles gleitet

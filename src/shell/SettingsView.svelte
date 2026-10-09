@@ -134,7 +134,8 @@
   .label { font-size: 0.9rem; color: var(--text-muted); }
   .desc, .inline-desc { font-size: 0.78rem; color: var(--text-faint); line-height: 1.4; }
   .val { color: var(--text-faint); font-variant-numeric: tabular-nums; }
-  input[type='range'] { width: 100%; accent-color: var(--color-primary); }
+  /* pan-y → a vertical drag scrolls the settings list instead of yanking the slider. */
+  input[type='range'] { width: 100%; accent-color: var(--color-primary); touch-action: pan-y; }
   .seg { display: flex; gap: 4px; flex-wrap: wrap; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 3px; }
   .seg button { flex: 1; padding: var(--space-2) var(--space-3); background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-muted); font-size: 0.82rem; white-space: nowrap; }
   .seg button.on { background: var(--color-primary); color: #fff; }

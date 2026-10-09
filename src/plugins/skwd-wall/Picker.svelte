@@ -414,6 +414,60 @@
   let cx = $derived(galleryWidth / 2);
   let cy = $derived(galleryHeight / 2);
 
+  // Browse cursor for the centred stages: wheel/drag flips through the items
+  // (cursor moves), tapping a tile selects it. The cursor follows the active
+  // selection whenever that changes externally (tap, auto-rotate, mode switch).
+  let centerIndex = $state(0);
+  $effect(() => {
+    centerIndex = activeIndex;
+  });
+  function stepCenter(delta: number) {
+    const n = items.length;
+    if (!n) return;
+    centerIndex = Math.max(0, Math.min(n - 1, centerIndex + delta));
+  }
+  function onStageWheel(e: WheelEvent) {
+    e.preventDefault();
+    stepCenter(e.deltaY > 0 ? 1 : -1);
+  }
+  const DRAG_STEP_PX = 52;
+  let dragging = false;
+  let dragLastY = 0;
+  let dragAcc = 0;
+  let dragMoved = false;
+  let suppressTap = false;
+  function onStagePointerDown(e: PointerEvent) {
+    dragging = true;
+    dragLastY = e.clientY;
+    dragAcc = 0;
+    dragMoved = false;
+  }
+  function onStagePointerMove(e: PointerEvent) {
+    if (!dragging) return;
+    dragAcc += e.clientY - dragLastY;
+    dragLastY = e.clientY;
+    // Drag up (content scrolls up) → advance; drag down → go back.
+    while (dragAcc <= -DRAG_STEP_PX) {
+      stepCenter(1);
+      dragAcc += DRAG_STEP_PX;
+      dragMoved = true;
+    }
+    while (dragAcc >= DRAG_STEP_PX) {
+      stepCenter(-1);
+      dragAcc -= DRAG_STEP_PX;
+      dragMoved = true;
+    }
+  }
+  function onStagePointerUp() {
+    dragging = false;
+    if (dragMoved) {
+      // A browse-drag just happened — swallow the trailing click so it doesn't select.
+      suppressTap = true;
+      setTimeout(() => (suppressTap = false), 60);
+    }
+    dragMoved = false;
+  }
+
   // All centred views arrange along the VERTICAL axis (phone is held upright):
   // the current item sits at the centre, neighbours stack above/below and the
   // motion on re-select reads top↔bottom. z-index stays well under the rail
@@ -426,7 +480,7 @@
   let sliceW = $derived(Math.min(Math.max(galleryWidth * 0.82, 180), 520));
   let sliceExpandedH = $derived(Math.min(Math.max(galleryHeight * 0.42, 150), 360));
   function slicesTf(i: number): string {
-    const d = i - activeIndex;
+    const d = i - centerIndex;
     const stride = SLICE_H + SLICE_GAP;
     const h = d === 0 ? sliceExpandedH : SLICE_H;
     let center: number;
@@ -449,7 +503,7 @@
   const depthOffset = (d: number) =>
     DEPTH_FALLOFF < 1e-4 ? d : Math.sign(d) * (Math.log(1 + DEPTH_FALLOFF * Math.abs(d)) / DEPTH_FALLOFF);
   function depthTf(i: number): string {
-    const n = i - activeIndex;
+    const n = i - centerIndex;
     const radius = (DEPTH_VISIBLE - 1) / 2;
     const scale = 1 / (1 + DEPTH_FALLOFF * Math.abs(n));
     const baseW = Math.min(galleryWidth * 0.64, 400);
@@ -474,7 +528,7 @@
   const SANDY_TH = 48;
   const SANDY_GAP = 8;
   function sandyStripTf(i: number): string {
-    const d = i - activeIndex;
+    const d = i - centerIndex;
     const stride = SANDY_TH + SANDY_GAP;
     const centerY = d * stride;
     const half = Math.max(1, galleryHeight / 2);
@@ -492,7 +546,7 @@
   // HAND — card fan centred on the current card, fanning VERTICALLY: cards step
   // top→bottom, bow out sideways, and the current card lifts forward.
   function handTf(i: number): string {
-    const n = i - activeIndex;
+    const n = i - centerIndex;
     const an = Math.abs(n);
     const spreadY = Math.max(26, wpState.value.handSpread * 5);
     const y = n * spreadY;
@@ -505,7 +559,7 @@
   // COLLECTION — vertical tilted deck; the current card sits big & upright in
   // front, the rest recede below as a shrinking, tilted stack.
   function collTf(i: number): string {
-    const d = i - activeIndex;
+    const d = i - centerIndex;
     const ad = Math.abs(d);
     const size = Math.min(galleryHeight * 0.5, galleryWidth * 0.7, 420);
     const active = d === 0;
@@ -756,6 +810,7 @@
     scheduleRailHide();
   }
   function select(id: string) {
+    if (suppressTap) return; // ignore the click that trails a browse-drag
     manager.setActive(id);
     // "Close on selection": collapse the rail/panels right after picking.
     if (wpState.value.closeOnSelection) {
@@ -833,7 +888,7 @@
         {/each}
       </div>
     {:else if mode === 'slices'}
-      <div class="stage slices">
+      <div class="stage slices" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
           <button class="tile slice" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{slicesTf(i)}{bg(item.id)}" title={item.name}>
@@ -842,7 +897,7 @@
         {/each}
       </div>
     {:else if mode === 'depth'}
-      <div class="stage depth">
+      <div class="stage depth" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
           <button class="tile depthcard" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{depthTf(i)}{bg(item.id)}" title={item.name}>
@@ -851,11 +906,11 @@
         {/each}
       </div>
     {:else if mode === 'sandy'}
-      <div class="stage sandy">
-        <button class="tile sandy-hero" class:active={items[activeIndex].id === activeId}
-          use:longpress={{ onLong: () => openDetail(items[activeIndex]), onTap: () => select(items[activeIndex].id) }}
-          style="left:{cx + (side === 'right' ? 28 : -28)}px;top:{cy}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[activeIndex].id)}" title={items[activeIndex].name}>
-          {@render tileInner(items[activeIndex])}
+      <div class="stage sandy" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
+        <button class="tile sandy-hero" class:active={items[centerIndex].id === activeId}
+          use:longpress={{ onLong: () => openDetail(items[centerIndex]), onTap: () => select(items[centerIndex].id) }}
+          style="left:{cx + (side === 'right' ? 28 : -28)}px;top:{cy}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[centerIndex].id)}" title={items[centerIndex].name}>
+          {@render tileInner(items[centerIndex])}
         </button>
         {#each items as item, i (item.id)}
           <button class="tile sandy-thumb" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
@@ -863,7 +918,7 @@
         {/each}
       </div>
     {:else if mode === 'hand'}
-      <div class="stage hand">
+      <div class="stage hand" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
           <button class="tile fan" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{handTf(i)}{bg(item.id)}" title={item.name}>
@@ -872,7 +927,7 @@
         {/each}
       </div>
     {:else if mode === 'collection'}
-      <div class="stage collection">
+      <div class="stage collection" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         {#each items as item, i (item.id)}
           <button class="tile stack" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
             style="{collTf(i)}{bg(item.id)}" title={item.name}>
@@ -943,7 +998,12 @@
       <div class="panel-backdrop" onclick={closePanel} role="presentation"></div>
     {/if}
     <div class="side-panel" class:docked={wpState.value.alwaysSearchBar} data-side={side}>
-      <div class="sp-head"><Icon name="search" size={16} /> Suche &amp; Tags</div>
+      <div class="sp-head">
+        <Icon name="search" size={16} /> Suche &amp; Tags
+        {#if wpState.value.alwaysSearchBar}
+          <button class="sp-off" onclick={() => manager.setField('alwaysSearchBar', false)} title="Suchleiste ausblenden" aria-label="Suchleiste ausblenden">×</button>
+        {/if}
+      </div>
       <input class="sp-input" placeholder="Name oder Tag…" bind:value={search} spellcheck="false" />
       {#if allTags.length}
         <div class="sp-taglabel">Nach Tags filtern</div>
@@ -1183,8 +1243,9 @@
   [data-mode='sandy'] .gallery-scroll,
   [data-mode='hand'] .gallery-scroll,
   [data-mode='collection'] .gallery-scroll { overflow: hidden; padding: 0; }
-  /* Own stacking context at z-index 0 → inner tiles can never cover the rail (25). */
-  .stage { position: relative; width: 100%; height: 100%; z-index: 0; }
+  /* Own stacking context at z-index 0 → inner tiles can never cover the rail (25).
+     touch-action:none → vertical drags are handled as browse-flipping, not scroll. */
+  .stage { position: relative; width: 100%; height: 100%; z-index: 0; touch-action: none; }
   .stage.hand, .stage.collection { perspective: 1400px; }
   .stage .tile {
     position: absolute;
@@ -1325,6 +1386,7 @@
     width: min(86%, 420px); max-height: 46%;
   }
   .sp-head { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); }
+  .sp-off { margin-left: auto; width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--text-muted); font-size: 1.1rem; line-height: 1; }
   .sp-input { padding: var(--space-3); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); font-size: 0.95rem; outline: none; }
   .sp-taglabel { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); }
   .sp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
