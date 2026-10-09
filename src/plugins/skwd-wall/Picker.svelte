@@ -45,6 +45,7 @@
   let activePanel = $state<string | null>(null);
   let uploading = $state(false);
   let galleryWidth = $state(0);
+  let galleryHeight = $state(0);
   let settingsOpen = $state(false);
   let applying = $state(false);
   let applyMsg = $state('');
@@ -362,39 +363,38 @@
       : 'repeat(auto-fill, minmax(var(--tile-size, 130px), 1fr))',
   );
 
-  // ---- Honeycomb geometry (geometric mode) — horizontal arc scroller (SKWD-style) ----
-  // Fixed number of rows (hexRows); items fill column by column and the strip
-  // scrolls horizontally. With "Arc" on, tiles curve and fade toward the edges.
-  let hexRowCount = $derived(Math.max(1, wpState.value.hexRows));
+  // ---- Honeycomb geometry (geometric mode) — VERTICAL arc scroller (SKWD-style) ----
+  // Fixed number of columns across the width; items fill row by row and the
+  // honeycomb scrolls up/down. With "Arc" on, tiles curve and fade at top/bottom.
+  let hexColCount = $derived(Math.max(1, wpState.value.hexColumns));
   let hexW = $derived.by(() => {
     if (wpState.value.hexSize > 0) return wpState.value.hexSize;
-    const cols = Math.max(1, wpState.value.hexColumns);
-    return galleryWidth > 0 ? Math.max(56, Math.floor((galleryWidth / cols) * 1.08)) : 108;
+    return galleryWidth > 0 ? Math.max(48, Math.floor(galleryWidth / hexColCount) - 4) : 100;
   });
   let hexH = $derived(Math.round(hexW * 1.1547));
-  let hexStepX = $derived(Math.round(hexW * 0.78) + 4);
-  let hexVStep = $derived(hexH + 6);
-  let hexColCount = $derived(Math.ceil(items.length / hexRowCount));
-  let hexWrapW = $derived(hexColCount * hexStepX + hexW);
-  let hexWrapH = $derived(hexRowCount * hexVStep + hexVStep / 2 + 14);
-  let hexScroll = $state(0);
+  let hexStepX = $derived(hexW + 4);
+  let hexVStep = $derived(Math.round(hexH * 0.75) + 4);
+  let hexRowCount = $derived(Math.ceil(items.length / hexColCount));
+  let hexWrapW = $derived(hexColCount * hexStepX + hexStepX / 2);
+  let hexWrapH = $derived(hexRowCount * hexVStep + hexH + 8);
+  let hexScrollTop = $state(0);
   function hexBase(i: number) {
-    const col = Math.floor(i / hexRowCount);
-    const row = i % hexRowCount;
-    return { x: col * hexStepX, y: row * hexVStep + (col % 2 ? hexVStep / 2 : 0) };
+    const row = Math.floor(i / hexColCount);
+    const col = i % hexColCount;
+    return { x: col * hexStepX + (row % 2 ? hexStepX / 2 : 0), y: row * hexVStep };
   }
   function hexStyle(i: number): string {
     const b = hexBase(i);
-    let ty = 0;
+    let tx = 0;
     let op = 1;
-    if (wpState.value.hexArc && galleryWidth > 0) {
-      const centerX = hexScroll + galleryWidth / 2;
-      const d = (b.x + hexW / 2 - centerX) / (galleryWidth / 2); // -1..1 across viewport
-      ty = wpState.value.hexArcIntensity * 1.3 * (d * d); // edges dip down → arc
+    if (wpState.value.hexArc && galleryHeight > 0) {
+      const centerY = hexScrollTop + galleryHeight / 2;
+      const d = (b.y + hexH / 2 - centerY) / (galleryHeight / 2); // -1..1 across viewport (vertical)
+      tx = wpState.value.hexArcIntensity * 1.3 * (d * d); // top/bottom curve outward → arc
       const ad = Math.abs(d);
-      op = ad > 0.78 ? Math.max(0, 1 - (ad - 0.78) / 0.22) : 1; // fade outer ~22%
+      op = ad > 0.82 ? Math.max(0, 1 - (ad - 0.82) / 0.18) : 1; // fade at top/bottom
     }
-    return `left:${b.x}px;top:${b.y}px;width:${hexW}px;height:${hexH}px;transform:translateY(${ty}px);opacity:${op};`;
+    return `left:${b.x}px;top:${b.y}px;width:${hexW}px;height:${hexH}px;transform:translateX(${tx}px);opacity:${op};`;
   }
 
   // ---- Card hand (fan) transforms ----
@@ -679,7 +679,8 @@
 
 <div class="picker" data-mode={mode} data-side={side} class:pinned
   style="--tile-size:{wpState.value.tileSize}px;--tile-radius:{wpState.value.tileRadius}px;--wall-grid:{wallGrid};--slices-skew:{wpState.value.slicesSkew}deg;--slices-aspect:24 / {wpState.value.slicesHeight};--depth-tilt:{wpState.value.depthTilt}deg;">
-  <div class="gallery-scroll" bind:clientWidth={galleryWidth}>
+  <div class="gallery-scroll" bind:clientWidth={galleryWidth} bind:clientHeight={galleryHeight}
+    onscroll={(e) => (hexScrollTop = (e.currentTarget as HTMLElement).scrollTop)}>
     {#if collections.length || collBarCreating}
       <div class="coll-bar">
         <button class="coll-chip" class:on={activeCollectionId === null} onclick={() => manager.setActiveCollection(null)}>Alle</button>
@@ -718,15 +719,13 @@
         <button class="upload-cta" onclick={clearFilters}>Filter zurücksetzen</button>
       </div>
     {:else if mode === 'geometric'}
-      <div class="hexscroll" style="height:{hexWrapH}px" onscroll={(e) => (hexScroll = (e.currentTarget as HTMLElement).scrollLeft)}>
-        <div class="hexwrap" style="width:{hexWrapW}px;height:{hexWrapH}px">
-          {#each items as item, i (item.id)}
-            <button class="tile hex" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
-              style="{hexStyle(i)}{bg(item.id)}" title={item.name}>
-              {@render tileInner(item)}
-            </button>
-          {/each}
-        </div>
+      <div class="hexwrap" style="width:{hexWrapW}px;height:{hexWrapH}px">
+        {#each items as item, i (item.id)}
+          <button class="tile hex" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+            style="{hexStyle(i)}{bg(item.id)}" title={item.name}>
+            {@render tileInner(item)}
+          </button>
+        {/each}
       </div>
     {:else if mode === 'sandy'}
       <div class="sandy">
@@ -1065,8 +1064,7 @@
   [data-mode='depth'] .tile.active { transform: rotateX(0deg) scale(1.02); }
 
   /* ---- Geometric (honeycomb) ---- */
-  .hexscroll { width: 100%; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
-  .hexwrap { position: relative; }
+  .hexwrap { position: relative; margin: 0 auto; }
   .tile.hex { position: absolute; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border-radius: 0; border: none; }
   .tile.hex.active { outline: none; box-shadow: inset 0 0 0 4px var(--color-primary); }
 
