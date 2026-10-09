@@ -13,10 +13,12 @@ import type {
   FillMode,
   TransitionType,
   GeometryPreset,
+  FolderSource,
 } from './types';
 import { DEFAULT_STATE, TRANSITIONS, RECOLOUR_PALETTES } from './types';
 import { applyEffect } from './effects';
 import { putImage, deleteImage, imageUrl } from './storage';
+import { pickFolder, scanFolder, folderFileUrl, reconnectFolder, forgetFolder } from './folders';
 import { generateTheme, seedFromImage, type SchemeCharacter, type Finish } from '../theme/palette';
 import {
   isNativeApp,
@@ -73,6 +75,9 @@ export class WallpaperManager {
   private firedScheduleKeys = new Set<string>();
 
   async start(): Promise<void> {
+    // Silently probe folder sources (query-only, no permission prompt) so the
+    // UI shows the right connected/disconnected state after a reload.
+    void this.probeFolders();
     // Resolve object URLs for all stored items.
     await this.refreshUrls();
     void this.cleanupTrash();
@@ -225,8 +230,12 @@ export class WallpaperManager {
     const map: Record<string, string> = {};
     const s = this.state.get();
     // Resolve library items AND trashed items (so the trash view shows thumbnails).
+    // Folder-sourced items resolve against their external directory; the rest
+    // are IndexedDB blobs.
     for (const item of [...s.items, ...s.trashedItems]) {
-      const url = await imageUrl(item.id);
+      const url = item.folderId
+        ? await folderFileUrl(item.folderId, item.fileName ?? item.name)
+        : await imageUrl(item.id);
       if (url) map[item.id] = url;
     }
     this.urls.set(map);
@@ -313,7 +322,7 @@ export class WallpaperManager {
     this.state.update((s) => ({
       ...s,
       trashedItems: s.trashedItems.filter((x) => x.id !== id),
-      items: [...s.items, { id: t.id, name: t.name, kind: t.kind, accent: t.accent, tags: t.tags }],
+      items: [...s.items, { id: t.id, name: t.name, kind: t.kind, accent: t.accent, tags: t.tags, folderId: t.folderId, fileName: t.fileName }],
     }));
     this.persist();
     if (!this.state.get().activeId) this.setActive(id);
@@ -461,6 +470,102 @@ export class WallpaperManager {
     }
   }
 
+  // ---- External folder sources -------------------------------------------
+  // Point at a real directory; its media appear in the library without being
+  // copied. Items carry {folderId, fileName} and resolve on demand.
+
+  /** Open the picker, scan the folder and add its media as referenced items. */
+  async addFolder(kind: 'image' | 'video'): Promise<{ ok: boolean; count: number }> {
+    const picked = await pickFolder();
+    if (!picked) return { ok: false, count: 0 };
+    const files = (await scanFolder(picked.id, kind)) ?? [];
+    const newItems: WallpaperItem[] = files.map((f) => ({
+      id: `fi-${picked.id}-${f.name}`,
+      name: f.name.replace(/\.[^.]+$/, ''),
+      kind: f.kind,
+      folderId: picked.id,
+      fileName: f.name,
+    }));
+    const source: FolderSource = { id: picked.id, name: picked.name, kind, connected: true, count: files.length };
+    this.state.update((s) => {
+      // Drop any prior items from this folder id (re-add = refresh).
+      const kept = s.items.filter((it) => it.folderId !== picked.id);
+      return { ...s, folders: [...s.folders, source], items: [...kept, ...newItems] };
+    });
+    this.persist();
+    await this.refreshUrls();
+    if (!this.state.get().activeId && newItems[0]) this.setActive(newItems[0].id);
+    this.lastLiveSig = null;
+    this.pushLive();
+    return { ok: true, count: files.length };
+  }
+
+  /** Remove a folder source and all items that came from it. */
+  async removeFolder(folderId: string): Promise<void> {
+    this.state.update((s) => ({
+      ...s,
+      folders: s.folders.filter((f) => f.id !== folderId),
+      items: s.items.filter((it) => it.folderId !== folderId),
+    }));
+    this.persist();
+    await forgetFolder(folderId);
+    await this.refreshUrls();
+    this.lastLiveSig = null;
+    this.pushLive();
+  }
+
+  /** Query-only check (no prompt) of which folders are still readable. */
+  private async probeFolders(): Promise<void> {
+    const folders = this.state.get().folders;
+    if (!folders.length) return;
+    let changed = false;
+    for (const f of folders) {
+      const files = await scanFolder(f.id, f.kind); // null when no permission
+      const connected = files !== null;
+      if (connected !== f.connected) {
+        changed = true;
+        this.state.update((s) => ({
+          ...s,
+          folders: s.folders.map((x) => (x.id === f.id ? { ...x, connected, count: files ? files.length : x.count } : x)),
+        }));
+      }
+    }
+    if (changed) {
+      this.persist();
+      await this.refreshUrls();
+    }
+  }
+
+  /** Re-grant permission (user gesture) and rescan every folder after a reload. */
+  async reconnectFolders(): Promise<void> {
+    const folders = this.state.get().folders;
+    for (const f of folders) {
+      const ok = await reconnectFolder(f.id);
+      let count = f.count;
+      let items: WallpaperItem[] | null = null;
+      if (ok) {
+        const files = (await scanFolder(f.id, f.kind)) ?? [];
+        count = files.length;
+        items = files.map((file) => ({
+          id: `fi-${f.id}-${file.name}`,
+          name: file.name.replace(/\.[^.]+$/, ''),
+          kind: file.kind,
+          folderId: f.id,
+          fileName: file.name,
+        }));
+      }
+      this.state.update((s) => ({
+        ...s,
+        folders: s.folders.map((x) => (x.id === f.id ? { ...x, connected: ok, count } : x)),
+        items: items ? [...s.items.filter((it) => it.folderId !== f.id), ...items] : s.items,
+      }));
+    }
+    this.persist();
+    await this.refreshUrls();
+    this.lastLiveSig = null;
+    this.pushLive();
+  }
+
   private recolourColors(): string[] {
     const s = this.state.get();
     if (s.recolourPalette !== 'theme') {
@@ -491,7 +596,7 @@ export class WallpaperManager {
       const trashedItems = item
         ? [
             ...s.trashedItems,
-            { id: item.id, name: item.name, kind: item.kind, accent: item.accent, tags: item.tags, deletedAt: Date.now() },
+            { id: item.id, name: item.name, kind: item.kind, accent: item.accent, tags: item.tags, folderId: item.folderId, fileName: item.fileName, deletedAt: Date.now() },
           ]
         : s.trashedItems;
       return { ...s, items, activeId, collections, trashedItems };

@@ -8,6 +8,7 @@
   import { SCHEME_CHARACTERS, FINISHES } from '../theme/palette';
   import { VIEW_MODES, FILL_MODES, TRANSITIONS, RECOLOUR_PALETTES } from './types';
   import { isNativeApp, openLiveWallpaperPicker, isLiveWallpaperActive } from '../../platform/wallpaper';
+  import { supportsFolders } from './folders';
 
   interface Props {
     app: App;
@@ -47,6 +48,23 @@
 
   const opt = <T,>(arr: { value: T; label: string }[]) =>
     arr.map((x) => ({ value: String(x.value), label: x.label }));
+
+  // Folder sources.
+  const foldersSupported = supportsFolders();
+  let folderBusy = $state(false);
+  let folderMsg = $state('');
+  async function addFolderSrc(kind: 'image' | 'video') {
+    folderBusy = true;
+    folderMsg = '';
+    const r = await manager.addFolder(kind);
+    folderBusy = false;
+    folderMsg = r.ok ? `${r.count} Datei(en) aus dem Ordner übernommen.` : '';
+  }
+  async function reconnectFolders() {
+    folderBusy = true;
+    await manager.reconnectFolders();
+    folderBusy = false;
+  }
 
   // Declarative sections. `show` closures read `s`/`vm` → reactive in SettingsView.
   let sections: SettingSection[] = $derived([
@@ -181,6 +199,12 @@
     },
     // Speicherort / Pfade
     {
+      title: 'Ordner', category: 'Quellen',
+      defs: [
+        { type: 'custom', customId: 'folders' },
+      ],
+    },
+    {
       title: 'Speicherort', category: 'Quellen',
       defs: [
         { key: 'wallpaperDir', type: 'text', label: 'Wallpaper-Ordner', placeholder: 'Standard (App-Speicher)' },
@@ -239,7 +263,7 @@
   }
 </script>
 
-<SettingsView {schema} custom={{ live, presets, themePresets, osTargets, schedule, trash, aiNote, pathsNote }} />
+<SettingsView {schema} custom={{ live, presets, themePresets, osTargets, schedule, trash, aiNote, pathsNote, folders }} />
 
 {#snippet live()}
   {#if liveActive === true}<p class="hint ok">✓ „SKWD Wall" ist als Live-Wallpaper aktiv.</p>
@@ -345,7 +369,39 @@
 {/snippet}
 
 {#snippet pathsNote()}
-  <p class="hint">Leer = App-Speicher (Standard). Eigene Ordner + „direkt ohne Hochladen nutzen" brauchen Datei-Zugriff am Gerät — das kommt als nativer Block; die Pfade werden schon gemerkt.</p>
+  <p class="hint">Leer = App-Speicher (Standard). Native Gerät-Pfade (Android-Ordner direkt beschreiben) kommen als nativer Block; die Pfade werden schon gemerkt.</p>
+{/snippet}
+
+{#snippet folders()}
+  {#if foldersSupported}
+    <p class="hint">Zeig auf einen echten Ordner — die Bilder/Videos erscheinen in der Galerie, <strong>ohne hochzuladen</strong> (Dateien bleiben im Ordner).</p>
+    <div class="chips">
+      <button class="btn" disabled={folderBusy} onclick={() => addFolderSrc('image')}>＋ Bilder-Ordner</button>
+      <button class="btn" disabled={folderBusy} onclick={() => addFolderSrc('video')}>＋ Video-Ordner</button>
+    </div>
+    {#if folderMsg}<p class="hint ok">{folderMsg}</p>{/if}
+    {#if s.folders.length}
+      <div class="folder-list">
+        {#each s.folders as f (f.id)}
+          <div class="folder-row">
+            <div class="folder-meta">
+              <span class="folder-name">{f.name}</span>
+              <span class="folder-sub">{f.kind === 'video' ? 'Videos' : 'Bilder'} · {f.count}{#if !f.connected} · getrennt{/if}</span>
+            </div>
+            {#if !f.connected}
+              <button class="btn" disabled={folderBusy} onclick={reconnectFolders}>Verbinden</button>
+            {/if}
+            <button class="btn danger" disabled={folderBusy} onclick={() => manager.removeFolder(f.id)}>Entfernen</button>
+          </div>
+        {/each}
+      </div>
+      {#if s.folders.some((f) => !f.connected)}
+        <p class="hint warn">Nach einem Neustart muss der Ordner-Zugriff einmal neu bestätigt werden („Verbinden").</p>
+      {/if}
+    {/if}
+  {:else}
+    <p class="hint">Direkter Ordner-Zugriff geht in diesem Browser nicht. Am PC (Chrome/Edge) kannst du Ordner direkt einbinden; auf dem Handy kommt der native Ordner-Zugriff (SAF) als eigener Block. Bis dahin: <strong>Hochladen</strong> nutzen.</p>
+  {/if}
 {/snippet}
 
 {#if pickerRuleId}
@@ -367,6 +423,12 @@
   .btn.primary { background: var(--color-primary); border: none; color: #fff; font-weight: 600; align-self: flex-start; }
   .btn.sm { padding: 4px 8px; font-size: 0.78rem; }
   .btn.danger { color: #e5484d; }
+  .btn:disabled { opacity: 0.5; }
+  .folder-list { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-2); }
+  .folder-row { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .folder-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .folder-name { font-size: 0.88rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .folder-sub { font-size: 0.74rem; color: var(--text-faint); }
   .row-inputs { display: flex; gap: var(--space-2); }
   .ti { flex: 1; min-width: 0; padding: var(--space-2) var(--space-3); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); font-size: 0.85rem; }
   .ta { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); font-family: var(--font-mono); font-size: 0.75rem; padding: var(--space-2); resize: vertical; }

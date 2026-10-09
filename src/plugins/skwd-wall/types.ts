@@ -62,6 +62,23 @@ export interface WallpaperItem {
   favorite?: boolean;
   /** Free-form tags for filtering. */
   tags?: string[];
+  /** If set, this item lives in an external folder source (not an IndexedDB blob). */
+  folderId?: string;
+  /** File name within the folder source (used to resolve the file on demand). */
+  fileName?: string;
+}
+
+/** An external directory the user pointed at (files referenced, not copied in). */
+export interface FolderSource {
+  id: string;
+  /** Display name (the picked directory's name). */
+  name: string;
+  /** Which library this folder feeds. */
+  kind: 'image' | 'video';
+  /** Whether we currently hold read permission for the handle (re-grant needed after reload). */
+  connected: boolean;
+  /** Number of media files found on the last scan. */
+  count: number;
 }
 
 export type MediaTab = 'all' | 'image' | 'video' | 'we';
@@ -98,6 +115,9 @@ export interface TrashItem {
   kind?: 'image' | 'video';
   accent?: string;
   tags?: string[];
+  /** Carried over for folder-sourced items so the trash can still show them. */
+  folderId?: string;
+  fileName?: string;
   /** epoch ms when it was moved to trash. */
   deletedAt: number;
 }
@@ -289,6 +309,8 @@ export interface WallpaperState {
   // --- Wallhaven ---
   whColumns: number;
   whApiKey: string;
+  // --- External folder sources ---
+  folders: FolderSource[];
   // --- Trash ---
   trashedItems: TrashItem[];
   trashRetentionDays: number;
@@ -366,6 +388,7 @@ export const DEFAULT_STATE: WallpaperState = {
   randomShader: false,
   whColumns: 3,
   whApiKey: '',
+  folders: [],
   trashedItems: [],
   trashRetentionDays: 30,
   trashAutoDelete: false,

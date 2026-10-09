@@ -217,6 +217,15 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
+### 22. Speicher-Backend: Ordner direkt nutzen (Teil 1, Web/PC — bitte testen)
+*Einstellungen → Quellen → **Ordner**. Erster Teil der Speicher-Arbeit: echte
+Ordner einbinden, OHNE hochzuladen. Funktioniert am **PC (Chrome/Edge)**; auf dem
+Handy folgt der native Ordner-Zugriff (SAF) als eigener Block.*
+- [ ] **„＋ Bilder-Ordner" / „＋ Video-Ordner"** öffnet den Ordner-Auswahldialog; die Medien erscheinen danach in der Galerie (nicht hochgeladen, bleiben im Ordner)
+- [ ] Eingebundene Ordner werden mit Name + Anzahl gelistet; **Entfernen** nimmt sie (und ihre Bilder) wieder raus
+- [ ] Nach App-Neustart: Ordner zeigt „getrennt" → **Verbinden** bestätigt den Zugriff neu, Bilder sind wieder da
+- [ ] In Browsern ohne Ordner-Zugriff (z. B. Handy-App aktuell) steht ein Hinweis „Hochladen nutzen" statt der Buttons
+
 ### 21. Platz oben + Card-Hand-Verschieben
 - [x] **Einstellungen & „Wallpaper hinzufügen": weniger Leerraum oben** — die Überschrift sitzt jetzt direkt unter der SKWD-Wall-Leiste (doppelte Safe-Area war schuld)
 - [x] **Card Hand → „Fächer verschieben (horizontal)"** — schiebt den ganzen Kartenfächer nach links/rechts
