@@ -121,7 +121,15 @@
 </div>
 
 <CommandPalette {app} open={paletteOpen} onClose={() => (paletteOpen = false)} />
-<Settings {app} open={settingsOpen} onClose={() => (settingsOpen = false)} />
+<Settings
+  {app}
+  open={settingsOpen}
+  onClose={() => (settingsOpen = false)}
+  onReplayOnboarding={() => {
+    settingsOpen = false;
+    showOnboarding = true;
+  }}
+/>
 <Plugins {app} open={pluginsOpen} onClose={() => (pluginsOpen = false)} />
 
 {#if showOnboarding}

@@ -8,8 +8,9 @@
     app: SojusApp;
     open: boolean;
     onClose: () => void;
+    onReplayOnboarding: () => void;
   }
-  let { app, open, onClose }: Props = $props();
+  let { app, open, onClose, onReplayOnboarding }: Props = $props();
 
   const themeMode = useStore(app.theme.mode);
   const navItems = useStore(app.navigation.store);
@@ -78,6 +79,14 @@
             </label>
           </div>
           <p class="hint">An: mehrere Plugins gleichzeitig als Tabs offen halten und umschalten. Aus (Standard): immer nur eine Ansicht – ein neues Plugin ersetzt das offene.</p>
+        </section>
+        <section>
+          <h3>Einstieg</h3>
+          <div class="row">
+            <span>Orbit-Einstieg</span>
+            <button class="act" onclick={onReplayOnboarding}>Erneut anzeigen</button>
+          </div>
+          <p class="hint">Zeigt den Willkommens- und Einrichtungsdialog von Orbit noch einmal.</p>
         </section>
         <p class="foot">Plugins verwaltest du im eigenen Bereich <strong>Plugins</strong> in der Seitenleiste.</p>
       </div>
@@ -190,6 +199,11 @@
   }
   input:checked + .slider { background: var(--accent); }
   input:checked + .slider::before { transform: translateX(18px); background: #fff; }
+  .act {
+    background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
+    border-radius: var(--radius-md); padding: var(--space-2) var(--space-4); font-size: 0.85rem; cursor: pointer;
+  }
+  .act:hover { background: var(--bg-hover); }
   .foot {
     margin-top: var(--space-5);
     padding-top: var(--space-4);
