@@ -20,6 +20,18 @@ export const manifest: PluginManifest = {
   // Powers it uses when present; it degrades gracefully where they're missing
   // (e.g. web can't set the OS wallpaper, a non-Chromium browser has no folders).
   capabilities: ['folders', 'wallpaper', 'live-wallpaper'],
+  news: [
+    {
+      version: '0.1.0',
+      date: '2026-10-09',
+      text: 'Neuer interaktiver Einrichtungsprozess: Ansicht & Übergänge direkt wählen, Handy-Funktionen per Schalter (standardmäßig aus). Schärferer App-Hintergrund und Hintergrund sofort beim Start gesetzt.',
+    },
+    {
+      version: '0.1.0',
+      date: '2026-10-08',
+      text: 'Sieben Ansichtsmodi aus dem SKWD-Original, automatisches Theme aus dem aktiven Bild, Übergänge (inkl. GPU-Shader), Live-Wallpaper (nativ), Ordner-Einbindung und Papierkorb.',
+    },
+  ],
 };
 
 const VIEW_ID = 'wallpaper-picker';

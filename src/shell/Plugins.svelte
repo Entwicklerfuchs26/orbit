@@ -34,6 +34,33 @@
     await app.pluginStore.uninstall(id);
   }
 
+  // --- Plugin detail page (Beschreibung + Neuigkeiten) ---
+  let detailFor = $state<string | null>(null);
+  let detailTab = $state<'desc' | 'news'>('desc');
+  function openDetail(id: string) {
+    detailFor = id;
+    detailTab = 'desc';
+  }
+  function registeredManifest(id: string) {
+    return app.plugins.getRegistered().find((m) => m.id === id);
+  }
+  function detailEntry(id: string) {
+    const c = catalogEntry(id);
+    const m = registeredManifest(id);
+    return {
+      id,
+      name: c?.name ?? m?.name ?? id,
+      description: c?.description ?? m?.description ?? '',
+      type: c?.type ?? m?.type,
+      version: c?.version ?? m?.version,
+      platforms: c?.platforms ?? m?.platforms,
+      screenshots: c?.screenshots ?? m?.screenshots,
+      news: c?.news ?? m?.news ?? [],
+      present: isPresent(id),
+      catalog: c,
+    };
+  }
+
   // --- Inline per-plugin settings (gear) ---
   let openSettingsFor = $state<string | null>(null);
   let settingsHost = $state<HTMLElement>();
@@ -187,6 +214,59 @@
             <Icon name="chevron-left" size={16} /> Zurück
           </button>
           <div bind:this={settingsHost} class="plugin-tab"></div>
+        {:else if detailFor}
+          {@const e = detailEntry(detailFor)}
+          <button class="back" onclick={() => (detailFor = null)}>
+            <Icon name="chevron-left" size={16} /> Zurück
+          </button>
+          <div class="detail-head">
+            <h3>{e.name}</h3>
+            <div class="meta">
+              {#if e.type}<span class="type">{e.type}</span>{/if}
+              {#if e.version}<span class="type">v{e.version}</span>{/if}
+              {#if e.platforms}<span class="plat">{e.platforms.join('/')}</span>{/if}
+            </div>
+          </div>
+          <div class="dtabs">
+            <button class:active={detailTab === 'desc'} onclick={() => (detailTab = 'desc')}>Beschreibung</button>
+            <button class:active={detailTab === 'news'} onclick={() => (detailTab = 'news')}>Neuigkeiten</button>
+          </div>
+          {#if detailTab === 'desc'}
+            {#if e.screenshots?.length}
+              <div class="shots big">{#each e.screenshots as s}<img src={s} alt="" loading="lazy" />{/each}</div>
+            {/if}
+            <p class="long-desc">{e.description}</p>
+          {:else if e.news.length > 0}
+            {#each e.news as n}
+              <div class="news-item">
+                <div class="news-head">{#if n.version}v{n.version}{/if}{#if n.date} · {n.date}{/if}</div>
+                <p>{n.text}</p>
+              </div>
+            {/each}
+          {:else}
+            <p class="muted">Noch keine Neuigkeiten.</p>
+          {/if}
+          <div class="detail-actions">
+            {#if !e.present && e.catalog}
+              <button class="btn primary" onclick={() => install(e.catalog!)} disabled={installing === e.id}>
+                {installing === e.id ? 'Installiere…' : 'Installieren'}
+              </button>
+            {:else}
+              {#if hasUpdate(e.id)}
+                <button class="btn primary" onclick={() => doUpdate(e.id)} disabled={installing === e.id}>
+                  <Icon name="sync" size={14} /> {installing === e.id ? 'Aktualisiere…' : 'Aktualisieren'}
+                </button>
+              {/if}
+              {#if hasCmd(e.id, 'show-intro')}
+                <button class="btn" onclick={() => { runCmd(e.id, 'show-intro'); onClose(); }}>Einführung</button>
+              {/if}
+              {#if isRemote(e.id)}
+                <button class="btn danger" onclick={() => { uninstall(e.id); detailFor = null; }}>
+                  <Icon name="trash" size={14} /> Deinstallieren
+                </button>
+              {/if}
+            {/if}
+          </div>
         {:else if tab === 'installed'}
           <section>
             <h3>Installiert</h3>
@@ -204,12 +284,15 @@
                   </div>
                 {/if}
                 <div class="card-main">
-                  <div class="card-body">
+                  <div class="card-body clickable" role="button" tabindex="0"
+                    onclick={() => openDetail(m.id)}
+                    onkeydown={(ev) => (ev.key === 'Enter' || ev.key === ' ') && openDetail(m.id)}>
                     <div class="meta">
                       <span class="name">{m.name}</span>
                       <span class="type">{m.type}</span>
                       {#if !platformOk(m.id)}<span class="plat">nur {m.platforms?.join('/')}</span>{/if}
                       {#if isRemote(m.id)}<span class="plat remote">Store</span>{/if}
+                      <Icon name="chevron-right" size={14} />
                     </div>
                     <p class="desc">{m.description}</p>
                   </div>
@@ -296,12 +379,15 @@
                   {#if e.screenshots?.length}
                     <div class="shots">{#each e.screenshots.slice(0, 3) as s}<img src={s} alt="" loading="lazy" />{/each}</div>
                   {/if}
-                  <div class="card-body">
+                  <div class="card-body clickable" role="button" tabindex="0"
+                    onclick={() => openDetail(e.id)}
+                    onkeydown={(ev) => (ev.key === 'Enter' || ev.key === ' ') && openDetail(e.id)}>
                     <div class="meta">
                       <span class="name">{e.name}</span>
                       {#if e.version}<span class="type">v{e.version}</span>{/if}
                       {#if e.platforms}<span class="plat">{e.platforms.join('/')}</span>{/if}
                       {#if typeof e.downloads === 'number'}<span class="dl">↓ {e.downloads}</span>{/if}
+                      <Icon name="chevron-right" size={14} />
                     </div>
                     {#if e.description}<p class="desc">{e.description}</p>{/if}
                   </div>
@@ -400,6 +486,22 @@
     color: #e5903b;
   }
   .btn:disabled { opacity: 0.5; cursor: default; }
+  .clickable { cursor: pointer; border-radius: var(--radius-md); }
+  .clickable:hover .name { color: var(--accent); }
+  .detail-head { margin: var(--space-2) 0 var(--space-3); }
+  .detail-head h3 { margin: 0 0 6px; font-size: 1.3rem; }
+  .dtabs { display: flex; gap: var(--space-2); border-bottom: 1px solid var(--border); margin-bottom: var(--space-4); }
+  .dtabs button {
+    background: transparent; border: none; border-bottom: 2px solid transparent;
+    color: var(--text-muted); padding: var(--space-2) var(--space-1); font-size: 0.9rem; margin-bottom: -1px; cursor: pointer;
+  }
+  .dtabs button.active { color: var(--text); border-bottom-color: var(--accent); }
+  .long-desc { line-height: 1.6; color: var(--text); }
+  .shots.big img { height: 160px; }
+  .news-item { padding: var(--space-3) 0; border-bottom: 1px solid var(--border); }
+  .news-head { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+  .news-item p { margin: 0; color: var(--text-muted); line-height: 1.55; }
+  .detail-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-5); }
   .card-main { display: flex; align-items: flex-start; gap: var(--space-4); }
   .card-main .card-body { flex: 1; min-width: 0; }
   .top-actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }

@@ -98,6 +98,12 @@
     manager.setLiveWallpaper(on);
   }
 
+  // Pointy-top hexagon points for the "geometric" preview.
+  function hex(cx: number, cy: number, r: number): string {
+    const w = r * 0.866;
+    return `${cx},${cy - r} ${cx + w},${cy - r / 2} ${cx + w},${cy + r / 2} ${cx},${cy + r} ${cx - w},${cy + r / 2} ${cx - w},${cy - r / 2}`;
+  }
+
   function next() {
     if (last) onDone();
     else i += 1;
@@ -174,17 +180,52 @@
             <path d="M64 152 C110 152 120 110 150 120" class="flow" style="animation-delay:1200ms" />
           </svg>
         {:else if step.kind === 'view'}
+          <!-- Live preview of the selected layout inside a phone frame -->
           <svg viewBox="0 0 260 210" class="il">
             <g class="float">
-              <rect x="92" y="54" width="76" height="104" rx="12" class="card c3" fill="url(#skwdGradSoft)" />
-              <rect x="92" y="54" width="76" height="104" rx="12" class="card c2" fill="url(#skwdGrad)" />
-              <rect x="92" y="54" width="76" height="104" rx="12" class="card c1 phone" />
-              <rect x="100" y="62" width="60" height="70" rx="8" fill="url(#skwdGrad)" />
-            </g>
-            <g class="swatches">
-              {#each [0, 1, 2, 3, 4] as k}
-                <circle cx={96 + k * 17} cy="176" r="7" class="swatch s{k}" style="animation-delay:{k * 120}ms" />
-              {/each}
+              <rect x="90" y="20" width="80" height="170" rx="16" class="phone" />
+              <clipPath id="vClip"><rect x="96" y="26" width="68" height="158" rx="10" /></clipPath>
+              <g clip-path="url(#vClip)">
+                <rect x="96" y="26" width="68" height="158" fill="url(#skwdGradSoft)" />
+                {#key viewMode}
+                  <g in:fade={{ duration: 260 }}>
+                    {#if viewMode === 'wall'}
+                      {#each [0, 1, 2] as c}{#each [0, 1, 2, 3, 4] as r}
+                        <rect x={100 + c * 21} y={31 + r * 30} width="17" height="25" rx="3" fill="url(#skwdGrad)" />
+                      {/each}{/each}
+                    {:else if viewMode === 'geometric'}
+                      {#each [[116, 44], [144, 44], [130, 68], [116, 92], [144, 92], [130, 116], [116, 140], [144, 140], [130, 164]] as [cx, cy]}
+                        <polygon points={hex(cx, cy, 13)} fill="url(#skwdGrad)" stroke="color-mix(in srgb, var(--bg) 60%, transparent)" stroke-width="1.5" />
+                      {/each}
+                    {:else if viewMode === 'slices'}
+                      <rect x="100" y="38" width="60" height="12" rx="3" fill="url(#skwdGrad)" opacity="0.55" />
+                      <rect x="100" y="54" width="60" height="16" rx="3" fill="url(#skwdGrad)" opacity="0.75" />
+                      <rect x="100" y="76" width="60" height="58" rx="6" fill="url(#skwdGrad)" />
+                      <rect x="100" y="140" width="60" height="16" rx="3" fill="url(#skwdGrad)" opacity="0.75" />
+                      <rect x="100" y="160" width="60" height="12" rx="3" fill="url(#skwdGrad)" opacity="0.55" />
+                    {:else if viewMode === 'depth'}
+                      <rect x="118" y="34" width="24" height="18" rx="3" fill="url(#skwdGrad)" opacity="0.4" />
+                      <rect x="112" y="56" width="36" height="26" rx="4" fill="url(#skwdGrad)" opacity="0.65" />
+                      <rect x="102" y="86" width="56" height="44" rx="6" fill="url(#skwdGrad)" />
+                      <rect x="112" y="134" width="36" height="26" rx="4" fill="url(#skwdGrad)" opacity="0.65" />
+                      <rect x="118" y="164" width="24" height="16" rx="3" fill="url(#skwdGrad)" opacity="0.4" />
+                    {:else if viewMode === 'sandy'}
+                      <rect x="100" y="40" width="42" height="130" rx="6" fill="url(#skwdGrad)" />
+                      {#each [0, 1, 2, 3] as r}
+                        <rect x="146" y={40 + r * 34} width="14" height="28" rx="3" fill="url(#skwdGrad)" opacity="0.7" />
+                      {/each}
+                    {:else if viewMode === 'hand'}
+                      {#each [-28, -14, 0, 14, 28] as a, k}
+                        <rect x="120" y="70" width="20" height="60" rx="5" fill="url(#skwdGrad)" opacity={k === 2 ? 1 : 0.6} transform={`rotate(${a} 130 130)`} />
+                      {/each}
+                    {:else}
+                      {#each [10, 5, 0] as a, k}
+                        <rect x="108" y={60 + k * 6} width="44" height="78" rx="6" fill="url(#skwdGrad)" opacity={0.55 + k * 0.22} transform={`rotate(${a} 130 100)`} />
+                      {/each}
+                    {/if}
+                  </g>
+                {/key}
+              </g>
             </g>
           </svg>
         {:else if step.kind === 'transition'}
@@ -197,20 +238,27 @@
             </g>
           </svg>
         {:else if step.kind === 'mobile'}
-          <!-- Phone with a glowing home wallpaper (consistent 2:1 aspect) -->
+          <!-- Clean, correctly-proportioned phone on a home screen -->
           <svg viewBox="0 0 260 210" class="il">
+            <g class="spin" style="transform-origin:130px 105px">
+              <ellipse cx="130" cy="105" rx="78" ry="72" class="ring" />
+            </g>
             <g class="float">
-              <rect x="100" y="20" width="60" height="170" rx="15" class="phone" />
-              <clipPath id="mClip"><rect x="106" y="26" width="48" height="158" rx="10" /></clipPath>
+              <rect x="101" y="23" width="58" height="164" rx="16" class="phone" />
+              <clipPath id="mClip"><rect x="107" y="29" width="46" height="152" rx="11" /></clipPath>
               <g clip-path="url(#mClip)">
-                <rect x="106" y="26" width="48" height="158" fill="url(#skwdGradSoft)" />
-                <path class="wave" d="M96 110 q14 -14 28 0 t28 0 t28 0 t28 0 V190 H96 Z" fill="url(#skwdGrad)" opacity="0.9" />
+                <rect x="107" y="29" width="46" height="152" fill="url(#skwdGradSoft)" />
+                <path class="wave" d="M100 118 q12 -14 24 0 t24 0 t24 0 t24 0 V181 H100 Z" fill="url(#skwdGrad)" opacity="0.92" />
+                <path class="wave w2" d="M100 132 q12 -12 24 0 t24 0 t24 0 t24 0 V181 H100 Z" fill="url(#skwdGrad)" opacity="0.5" />
               </g>
+              <!-- notch + home indicator -->
+              <rect x="121" y="33" width="18" height="4" rx="2" class="notch" />
+              <rect x="120" y="173" width="20" height="3" rx="1.5" class="notch" />
+              <!-- app dots -->
               {#each [0, 1, 2, 3, 4, 5] as k}
-                <rect x={112 + (k % 3) * 13} y={34 + Math.floor(k / 3) * 13} width="9" height="9" rx="2.5" class="appdot" />
+                <rect x={114 + (k % 3) * 13} y={46 + Math.floor(k / 3) * 13} width="9" height="9" rx="2.5" class="appdot" />
               {/each}
             </g>
-            <circle cx="186" cy="150" r="14" class="switch-knob {mobileOn ? 'on' : ''}" />
           </svg>
         {:else}
           <!-- Done: checkmark inside an orbit -->
@@ -251,11 +299,13 @@
               <span class="sw" aria-hidden="true"><span class="knob"></span></span>
             </button>
             {#if !randomShader}
-              <select class="sel-input" value={transitionType} onchange={(e) => setTransition(e.currentTarget.value as TransitionType)}>
+              <div class="trans-grid">
                 {#each TRANSITIONS as t (t.value)}
-                  <option value={t.value}>{t.label}{t.gpu ? ' ✦' : ''}</option>
+                  <button class="chip-opt sm" class:sel={transitionType === t.value} onclick={() => setTransition(t.value)}>
+                    {t.label}{#if t.gpu}<span class="gpu">✦</span>{/if}
+                  </button>
                 {/each}
-              </select>
+              </div>
             {/if}
           </div>
         {/if}
@@ -351,6 +401,13 @@
   }
   .chip-opt:active { transform: scale(0.96); }
   .chip-opt.sel { background: var(--accent, #6aa0ff); color: #fff; border-color: transparent; }
+  .chip-opt.sm { padding: 7px 12px; font-size: 0.82rem; }
+  .gpu { margin-left: 4px; opacity: 0.8; font-size: 0.75em; }
+  .trans-grid {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 7px;
+    max-width: 30rem; max-height: 136px; overflow-y: auto; padding: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
   .sel-input {
     width: 100%; margin-top: 2px; background: color-mix(in srgb, var(--text, #fff) 6%, transparent);
     border: 1px solid color-mix(in srgb, var(--text, #fff) 14%, transparent); color: var(--text, #fff);
@@ -409,6 +466,7 @@
   .swatches .s4 { fill: color-mix(in srgb, var(--text, #fff) 70%, transparent); }
   .swatches circle { stroke: color-mix(in srgb, var(--text, #fff) 14%, transparent); stroke-width: 1; opacity: 0; animation: pop 0.5s cubic-bezier(.2,.9,.3,1.3) forwards; }
   .appdot { fill: color-mix(in srgb, #fff 45%, transparent); }
+  .notch { fill: color-mix(in srgb, var(--text, #fff) 30%, transparent); }
   .switch-knob { fill: color-mix(in srgb, var(--text, #fff) 35%, transparent); transition: fill 0.25s; }
   .switch-knob.on { fill: var(--accent, #6aa0ff); animation: livepulse 1.8s ease-in-out infinite; }
   .check { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 70; stroke-dashoffset: 70; animation: draw 0.6s 0.2s cubic-bezier(.2,.8,.2,1) forwards; }

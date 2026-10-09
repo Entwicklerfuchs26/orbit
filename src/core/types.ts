@@ -28,6 +28,15 @@ export interface PluginManifest {
   screenshots?: string[];
   repo?: string;
   homepage?: string;
+  /** Changelog / news feed shown on the plugin's detail page (newest first). */
+  news?: NewsItem[];
+}
+
+/** One changelog entry for a plugin's "Neuigkeiten" feed. */
+export interface NewsItem {
+  version?: string;
+  date?: string;
+  text: string;
 }
 
 export interface PluginConfig {

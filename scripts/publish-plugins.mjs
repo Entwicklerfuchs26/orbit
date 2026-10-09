@@ -88,6 +88,7 @@ const registry = PLUGINS.map((id) => {
     screenshots: m.screenshots,
     repo: m.repo,
     homepage: m.homepage,
+    news: m.news,
     main,
     versions,
   };

@@ -10,7 +10,7 @@
  * Installing = remember the entry in config and `loadFromUrl` its built ESM.
  * The APK ships no feature plugin; everything here is fetched on demand.
  */
-import type { ConfigManager, PlatformType } from './types';
+import type { ConfigManager, PlatformType, NewsItem } from './types';
 import type { PluginLoader } from './loader';
 import { Store } from './store';
 
@@ -22,10 +22,13 @@ export interface StorePluginEntry {
   author?: string;
   version?: string;
   platforms?: PlatformType[];
+  type?: string;
   /** Preview image URLs for the store card. */
   screenshots?: string[];
   repo?: string;
   homepage?: string;
+  /** Changelog / news feed (newest first). */
+  news?: NewsItem[];
   /** Rough popularity, if the source tracks it. */
   downloads?: number;
   /** Absolute URL of the built ESM `main.js` to import on install. */
