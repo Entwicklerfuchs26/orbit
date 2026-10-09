@@ -61,5 +61,7 @@ GL-Live-Wallpaper).
 
 ## Testlisten
 
-Jede Testliste gehört in `FEATURES.md`. `- [x]` nur, wenn Jonas bestätigt hat,
-sonst `- [ ]` offen lassen.
+Pro Bereich eine eigene Datei, damit keine Liste „arschlang" wird:
+**Kern/Shell** → `FEATURES.md` (Root; Plattform-Unterschiede inline **[Web]**/**[nativ]**
+getaggt). **Plugins** → `src/plugins/<id>/FEATURES.md` (bzw. im Plugin-Repo).
+`- [x]` nur, wenn Jonas bestätigt hat, sonst `- [ ]` offen lassen.
