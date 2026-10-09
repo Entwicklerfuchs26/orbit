@@ -55,26 +55,39 @@ Bestehende Tester sehen ihn NICHT. Zum Testen: localStorage leeren + neu laden.*
 - [ ] **Store** → Feld „Aus GitHub-Link laden" (rohe manifest.json); Unsinn-Link → verständlicher Fehler
 - [ ] Katalog aus dem orbit-plugins-Repo lädt; „Installieren" lädt + aktiviert ein echtes Remote-Plugin; **Deinstallieren** entfernt es
 
-## 6. Plugin-Externalisierung (Block 5, Pipeline)
-*Grundlage für „APK bringt kein Plugin mit".*
-- [x] `PLUGIN=<id> npm run build:plugin` baut je ein eigenständiges `main.js` (bindet an `globalThis.Orbit`, Styles im JS)
-- [x] `node scripts/assemble-registry.mjs` erzeugt `plugins-dist/registry/` fürs orbit-plugins-Repo
-- [ ] [nativ] NÄCHSTER SCHRITT (Gerät): eingebaute Plugins aus der APK entfernen + Onboarding installiert aus dem Store
-- [ ] [nativ] Standalone-APK: kein Dev-Server-Zwang (Plugin-spezifische Zusätze wie Wallhaven-Direktabruf stehen in der jeweiligen Plugin-Testliste)
+## 6. Store: Versionierung, Updates, Rollback, Detailseite
+*Veröffentlicht via `scripts/publish-plugins.mjs` (SHA-gepinnt). APK bringt kein
+Feature-Plugin mit – alles kommt aus dem Store.*
+- [ ] Plugins → **Aktualisieren** holt den neuesten Build (Banner „N Updates", Punkt am Sidebar-Eintrag)
+- [ ] **Versions-Dropdown** (ab 2 Versionen): ältere Version wählen = Rollback
+- [ ] Plugin-Karte antippen → **Detailseite** mit Tabs **Beschreibung** + **Neuigkeiten** (Changelog ohne Update sichtbar)
+- [ ] Katalog listet Plugins; „Installieren"/„Deinstallieren" wirken; schon vorhandene = „Bereits vorhanden"
+
+## 7. Orbit-Home, Multitasking, Einstieg
+- [ ] **Orbit-Home** ist die Startseite (Kacheln: Plugins öffnen, Store, Einstellungen); „Orbit"-Wortmarke oben führt dahin; kein leerer Bildschirm mehr
+- [ ] **Multitasking-Tabs** (Einstellungen → Fenster): aus = eine Ansicht/keine Tab-Leiste, an = mehrere Tabs
+- [ ] **Orbit-Einstieg** nur beim ersten Start; Einstellungen → Einstieg → **„Erneut anzeigen"** spielt ihn wieder ab
+- [ ] Einstieg: SKWD-Wall-Schnellweg (+ „Als Startseite") ODER „Orbit entdecken" (Erklär-Folien + Plugin-Picker)
+
+## 8. Eigenständige APK (nativ)
+- [ ] [nativ] Standalone-APK startet ohne Dev-Server; Erststart → Orbit-Einstieg; SKWD Wall wird aus dem Store nachgeladen (Internet)
+- [ ] [nativ] Eigenes **Orbit-App-Icon** auf dem Homescreen; App heißt „Orbit"
+- [ ] [nativ] Wallhaven-Online ohne Dev-Proxy (nativer Direktabruf) — auf Fremdgerät prüfen
 
 ---
 
 ## Plan / Roadmap
 
-### ✅ Kern-Phase (09.10.2026)
-- [x] Capability-API · Startseite · Onboarding · Plugins-Store · Externalisierungs-Pipeline
+### ✅ Erledigt (09.10.2026)
+- [x] Capability-API · Startseite · Onboarding · Plugins-Store (Versionierung/Updates/Rollback/Detailseite)
+- [x] Externalisierung + SHA-gepinnte Veröffentlichung · Orbit-Home · Multitasking-Schalter
+- [x] Animierter Orbit-Einstieg · SKWD-Wall-Einrichtung · Orbit-App-Icon · **eigenständige APK**
 
-### ▶ Als Nächstes (braucht Gerät + orbit-plugins live)
-- [ ] orbit-plugins-Repo befüllen → Remote-Install im Store testen
-- [ ] Eingebaute Plugins aus `main.ts` entfernen (APK bringt kein Feature-Plugin mit); Onboarding installiert aus dem Store
-- [ ] **Eigenständige APK** — losgelöst vom Dev-Server, an beliebige Person weitergebbar
+### ▶ Als Nächstes
+- [ ] Wallhaven-Standalone auf echtem Fremdgerät verifizieren
+- [ ] Signierter Release-Build (F-Droid/IzzyOnDroid/Play — später)
 - [ ] Launcher-Modus (Android-Homescreen) + Gesten-Hooks
-- [ ] Offene Fragen: Plugins von außen erreichbar (Homescreen-Geste → Plugin); deklarative Plugin-Verwaltung am PC (NixOS/Home-Manager)
+- [ ] Plugins von außen erreichbar (Homescreen-Geste → Plugin); deklarative Plugin-Verwaltung am PC (NixOS/Home-Manager)
 
 ### Später
 - [ ] **Sync PC ↔ Handy**

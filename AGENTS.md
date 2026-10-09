@@ -26,7 +26,10 @@ GL-Live-Wallpaper).
   Veröffentlichen (SHA-gepinnt + Versionshistorie, pusht nach orbit-plugins):
   `node scripts/publish-plugins.mjs <klon-von-orbit-plugins>` (baut, committet Plugin-
   Dateien, pinnt registry.json auf den Commit-SHA → deterministisch frisch + Rollback).
-- Android-APK: `nix-shell android-shell.nix --run "CAP_SERVER_URL=http://192.168.1.40:5173 npx cap sync android && cd android && ./gradlew assembleDebug"`.
+- Dev-APK (live-reload vom Vite-Server): `nix-shell android-shell.nix --run "CAP_SERVER_URL=http://192.168.1.40:5173 npx cap sync android && cd android && ./gradlew assembleDebug"`.
+- **Eigenständige APK** (gebündelt, ohne Dev-Server, lädt Plugins aus dem Store) —
+  für Weitergabe: `npm run build` dann `nix-shell android-shell.nix --run "npx cap sync android && cd android && ./gradlew assembleDebug"` (OHNE `CAP_SERVER_URL`). Hat eine
+  andere Web-Origin als die Dev-APK → eigener localStorage/IndexedDB.
   APK-Download: `http://192.168.1.40:5173/wallpaper.apk` (serveApk-Middleware liest
   direkt aus dem Build-Output — **nicht** nach `static/` kopieren, sonst wandert
   sie ins Bundle).
@@ -48,6 +51,16 @@ GL-Live-Wallpaper).
   als Plugin downloadbar → er lebt im Kern-APK und wird als **generische Capability**
   (Datei/Ordner, Wallpaper, Live-Wallpaper) angeboten, die jedes Plugin nutzen kann —
   nicht plugin-spezifisch hardcoden.
+
+## Einrichtungsdialoge
+
+Onboarding-/Einrichtungsdialoge (Orbit-Einstieg `shell/Onboarding.svelte`,
+Plugin-Intros wie `skwd-wall/Intro.svelte`) folgen dem **Design-Standard in
+CONVENTIONS.md** → „Einrichtungs-/Onboarding-Dialoge": Vollbild, Aurora-Hintergrund,
+eigene animierte SVGs (keine Emojis), Schritt-Transitions (fade/fly) + Fortschritts-
+punkte, iOS-Schalter/Chip-Raster, `prefers-reduced-motion`, alles über Theme-Tokens.
+Neue Dialoge dieses Muster kopieren. Veröffentlichen von Plugins nur via
+`scripts/publish-plugins.mjs` (SHA-gepinnt).
 
 ## Harte Regeln
 

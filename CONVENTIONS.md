@@ -88,6 +88,69 @@ bauen, sondern drei Schichten:
   den aktuell direkt genutzten nativen Plugins auf eine saubere Kern-Capability-API
   umstellen.)
 
+## Einrichtungs-/Onboarding-Dialoge (Design-Standard)
+
+Alle Einstiegs-/Einrichtungsdialoge sehen gleich aus und fühlen sich gleich an –
+Orbit-Einstieg (`src/shell/Onboarding.svelte`) und Plugin-Einstiege (Vorbild
+`src/plugins/skwd-wall/Intro.svelte`). Neue Dialoge kopieren dieses Muster.
+
+**Aufbau.** Vollbild: `position: fixed; inset: 0` (Orbit-Onboarding `z-index: 950`;
+Plugin-Intro in der View `z-index: 80`). Safe-Area beachten:
+`padding: calc(env(safe-area-inset-top) + …) … calc(env(safe-area-inset-bottom) + …)`.
+Zentrierte „stage" (`max-width: ~560px`), darin Illustration → Copy → Footer.
+
+**Hintergrund.** `radial-gradient(… color-mix(--accent 22%, transparent) …)` über
+`var(--bg)`, plus zwei weich geblurrte „aurora"-Blobs (`.a1`/`.a2`), die langsam
+driften (`@keyframes drift1/drift2`). Keine harten Flächen.
+
+**Illustrationen = eigene Inline-SVGs, KEINE Emojis.** viewBox ~`260×210`. Füllungen
+über eine gemeinsame `<linearGradient id="…Grad">` (Stop 0 `var(--accent)` → Stop 1
+`color-mix(--accent 55%, #b06cf0)`); Striche/Flächen via `color-mix` auf `--text`/
+`--accent`, damit sie in Hell/Dunkel sitzen. Dezente Animationen: `float` (sanftes
+Heben), `spin` (Orbit-Ringe), `pop` (Einblenden mit Scale), `dashmove` (laufende
+Linien), `wave`, `slidein`, `draw` (Stroke-Dash). Interaktive Schritte dürfen die
+Illustration mit `{#key wert}` + `in:fade` live wechseln (z. B. Ansichts-Vorschau).
+
+**Schritte & Transitions.** Pro Schritt `{#key i}`: Illustration `in:fade`
+(~420 ms), Copy `in:fly={{ y: 16, easing: cubicOut }}`. Fortschrittspunkte unten
+(aktiv = zum Pill verlängert, `--accent`). Copy-Hierarchie: `kicker` (uppercase,
+`--accent`, `NN · Label`), `h1` (`clamp(...)`, `font-weight: 800`,
+`letter-spacing: -0.02em`), `p` (`--text-muted`, `max-width: ~32rem`, `line-height: 1.6`).
+
+**Bedienelemente** (wirken sofort auf den State): Schalter = iOS-Stil (Track 46×28,
+Knopf 22, `--accent` wenn an); Mehrfachauswahl = Chip-Raster (Pillen, gewählt =
+`--accent`-Fläche); größere Auswahl = Options-/Choice-Karten. Kein natives `<select>`
+in diesen Dialogen.
+
+**Footer.** `ghost` (Zurück) + primärer `go`-Button (Verlauf `--accent`→Violett,
+weicher Schatten; am Handy voll breit). Letzter Schritt: „Loslegen"/„Los geht's".
+
+**Barrierefreiheit & Theme.** Alles über Tokens (`--accent`, `--text`, `--bg`,
+`--bg-elevated`, `--border`, `color-mix`) → Hell/Dunkel automatisch.
+`@media (prefers-reduced-motion: reduce)` schaltet ALLE Animationen aus und zeigt
+Endzustände.
+
+**Verhalten.** Plattformnahe Plugin-Intros sind **Handy-only** (`app.platform.isMobile`)
+und erscheinen **einmal** (persistiertes Flag, z. B. `introSeen`). Erneut zeigbar
+über einen Command `"<id>:show-intro"` (vom Plugins-Bereich + Plugin-Einstellungen
+angeboten) bzw. für den Orbit-Einstieg über Einstellungen → Einstieg. Der Orbit-
+Einstieg markiert sich beim Erscheinen als gesehen (`core.onboarded`), nervt also nie.
+Ein Intro, das in eine frisch geöffnete View gemountet wird, wartet per
+`requestAnimationFrame` auf `containerEl` (der ViewHost setzt ihn erst im nächsten
+Tick) – sonst leerer Tab.
+
+## Plugin-Verteilung / Store
+
+- Veröffentlichen NUR über `node scripts/publish-plugins.mjs <klon-von-orbit-plugins>`:
+  baut die Plugins, committet sie, **pinnt `registry.json` auf den Commit-SHA**
+  (unveränderliche URLs → GitHub/CDN liefert nie veraltet) und pflegt die
+  Versionshistorie (`versions[]` für Rollback). `news[]` im Manifest = Changelog für
+  die Detailseite.
+- Remote-Laden: `loader.loadFromUrl` holt den Quelltext per `fetch(cache:'no-store')`
+  und importiert ihn über eine **Blob-URL** (umgeht raw-MIME + Browser-Cache). Plugins
+  binden an `globalThis.Orbit` (Laufzeit-Shim), werden gegen `@core` als „external"
+  gebaut (`vite.plugin.config.ts`).
+
 ## Qualität
 
 - `npm run check` (0 Fehler) **und** `npm run build` (grün) vor jedem Abschluss.

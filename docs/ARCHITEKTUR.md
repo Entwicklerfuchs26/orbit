@@ -118,12 +118,27 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
   (`github.com/Entwicklerfuchs26/orbit-plugins`, raw registry.json ist die Default-
   Quelle; relative `main`-Pfade lösen gegen die registry-URL auf). Verifiziert: alle
   drei Plugins bauen, binden an `globalThis.Orbit`, exportieren manifest+default.
-- **Offen / als Nächstes (braucht Gerät + orbit-plugins live):** eingebaute Plugins
-  aus `main.ts` entfernen (APK bringt kein Feature-Plugin mit), Onboarding installiert
-  dann aus dem Store statt builtins zu aktivieren; **eigenständige APK** (kein
-  Dev-Server-Zwang) + **Wallhaven eigenständig** (im skwd-wall-Plugin: nativer Direkt-
-  Abruf via CapacitorHttp statt Vite-Proxy); danach PC↔Handy-Sync. Deklarative
-  Plugin-Verwaltung auf dem PC (NixOS/Home-Manager) ist angedacht.
+- **Store mit Versionierung (erledigt):** Veröffentlicht wird über
+  `scripts/publish-plugins.mjs` → `registry.json` ist SHA-gepinnt (unveränderliche,
+  nie veraltende URLs) mit Versionshistorie. App: Update-Erkennung (Banner +
+  Sidebar-Punkt), „Aktualisieren", Versions-Dropdown (Rollback), Plugin-Detailseite
+  mit Tabs **Beschreibung** + **Neuigkeiten** (`news[]`). Remote-Laden robust via
+  `fetch`+Blob-Import; Hot-Swap beim Update. **APK bringt kein Feature-Plugin mit**
+  (`main.ts` `modules = []`); Onboarding/Store installieren aus orbit-plugins.
+- **Orbit-Einstieg + Home + Shell (erledigt):** `Onboarding.svelte` (animierter
+  Vollbild-Wizard: SKWD-Schnellweg / „Orbit entdecken"); `ShellHome.svelte` ist die
+  Basis-Startseite (öffnet automatisch, wenn keine View aktiv ist; erreichbar über die
+  „Orbit"-Wortmarke). **Multitasking-Tabs** als Einstellung (Default aus = Einzelmodus,
+  Tab-Leiste versteckt). Einstiegs-/Einrichtungsdialoge folgen dem Design-Standard in
+  `CONVENTIONS.md`.
+- **Eigenständige APK (erledigt):** Production-Build (ohne Dev-Server, gebündelt) baut
+  via `nix-shell android-shell.nix --run "npx cap sync android && cd android &&
+  ./gradlew assembleDebug"` (ohne `CAP_SERVER_URL`). Lädt Plugins aus dem Store;
+  **Wallhaven eigenständig** (skwd-wall: nativer Direktabruf via CapacitorHttp, direkte
+  Bild-URLs; Web/Dev weiter Proxy). Eigenes **Orbit-App-Icon** (adaptive Vektor-Icons).
+- **Offen / als Nächstes:** Wallhaven-Standalone auf echtem Fremdgerät verifizieren;
+  signierter Release-Build (F-Droid/IzzyOnDroid/Play, später); Launcher-Modus +
+  Gesten-Hooks; PC↔Handy-Sync; deklarative Plugin-Verwaltung am PC (NixOS/Home-Manager).
 
 ## Schichtenmodell
 

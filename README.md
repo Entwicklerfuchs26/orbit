@@ -22,8 +22,15 @@ In aktiver Entwicklung. Erstes großes Plugin: **skwd-wall** — bringt
   Auto-Wechsel, kategorisierte Einstellungen.
 - System-Hintergrund (Home/Lock) + nativer OpenGL-**Live-Wallpaper**-Dienst.
 
-Als Nächstes: **Kern-Arbeit** (Standard-Startseite, Onboarding, Plugin-Store,
-eigenständige teilbare APK), dann PC↔Handy-**Sync**.
+**Kern-Phase erledigt:** Capability-API, wählbare Startseite + **Orbit-Home**,
+animierter **Orbit-Einstieg** & SKWD-Wall-Einrichtung, **Plugin-Store** mit
+Versionierung/Updates/Rollback und Detailseiten (Beschreibung + Neuigkeiten),
+Multitasking-Schalter, eigenes **App-Icon** — und eine **eigenständige APK**, die
+ihre Plugins eigenständig aus dem Store ([orbit-plugins](https://github.com/Entwicklerfuchs26/orbit-plugins))
+lädt (bringt selbst keins mit). Einrichtungsdialoge folgen einem festen
+[Design-Standard](CONVENTIONS.md).
+
+Als Nächstes: Launcher-Modus (Android-Homescreen) + Gesten, dann PC↔Handy-**Sync**.
 
 ## Schnellstart
 
@@ -37,8 +44,19 @@ npm run build      # Produktions-Build nach dist/
 Android-APK bauen (projekt-lokale Toolchain via nix):
 
 ```bash
+# Dev-APK (lädt live vom Vite-Server):
 nix-shell android-shell.nix --run \
   "CAP_SERVER_URL=http://<lan-ip>:5173 npx cap sync android && cd android && ./gradlew assembleDebug"
+
+# Eigenständige APK (gebündelt, lädt Plugins aus dem Store):
+npm run build && nix-shell android-shell.nix --run \
+  "npx cap sync android && cd android && ./gradlew assembleDebug"
+```
+
+Plugins veröffentlichen (SHA-gepinnt ins orbit-plugins-Repo):
+
+```bash
+node scripts/publish-plugins.mjs <klon-von-orbit-plugins>
 ```
 
 ## Struktur
