@@ -3,6 +3,7 @@ import { mount } from 'svelte';
 import { SojusApp } from '@core/app';
 import Shell from '@shell/Shell.svelte';
 import type { PluginModule } from '@core/loader';
+import { installCapabilities } from '@platform/index';
 
 // Phase 1: plugins are statically imported. Later phases load them from
 // GitHub links / a registry at runtime.
@@ -44,6 +45,10 @@ async function main() {
   if (app.config.getPluginConfig('skwd-wall') === undefined) {
     app.config.enablePlugin('skwd-wall');
   }
+
+  // Install the platform-specific capabilities BEFORE plugins load, so a plugin
+  // can query app.capabilities.has(...) inside its onload().
+  installCapabilities(app);
 
   await app.boot(modules);
 

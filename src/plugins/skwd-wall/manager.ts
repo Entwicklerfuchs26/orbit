@@ -18,15 +18,7 @@ import type {
 import { DEFAULT_STATE, TRANSITIONS, RECOLOUR_PALETTES } from './types';
 import { applyEffect } from './effects';
 import { putImage, deleteImage, imageUrl } from './storage';
-import { pickFolder, scanFolder, folderFileUrl, folderThumbUrl, reconnectFolder, forgetFolder } from './folders';
 import { generateTheme, seedFromImage, type SchemeCharacter, type Finish } from '../theme/palette';
-import {
-  isNativeApp,
-  setSystemWallpaper,
-  setLiveWallpaperMedia,
-  setLivePool,
-  setLiveTransition,
-} from '../../platform/wallpaper';
 
 const PLUGIN_ID = 'skwd-wall';
 
@@ -68,6 +60,19 @@ export class WallpaperManager {
     }
     this.state = new Store<WallpaperState>(merged);
     if (migrated) this.persist();
+  }
+
+  // Platform powers via the core capability API. Each is undefined where the
+  // current device can't provide it (e.g. no folders on a non-Chromium browser,
+  // no wallpaper on web), so every call site uses optional chaining.
+  private get folders() {
+    return this.app.capabilities.get('folders');
+  }
+  private get live() {
+    return this.app.capabilities.get('live-wallpaper');
+  }
+  private get sysWallpaper() {
+    return this.app.capabilities.get('wallpaper');
   }
 
   private rotationTimer: ReturnType<typeof setInterval> | null = null;
@@ -157,13 +162,13 @@ export class WallpaperManager {
     // static bitmap on top would show Android's "wallpaper set" toast and bounce
     // the user to the home screen on every change. Skip it.
     if (s.liveWallpaper) return;
-    if (!((s.randomSetHome || s.randomSetLock) && isNativeApp())) return;
+    if (!((s.randomSetHome || s.randomSetLock) && this.sysWallpaper)) return;
     const target = s.randomSetHome && s.randomSetLock ? 'both' : s.randomSetHome ? 'home' : 'lock';
     void (async () => {
       const full = await this.fullUrl(id); // full-res, not the gallery thumbnail
       if (!full) return;
       try {
-        await setSystemWallpaper(full, target);
+        await this.sysWallpaper?.setSystem(full, target);
       } catch {
         /* ignore */
       } finally {
@@ -265,7 +270,7 @@ export class WallpaperManager {
       // Gallery display uses a small thumbnail for folder items (low memory,
       // smooth scroll). IndexedDB blobs are already screen-sized.
       const url = item.folderId
-        ? await folderThumbUrl(item.folderId, item.fileName ?? item.name, item.kind ?? 'image')
+        ? ((await this.folders?.thumbUrl(item.folderId, item.fileName ?? item.name, item.kind ?? 'image')) ?? null)
         : await imageUrl(item.id);
       if (url) this.urls.update((m) => ({ ...m, [id]: url }));
     } finally {
@@ -279,7 +284,7 @@ export class WallpaperManager {
     const item = [...this.state.get().items, ...this.state.get().trashedItems].find((it) => it.id === id);
     if (!item) return null;
     return item.folderId
-      ? folderFileUrl(item.folderId, item.fileName ?? item.name)
+      ? ((await this.folders?.fileUrl(item.folderId, item.fileName ?? item.name)) ?? null)
       : imageUrl(item.id);
   }
 
@@ -536,9 +541,9 @@ export class WallpaperManager {
 
   /** Open the picker, scan the folder and add its media as referenced items. */
   async addFolder(kind: 'image' | 'video'): Promise<{ ok: boolean; count: number }> {
-    const picked = await pickFolder();
+    const picked = (await this.folders?.pick()) ?? null;
     if (!picked) return { ok: false, count: 0 };
-    const files = (await scanFolder(picked.id, kind)) ?? [];
+    const files = (await this.folders?.scan(picked.id, kind)) ?? [];
     const newItems: WallpaperItem[] = files.map((f) => ({
       id: `fi-${picked.id}-${f.name}`,
       name: f.name.replace(/\.[^.]+$/, ''),
@@ -568,7 +573,7 @@ export class WallpaperManager {
       items: s.items.filter((it) => it.folderId !== folderId),
     }));
     this.persist();
-    await forgetFolder(folderId);
+    await this.folders?.forget(folderId);
     await this.refreshUrls();
     this.lastLiveSig = null;
     this.pushLive();
@@ -580,7 +585,7 @@ export class WallpaperManager {
     if (!folders.length) return;
     let changed = false;
     for (const f of folders) {
-      const files = await scanFolder(f.id, f.kind); // null when no permission
+      const files = (await this.folders?.scan(f.id, f.kind)) ?? null; // null when no permission
       const connected = files !== null;
       if (connected !== f.connected) {
         changed = true;
@@ -600,11 +605,11 @@ export class WallpaperManager {
   async reconnectFolders(): Promise<void> {
     const folders = this.state.get().folders;
     for (const f of folders) {
-      const ok = await reconnectFolder(f.id);
+      const ok = (await this.folders?.reconnect(f.id)) ?? false;
       let count = f.count;
       let items: WallpaperItem[] | null = null;
       if (ok) {
-        const files = (await scanFolder(f.id, f.kind)) ?? [];
+        const files = (await this.folders?.scan(f.id, f.kind)) ?? [];
         count = files.length;
         items = files.map((file) => ({
           id: `fi-${f.id}-${file.name}`,
@@ -698,14 +703,14 @@ export class WallpaperManager {
   /** Keep the live service's transition (type + duration) in sync with settings. */
   private syncLiveTransition(): void {
     const s = this.state.get();
-    if (!(s.liveWallpaper && s.deviceMobile && isNativeApp())) return;
+    if (!(s.liveWallpaper && s.deviceMobile && this.live)) return;
     const ms = s.transitionType === 'none' ? 1 : s.transitionMs;
-    void setLiveTransition(s.transitionType, ms);
+    void this.live.setTransition(s.transitionType, ms);
   }
 
   private pushLive(): void {
     const s = this.state.get();
-    if (!(s.liveWallpaper && s.deviceMobile && isNativeApp())) return;
+    if (!(s.liveWallpaper && s.deviceMobile && this.live)) return;
     this.syncLiveTransition();
 
     if (s.randomEnabled) {
@@ -726,7 +731,7 @@ export class WallpaperManager {
             return;
           }
           try {
-            await setLivePool(fulls, Math.max(2, s.randomIntervalSec) * 1000, true);
+            await this.live?.setPool(fulls, Math.max(2, s.randomIntervalSec) * 1000, true);
           } catch {
             this.lastLiveSig = null;
           } finally {
@@ -749,7 +754,7 @@ export class WallpaperManager {
             return;
           }
           try {
-            await setLiveWallpaperMedia(full, kind);
+            await this.live?.setMedia(full, kind);
           } catch {
             this.lastLiveSig = null;
           } finally {

@@ -10,8 +10,12 @@
  *  - Web (Chromium): the File System Access API. The folder id is a generated
  *    key for a persisted `FileSystemDirectoryHandle`; the locator is the file
  *    name; permission must be re-granted after a reload.
+ *
+ * This is a platform adapter: it implements the core `FoldersCapability`
+ * contract and is registered into `app.capabilities` at boot (see index.ts).
  */
 import { registerPlugin, Capacitor } from '@capacitor/core';
+import type { FoldersCapability, ScannedFile } from '@core/capabilities';
 
 interface FolderAccessNative {
   pickFolder(): Promise<{ uri?: string; name?: string; cancelled?: boolean }>;
@@ -32,18 +36,12 @@ const STORE = 'handles';
 export const IMAGE_EXT = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'bmp'];
 export const VIDEO_EXT = ['mp4', 'webm', 'mov', 'm4v', 'mkv'];
 
+/** Whether this platform can offer folder access at all. */
 export function supportsFolders(): boolean {
   return (
     isNative() ||
     typeof (globalThis as unknown as { showDirectoryPicker?: unknown }).showDirectoryPicker === 'function'
   );
-}
-
-export interface ScannedFile {
-  name: string;
-  kind: 'image' | 'video';
-  /** Per-file locator: file name (web) or document URI (native). */
-  locator: string;
 }
 
 // ---- Web (File System Access) handle persistence -------------------------
@@ -103,7 +101,7 @@ async function webHasPermission(h: DirHandle): Promise<boolean> {
 // ---- Public API (platform-branching) -------------------------------------
 
 /** Open the native/OS picker and return a stable folder id + display name. */
-export async function pickFolder(): Promise<{ id: string; name: string } | null> {
+async function pickFolder(): Promise<{ id: string; name: string } | null> {
   if (isNative()) {
     const r = await Native.pickFolder();
     if (!r || r.cancelled || !r.uri) return null;
@@ -124,7 +122,7 @@ export async function pickFolder(): Promise<{ id: string; name: string } | null>
 }
 
 /** List media in the folder (null = no access / unavailable). */
-export async function scanFolder(folderId: string, kind: 'image' | 'video'): Promise<ScannedFile[] | null> {
+async function scanFolder(folderId: string, kind: 'image' | 'video'): Promise<ScannedFile[] | null> {
   if (isNative()) {
     try {
       const r = await Native.listFolder({ uri: folderId, kind });
@@ -153,7 +151,7 @@ export async function scanFolder(folderId: string, kind: 'image' | 'video'): Pro
 }
 
 /** Re-establish access after a reload (native: persisted; web: needs a gesture). */
-export async function reconnectFolder(folderId: string): Promise<boolean> {
+async function reconnectFolder(folderId: string): Promise<boolean> {
   if (isNative()) {
     try {
       return (await Native.hasAccess({ uri: folderId })).granted;
@@ -173,7 +171,7 @@ export async function reconnectFolder(folderId: string): Promise<boolean> {
 }
 
 /** Resolve one file to a displayable object URL (null if unavailable). */
-export async function folderFileUrl(folderId: string, locator: string): Promise<string | null> {
+async function folderFileUrl(folderId: string, locator: string): Promise<string | null> {
   if (isNative()) {
     try {
       const { data, mime } = await Native.readFile({ uri: locator });
@@ -199,7 +197,7 @@ export async function folderFileUrl(folderId: string, locator: string): Promise<
 
 /** Resolve a small DOWNSCALED thumbnail for gallery display (low memory, smooth
  *  scrolling). Full resolution is only loaded via folderFileUrl() when applying. */
-export async function folderThumbUrl(
+async function folderThumbUrl(
   folderId: string,
   locator: string,
   kind: 'image' | 'video',
@@ -239,8 +237,18 @@ export async function folderThumbUrl(
   }
 }
 
-export async function forgetFolder(folderId: string): Promise<void> {
+async function forgetFolder(folderId: string): Promise<void> {
   if (isNative()) return; // SAF permission can stay; nothing to clean up here
   liveHandles.delete(folderId);
   await tx('readwrite', (s) => s.delete(folderId));
 }
+
+/** The core capability object wired into `app.capabilities` when supported. */
+export const foldersCapability: FoldersCapability = {
+  pick: pickFolder,
+  scan: scanFolder,
+  reconnect: reconnectFolder,
+  fileUrl: folderFileUrl,
+  thumbUrl: folderThumbUrl,
+  forget: forgetFolder,
+};

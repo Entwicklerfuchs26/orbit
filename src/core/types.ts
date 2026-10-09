@@ -1,3 +1,5 @@
+import type { CapabilityRegistry, CapabilityName } from './capabilities';
+
 export type PlatformType = 'desktop' | 'mobile' | 'web';
 
 export interface PluginManifest {
@@ -15,6 +17,13 @@ export interface PluginManifest {
    * "not for this platform" in settings).
    */
   platforms?: PlatformType[];
+  /**
+   * Capabilities this plugin needs from the core (e.g. 'folders', 'wallpaper').
+   * Informational for now — surfaced in the Plugins/store UI so a user sees
+   * what a plugin requires and whether this device can provide it
+   * (`app.capabilities.has(x)`). The kernel does not block loading on it yet.
+   */
+  capabilities?: CapabilityName[];
 }
 
 export interface PluginConfig {
@@ -113,6 +122,7 @@ export interface App {
   theme: ThemeApi;
   platform: PlatformInfo;
   plugins: PluginRegistry;
+  capabilities: CapabilityRegistry;
 }
 
 export interface Workspace {

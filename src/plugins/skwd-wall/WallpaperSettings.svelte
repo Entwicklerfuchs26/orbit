@@ -7,8 +7,6 @@
   import ImagePicker from './ImagePicker.svelte';
   import { SCHEME_CHARACTERS, FINISHES } from '../theme/palette';
   import { VIEW_MODES, FILL_MODES, TRANSITIONS, RECOLOUR_PALETTES } from './types';
-  import { isNativeApp, openLiveWallpaperPicker, isLiveWallpaperActive } from '../../platform/wallpaper';
-  import { supportsFolders } from './folders';
 
   interface Props {
     app: App;
@@ -16,7 +14,9 @@
   }
   let { app, manager }: Props = $props();
 
-  const native = isNativeApp();
+  // Native wallpaper/live-wallpaper capabilities are registered together on the
+  // native app, so this flag gates every OS-level device feature below.
+  const native = app.capabilities.has('wallpaper');
   const wpState = useStore(manager.state);
   const urls = useStore(manager.urls);
   const themeMode = useStore(app.theme.mode);
@@ -28,7 +28,7 @@
   let liveActive = $state<boolean | null>(null);
   $effect(() => {
     if (s.liveWallpaper && s.deviceMobile && native) {
-      void isLiveWallpaperActive().then((v) => (liveActive = v));
+      void app.capabilities.get('live-wallpaper')?.isActive().then((v) => (liveActive = v));
     } else liveActive = null;
   });
 
@@ -50,7 +50,7 @@
     arr.map((x) => ({ value: String(x.value), label: x.label }));
 
   // Folder sources.
-  const foldersSupported = supportsFolders();
+  const foldersSupported = app.capabilities.has('folders');
   let folderBusy = $state(false);
   let folderMsg = $state('');
   async function addFolderSrc(kind: 'image' | 'video') {
@@ -268,7 +268,7 @@
 {#snippet live()}
   {#if liveActive === true}<p class="hint ok">✓ „SKWD Wall" ist als Live-Wallpaper aktiv.</p>
   {:else if liveActive === false}<p class="hint warn">⚠ Nicht aktiv (Neuinstallation setzt das zurück). Unten neu auswählen.</p>{/if}
-  <button class="btn primary" onclick={() => openLiveWallpaperPicker()}>Als Handy-Hintergrund aktivieren…</button>
+  <button class="btn primary" onclick={() => app.capabilities.get('live-wallpaper')?.openPicker()}>Als Handy-Hintergrund aktivieren…</button>
 {/snippet}
 
 {#snippet presets()}

@@ -30,6 +30,7 @@ export default defineConfig({
     alias: {
       '@core': resolve(__dirname, 'src/core'),
       '@shell': resolve(__dirname, 'src/shell'),
+      '@platform': resolve(__dirname, 'src/platform'),
     },
   },
   server: {

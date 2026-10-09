@@ -16,6 +16,9 @@ export const manifest: PluginManifest = {
   // GUI runs everywhere (testable in the browser); native wallpaper-setting
   // (phone) lands in a later block. Kept broad so desktop/web can preview.
   platforms: ['mobile', 'desktop', 'web'],
+  // Powers it uses when present; it degrades gracefully where they're missing
+  // (e.g. web can't set the OS wallpaper, a non-Chromium browser has no folders).
+  capabilities: ['folders', 'wallpaper', 'live-wallpaper'],
 };
 
 const VIEW_ID = 'wallpaper-picker';

@@ -276,6 +276,23 @@ vertikal (oben↔unten)**, nie horizontal. Reine Web-Änderung → nur neu laden
 
 ---
 
+## 17. Kern-Phase · Block 1 — Capability-API (bitte testen)
+*Reiner Kern-Umbau: native Fähigkeiten (Ordner, Wallpaper, Live-Wallpaper) laufen jetzt
+über eine saubere Kern-API (`app.capabilities`) statt direkter Plugin-Imports. SKWD Wall
+nutzt sie. **Verhalten soll unverändert sein** — das ist ein Regressionstest. Web-Änderung
+→ nur App neu laden; der native Teil braucht den **nächsten APK-Build** (kein Zwang für
+diesen Block, da nur umverdrahtet).*
+
+### Web (Browser, Live-Reload)
+- [ ] App lädt normal, Galerie + Theming wie vorher
+- [ ] Am PC (Chrome/Edge): **Ordner einbinden** geht weiter (Picker, Thumbnails, Scrollen); in einem Browser ohne FS-Access erscheint weiter der Hinweistext statt des Ordner-Blocks
+- [ ] Kein „Als Hintergrund"-Knopf im Web (nur nativ) — unverändert
+
+### Nativ (APK, nach nächstem Build)
+- [ ] Ordner (SAF) einbinden, Thumbnails, Reconnect nach App-Neustart
+- [ ] „Als Hintergrund" (Home/Sperrbildschirm) setzt den System-Hintergrund
+- [ ] Live-Wallpaper aktivieren + Auto-Wechsel-Pool laufen wie vorher
+
 ## Bekannte Kleinigkeiten
 - Foto-Effekte waren bei großen Bildern leicht verpixelt → Grenze auf 4K erhöht (bitte erneut prüfen).
 - **Video-Wallpaper in der App ruckelt (offen, später fixen):** Ein Video als

@@ -5,12 +5,10 @@
   import type { WallpaperManager } from './manager';
   import type { WallpaperItem } from './types';
   import { VIEW_MODES, SORTS, COLOR_FAMILIES, MEDIA_TABS } from './types';
-  import { supportsFolders } from './folders';
   import type { SortBy, MediaTab } from './types';
   import { colorFamily, lightness, rainbowKey } from './color';
   import { applyEffect, EFFECTS, type EffectType } from './effects';
   import WallpaperSettings from './WallpaperSettings.svelte';
-  import { isNativeApp, setSystemWallpaper } from '../../platform/wallpaper';
   import {
     searchWallhaven,
     downloadWallhaven,
@@ -51,7 +49,8 @@
   let applying = $state(false);
   let applyMsg = $state('');
   let sysWpOpen = $state(false);
-  const native = isNativeApp();
+  // System-wallpaper capability present only inside the native app.
+  const native = app.capabilities.has('wallpaper');
 
   let setHome = $derived(wpState.value.setHome);
   let setLock = $derived(wpState.value.setLock);
@@ -71,7 +70,7 @@
     applyMsg = '';
     cancelHide();
     try {
-      await setSystemWallpaper(url, target);
+      await app.capabilities.get('wallpaper')?.setSystem(url, target);
       applyMsg = 'Als Hintergrund gesetzt ✓';
     } catch (e) {
       applyMsg = 'Fehler: ' + (e instanceof Error ? e.message : String(e));
@@ -641,7 +640,7 @@
   // --- Add overlay (upload + Wallhaven) ---
   let addOpen = $state(false);
   let addTab = $state<'upload' | 'web'>('upload');
-  const foldersSupported = supportsFolders();
+  const foldersSupported = app.capabilities.has('folders');
   let whFilters = $state<WhFilters>({ ...DEFAULT_WH_FILTERS });
   let whResults = $state<WhResult[]>([]);
   let whPage = $state(1);

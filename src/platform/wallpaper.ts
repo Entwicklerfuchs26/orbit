@@ -1,4 +1,5 @@
 import { registerPlugin, Capacitor } from '@capacitor/core';
+import type { WallpaperCapability, LiveWallpaperCapability } from '@core/capabilities';
 
 export interface WallpaperNativePlugin {
   setWallpaper(options: { data: string; target?: 'home' | 'lock' | 'both' }): Promise<void>;
@@ -159,3 +160,16 @@ async function urlToBase64(url: string): Promise<string> {
     r.readAsDataURL(blob);
   });
 }
+
+/** Core capability objects wired into `app.capabilities` on native platforms. */
+export const wallpaperCapability: WallpaperCapability = {
+  setSystem: setSystemWallpaper,
+};
+
+export const liveWallpaperCapability: LiveWallpaperCapability = {
+  setMedia: setLiveWallpaperMedia,
+  setPool: setLivePool,
+  setTransition: setLiveTransition,
+  openPicker: openLiveWallpaperPicker,
+  isActive: isLiveWallpaperActive,
+};

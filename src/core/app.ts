@@ -6,6 +6,7 @@ import { Navigation } from './navigation';
 import { PluginLoader } from './loader';
 import { ThemeEngine } from './theme';
 import { detectPlatform } from './platform';
+import { CapabilityRegistry } from './capabilities';
 import type { PluginModule } from './loader';
 
 /**
@@ -21,6 +22,8 @@ export class SojusApp implements IApp {
   readonly plugins: PluginLoader;
   readonly theme: ThemeEngine;
   readonly platform = detectPlatform();
+  /** Platform-specific powers (folders, wallpaper…), filled by installCapabilities. */
+  readonly capabilities = new CapabilityRegistry();
 
   constructor() {
     this.config = new Config();

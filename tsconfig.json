@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "paths": {
       "@core/*": ["src/core/*"],
-      "@shell/*": ["src/shell/*"]
+      "@shell/*": ["src/shell/*"],
+      "@platform/*": ["src/platform/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"]

@@ -51,8 +51,17 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
   Live-Wallpaper (nativer GL-Dienst), Papierkorb, Zeitplan, Auto-Wechsel.
 - **Native Capabilities im Kern-APK:** `WallpaperPlugin` (statisch + GL-Live) und
   `FolderAccessPlugin` (SAF). Grundsatz: nativer Code ist nicht downloadbar → er
-  gehört in den Kern und wird als generische Capability für alle Plugins angeboten
-  (beim Kern-Umbau sauber als API herauslösen).
+  gehört in den Kern und wird als generische Capability für alle Plugins angeboten.
+- **Capability-API (Kern-Phase Block 1, erledigt):** `app.capabilities` — eine
+  typisierte Registry mit Verträgen `folders` / `wallpaper` / `live-wallpaper`
+  (`src/core/capabilities.ts`). Implementierungen liegen plattformspezifisch in
+  `src/platform/` (`folders.ts`, `wallpaper.ts`) und werden beim Boot über
+  `installCapabilities(app)` (`src/platform/index.ts`) NUR dort registriert, wo das
+  Gerät sie wirklich kann → `has('x')` ist ein ehrlicher Laufzeit-Check, kein
+  OS-String-Raten (macOS schleppt keine Android-Wallpaper-API mit). Der Kern bleibt
+  plattformfrei; `main.ts` (Composition Root) verdrahtet Plattform → Kern.
+  Plugins deklarieren benötigte Capabilities im Manifest (`capabilities: [...]`) und
+  degradieren sauber, wo eine fehlt. skwd-wall nutzt ausschließlich diese API.
 - **Offen / als Nächstes (Kern-Phase):** Standard-Startseite, Onboarding,
   Plugin-Store (JS-Plugins, evtl. GitHub), eigenständige teilbare APK (bringt kein
   Plugin mit), danach PC↔Handy-Sync. Deklarative Plugin-Verwaltung auf dem PC
