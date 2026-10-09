@@ -14,33 +14,43 @@ export class WorkspaceManager implements IWorkspace {
 
   readonly tabs = new Store<TabState[]>([]);
   readonly activeTabId = new Store<string | null>(null);
+  /** Multitasking tabs on/off. Off (default) = only one view open at a time. */
+  readonly multitaskStore = new Store<boolean>(false);
+  private multitask = false;
 
   registerView(id: string, factory: () => View): void {
     this.viewFactories.set(id, factory);
   }
 
-  openView(id: string): void {
-    if (this.activeViews.has(id)) {
-      this.setActiveView(id);
-      return;
+  /** Toggle multitasking tabs. When turned off, collapse to the active view. */
+  setMultitask(on: boolean): void {
+    this.multitask = on;
+    this.multitaskStore.set(on);
+    if (!on) {
+      const keep = this.activeTabId.get();
+      if (keep) this.closeOthers(keep);
     }
+  }
 
-    const factory = this.viewFactories.get(id);
-    if (!factory) return;
+  private closeOthers(keepId: string): void {
+    for (const id of [...this.activeViews.keys()]) {
+      if (id !== keepId) this.closeView(id);
+    }
+  }
 
-    const view = factory();
-    this.activeViews.set(id, view);
-
-    this.tabs.update((tabs) => [
-      ...tabs,
-      {
-        id,
-        viewId: id,
-        title: view.getDisplayName(),
-        icon: view.getIcon(),
-      },
-    ]);
-
+  openView(id: string): void {
+    if (!this.activeViews.has(id)) {
+      const factory = this.viewFactories.get(id);
+      if (!factory) return;
+      const view = factory();
+      this.activeViews.set(id, view);
+      this.tabs.update((tabs) => [
+        ...tabs,
+        { id, viewId: id, title: view.getDisplayName(), icon: view.getIcon() },
+      ]);
+    }
+    // Single-view mode: opening a view closes any other open one.
+    if (!this.multitask) this.closeOthers(id);
     this.setActiveView(id);
   }
 

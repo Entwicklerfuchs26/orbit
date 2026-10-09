@@ -51,6 +51,24 @@ class PickerView extends View {
   getIcon() {
     return 'image';
   }
+  /** Mount the full-screen intro/setup overlay (idempotent). */
+  showIntro() {
+    if (this.intro || !this.containerEl) return;
+    this.intro = mount(Intro, {
+      target: this.containerEl,
+      props: {
+        app: this.app,
+        manager: this.manager,
+        onDone: () => {
+          this.app.config.set('skwd-wall', 'introSeen', true);
+          if (this.intro) {
+            unmount(this.intro);
+            this.intro = null;
+          }
+        },
+      },
+    });
+  }
   async onOpen() {
     this.component = mount(Picker, {
       target: this.containerEl,
@@ -60,27 +78,13 @@ class PickerView extends View {
       },
     });
 
-    // First-run intro: a full-screen click-through that explains the plugin.
-    // Phone-only (it's about the swipe rail, live wallpaper, home screen) and
+    // First-run intro: phone-only (swipe rail, live wallpaper, home screen),
     // shown once; flag persisted in the plugin's own config.
     if (
       this.app.platform.isMobile &&
       this.app.config.get<boolean>('skwd-wall', 'introSeen') !== true
     ) {
-      this.intro = mount(Intro, {
-        target: this.containerEl,
-        props: {
-          app: this.app,
-          manager: this.manager,
-          onDone: () => {
-            this.app.config.set('skwd-wall', 'introSeen', true);
-            if (this.intro) {
-              unmount(this.intro);
-              this.intro = null;
-            }
-          },
-        },
-      });
+      this.showIntro();
     }
   }
   async onClose() {
@@ -100,6 +104,15 @@ export default class WallpaperPlugin extends Plugin {
 
   constructor(app: App, m: PluginManifest) {
     super(app, m);
+  }
+
+  /** Reset the seen-flag and show the setup on the OPEN view (no close+reopen,
+   *  which left an empty tab). Opens the view first if it isn't open. */
+  private replayIntro() {
+    this.app.config.set('skwd-wall', 'introSeen', false);
+    this.app.workspace.openView(VIEW_ID);
+    const v = this.app.workspace.getView(VIEW_ID);
+    if (v instanceof PickerView) v.showIntro();
   }
 
   async onload() {
@@ -128,11 +141,7 @@ export default class WallpaperPlugin extends Plugin {
     this.addCommand({
       id: 'show-intro',
       name: 'Einführung anzeigen',
-      callback: () => {
-        this.app.config.set('skwd-wall', 'introSeen', false);
-        this.app.workspace.closeView(VIEW_ID);
-        this.app.workspace.openView(VIEW_ID);
-      },
+      callback: () => this.replayIntro(),
     });
 
     // Wipe the plugin's data — the Plugins area offers a "Daten löschen" button
@@ -143,9 +152,7 @@ export default class WallpaperPlugin extends Plugin {
       callback: () => {
         void this.manager.clearAllData();
         // Clearing all data = a fresh start → show the setup again.
-        this.app.config.set('skwd-wall', 'introSeen', false);
-        this.app.workspace.closeView(VIEW_ID);
-        this.app.workspace.openView(VIEW_ID);
+        this.replayIntro();
       },
     });
 

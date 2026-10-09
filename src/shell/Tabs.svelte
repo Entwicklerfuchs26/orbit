@@ -10,9 +10,11 @@
 
   const tabs = useStore(app.workspace.tabs);
   const activeTab = useStore(app.workspace.activeTabId);
+  const multitask = useStore(app.workspace.multitaskStore);
 </script>
 
-{#if tabs.value.length > 0}
+<!-- Only show the tab strip in multitasking mode; single-view mode has one view. -->
+{#if multitask.value && tabs.value.length > 0}
   <div class="tabs">
     {#each tabs.value as tab (tab.id)}
       <div class="tab" class:active={activeTab.value === tab.id}>

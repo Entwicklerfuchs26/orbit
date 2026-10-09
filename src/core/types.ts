@@ -163,6 +163,7 @@ export interface Workspace {
   openView(id: string): void;
   closeView(id: string): void;
   getActiveView(): View | null;
+  getView(id: string): View | null;
   setActiveView(id: string): void;
 }
 

@@ -238,25 +238,25 @@
             </g>
           </svg>
         {:else if step.kind === 'mobile'}
-          <!-- Clean, correctly-proportioned phone on a home screen -->
+          <!-- Clean phone on a home screen (wider aspect) -->
           <svg viewBox="0 0 260 210" class="il">
             <g class="spin" style="transform-origin:130px 105px">
-              <ellipse cx="130" cy="105" rx="78" ry="72" class="ring" />
+              <ellipse cx="130" cy="105" rx="82" ry="72" class="ring" />
             </g>
             <g class="float">
-              <rect x="101" y="23" width="58" height="164" rx="16" class="phone" />
-              <clipPath id="mClip"><rect x="107" y="29" width="46" height="152" rx="11" /></clipPath>
+              <rect x="92" y="26" width="76" height="158" rx="17" class="phone" />
+              <clipPath id="mClip"><rect x="98" y="32" width="64" height="146" rx="12" /></clipPath>
               <g clip-path="url(#mClip)">
-                <rect x="107" y="29" width="46" height="152" fill="url(#skwdGradSoft)" />
-                <path class="wave" d="M100 118 q12 -14 24 0 t24 0 t24 0 t24 0 V181 H100 Z" fill="url(#skwdGrad)" opacity="0.92" />
-                <path class="wave w2" d="M100 132 q12 -12 24 0 t24 0 t24 0 t24 0 V181 H100 Z" fill="url(#skwdGrad)" opacity="0.5" />
+                <rect x="98" y="32" width="64" height="146" fill="url(#skwdGradSoft)" />
+                <path class="wave" d="M94 120 q16 -15 32 0 t32 0 t32 0 V178 H94 Z" fill="url(#skwdGrad)" opacity="0.92" />
+                <path class="wave w2" d="M94 134 q16 -13 32 0 t32 0 t32 0 V178 H94 Z" fill="url(#skwdGrad)" opacity="0.5" />
               </g>
               <!-- notch + home indicator -->
-              <rect x="121" y="33" width="18" height="4" rx="2" class="notch" />
-              <rect x="120" y="173" width="20" height="3" rx="1.5" class="notch" />
+              <rect x="121" y="36" width="18" height="4" rx="2" class="notch" />
+              <rect x="119" y="170" width="22" height="3" rx="1.5" class="notch" />
               <!-- app dots -->
               {#each [0, 1, 2, 3, 4, 5] as k}
-                <rect x={114 + (k % 3) * 13} y={46 + Math.floor(k / 3) * 13} width="9" height="9" rx="2.5" class="appdot" />
+                <rect x={110 + (k % 3) * 15} y={50 + Math.floor(k / 3) * 14} width="10" height="10" rx="2.5" class="appdot" />
               {/each}
             </g>
           </svg>

@@ -59,6 +59,7 @@ export class SojusApp implements IApp {
     // Load plugins installed from the store (remote ESM), enabled ones only.
     await this.pluginStore.loadInstalled();
 
+    this.workspace.setMultitask(this.isMultitask());
     this.registerCoreCommands();
     this.restoreWorkspace();
   }
@@ -100,6 +101,16 @@ export class SojusApp implements IApp {
     };
     this.workspace.tabs.subscribe(persist);
     this.workspace.activeTabId.subscribe(persist);
+  }
+
+  /** Multitasking tabs: keep several plugin views open at once (default off). */
+  isMultitask(): boolean {
+    return this.config.get<boolean>('core', 'multitaskTabs') ?? false;
+  }
+
+  setMultitask(on: boolean): void {
+    this.config.set('core', 'multitaskTabs', on);
+    this.workspace.setMultitask(on);
   }
 
   /** Whether first-run onboarding is done (false shows the bundle picker). */

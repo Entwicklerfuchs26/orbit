@@ -25,6 +25,12 @@
   function setMode(mode: 'light' | 'dark' | 'auto') {
     app.theme.setMode(mode);
   }
+
+  let multitask = $state(app.isMultitask());
+  function setMultitask(v: boolean) {
+    multitask = v;
+    app.setMultitask(v);
+  }
 </script>
 
 {#if open}
@@ -61,6 +67,17 @@
             </select>
           </div>
           <p class="hint">Was beim Öffnen der App erscheint. „Letzte Sitzung" stellt die zuletzt offenen Tabs wieder her.</p>
+        </section>
+        <section>
+          <h3>Fenster</h3>
+          <div class="row">
+            <span>Multitasking-Tabs</span>
+            <label class="switch">
+              <input type="checkbox" checked={multitask} onchange={(e) => setMultitask(e.currentTarget.checked)} />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <p class="hint">An: mehrere Plugins gleichzeitig als Tabs offen halten und umschalten. Aus (Standard): immer nur eine Ansicht – ein neues Plugin ersetzt das offene.</p>
         </section>
         <p class="foot">Plugins verwaltest du im eigenen Bereich <strong>Plugins</strong> in der Seitenleiste.</p>
       </div>
@@ -164,6 +181,15 @@
     font-size: 0.8rem;
     margin: var(--space-1) 0 0;
   }
+  .switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: var(--bg-active); border-radius: 24px; transition: background var(--transition); }
+  .slider::before {
+    content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px;
+    background: var(--text-muted); border-radius: 50%; transition: transform var(--transition), background var(--transition);
+  }
+  input:checked + .slider { background: var(--accent); }
+  input:checked + .slider::before { transform: translateX(18px); background: #fff; }
   .foot {
     margin-top: var(--space-5);
     padding-top: var(--space-4);
