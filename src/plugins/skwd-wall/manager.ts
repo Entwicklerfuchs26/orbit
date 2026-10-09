@@ -17,7 +17,7 @@ import type {
 } from './types';
 import { DEFAULT_STATE, TRANSITIONS, RECOLOUR_PALETTES } from './types';
 import { applyEffect } from './effects';
-import { putImage, deleteImage, imageUrl } from './storage';
+import { putImage, deleteImage, imageUrl, clearAllImages } from './storage';
 import { generateTheme, seedFromImage, type SchemeCharacter, type Finish } from '../theme/palette';
 
 const PLUGIN_ID = 'skwd-wall';
@@ -102,6 +102,22 @@ export class WallpaperManager {
     this.stopRotation();
     this.stopScheduler();
     for (const url of Object.values(this.urls.get())) URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Wipe ALL plugin data: uploaded image blobs (IndexedDB) + the whole state
+   * (library, collections, folder sources, settings) back to defaults. Used by
+   * the "Daten löschen" action in the Plugins area.
+   */
+  async clearAllData(): Promise<void> {
+    for (const url of Object.values(this.urls.get())) URL.revokeObjectURL(url);
+    this.urls.set({});
+    await clearAllImages();
+    this.state.set({ ...DEFAULT_STATE });
+    this.persist();
+    this.lastLiveSig = null;
+    this.applyActive();
+    this.pushLive();
   }
 
   /** Apply the wallpaper fit mode as CSS vars read by the #app-wallpaper layer. */
@@ -272,7 +288,14 @@ export class WallpaperManager {
       const url = item.folderId
         ? ((await this.folders?.thumbUrl(item.folderId, item.fileName ?? item.name, item.kind ?? 'image')) ?? null)
         : await imageUrl(item.id);
-      if (url) this.urls.update((m) => ({ ...m, [id]: url }));
+      if (url) {
+        this.urls.update((m) => ({ ...m, [id]: url }));
+        // If this is the active wallpaper, (re)apply it to the app background now
+        // that its URL exists. On boot, folder-sourced items resolve lazily/async,
+        // so applyActive() at start() ran with a null URL → the background stayed
+        // blank until the user re-selected. This sets it as soon as it's ready.
+        if (id === this.state.get().activeId) this.applyActive();
+      }
     } finally {
       this.resolving.delete(id);
     }

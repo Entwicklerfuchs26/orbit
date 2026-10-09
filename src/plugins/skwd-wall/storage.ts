@@ -40,6 +40,11 @@ export async function deleteImage(id: string): Promise<void> {
   await tx('readwrite', (s) => s.delete(id));
 }
 
+/** Wipe every stored image blob (used by the plugin's "Daten löschen"). */
+export async function clearAllImages(): Promise<void> {
+  await tx('readwrite', (s) => s.clear());
+}
+
 /** Resolve an id to a displayable object URL (or null if missing). */
 export async function imageUrl(id: string): Promise<string | null> {
   const blob = await getImage(id);

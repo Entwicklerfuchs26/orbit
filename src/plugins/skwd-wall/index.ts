@@ -110,6 +110,28 @@ export default class WallpaperPlugin extends Plugin {
       callback: () => this.app.workspace.openView(VIEW_ID),
     });
 
+    // Replayable onboarding — the shell's Plugins area offers an "Einführung"
+    // button for any plugin that registers a `show-intro` command.
+    this.addCommand({
+      id: 'show-intro',
+      name: 'Einführung anzeigen',
+      callback: () => {
+        this.app.config.set('skwd-wall', 'introSeen', false);
+        this.app.workspace.closeView(VIEW_ID);
+        this.app.workspace.openView(VIEW_ID);
+      },
+    });
+
+    // Wipe the plugin's data — the Plugins area offers a "Daten löschen" button
+    // for any plugin that registers a `clear-data` command.
+    this.addCommand({
+      id: 'clear-data',
+      name: 'Daten löschen',
+      callback: () => {
+        void this.manager.clearAllData();
+      },
+    });
+
     // Same settings, reachable from global Settings → Plugins → gear.
     let settingsComponent: ReturnType<typeof mount> | null = null;
     this.addSettingTab({

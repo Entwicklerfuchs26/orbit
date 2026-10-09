@@ -110,6 +110,21 @@
   function platformOk(id: string) {
     return app.plugins.supportsPlatform(id);
   }
+
+  // Optional per-plugin actions, offered when the plugin registered a command
+  // by convention: `<id>:show-intro` (replay onboarding) / `<id>:clear-data`.
+  function hasCmd(id: string, suffix: string) {
+    return (loaded.value, app.commands.getAll().some((c) => c.id === `${id}:${suffix}`));
+  }
+  function runCmd(id: string, suffix: string) {
+    app.commands.execute(`${id}:${suffix}`);
+  }
+  function clearData(id: string, name: string) {
+    const ok = confirm(
+      `Alle Daten von „${name}" löschen?\n\nEntfernt die gespeicherten Inhalte dieses Plugins (z. B. Bibliothek, Einstellungen) endgültig. Das Plugin selbst bleibt installiert.`,
+    );
+    if (ok) runCmd(id, 'clear-data');
+  }
   // Already in the app — either built in (registered) or installed from the store.
   // Such catalog entries aren't offered for install, just marked as present.
   function isPresent(id: string) {
@@ -150,32 +165,44 @@
                     {#each m.screenshots.slice(0, 3) as s}<img src={s} alt="" loading="lazy" />{/each}
                   </div>
                 {/if}
-                <div class="card-body">
-                  <div class="meta">
-                    <span class="name">{m.name}</span>
-                    <span class="type">{m.type}</span>
-                    {#if !platformOk(m.id)}<span class="plat">nur {m.platforms?.join('/')}</span>{/if}
-                    {#if isRemote(m.id)}<span class="plat remote">Store</span>{/if}
+                <div class="card-main">
+                  <div class="card-body">
+                    <div class="meta">
+                      <span class="name">{m.name}</span>
+                      <span class="type">{m.type}</span>
+                      {#if !platformOk(m.id)}<span class="plat">nur {m.platforms?.join('/')}</span>{/if}
+                      {#if isRemote(m.id)}<span class="plat remote">Store</span>{/if}
+                    </div>
+                    <p class="desc">{m.description}</p>
                   </div>
-                  <p class="desc">{m.description}</p>
+                  <div class="top-actions">
+                    {#if settingTabFor(m.id)}
+                      <button class="gear" title="Einstellungen" onclick={() => (openSettingsFor = m.id)}>
+                        <Icon name="settings" size={18} />
+                      </button>
+                    {/if}
+                    <label class="switch" class:disabled={!platformOk(m.id)}>
+                      <input type="checkbox" checked={isEnabled(m.id)} disabled={!platformOk(m.id)}
+                        onchange={(e) => toggle(m.id, e.currentTarget.checked)} />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
                 </div>
-                <div class="actions">
-                  {#if settingTabFor(m.id)}
-                    <button class="gear" title="Einstellungen" onclick={() => (openSettingsFor = m.id)}>
-                      <Icon name="settings" size={18} />
-                    </button>
-                  {/if}
-                  <label class="switch" class:disabled={!platformOk(m.id)}>
-                    <input type="checkbox" checked={isEnabled(m.id)} disabled={!platformOk(m.id)}
-                      onchange={(e) => toggle(m.id, e.currentTarget.checked)} />
-                    <span class="slider"></span>
-                  </label>
-                  {#if isRemote(m.id)}
-                    <button class="btn danger" onclick={() => uninstall(m.id)}>
-                      <Icon name="trash" size={15} /> Deinstallieren
-                    </button>
-                  {/if}
-                </div>
+                {#if hasCmd(m.id, 'show-intro') || hasCmd(m.id, 'clear-data') || isRemote(m.id)}
+                  <div class="card-actions">
+                    {#if hasCmd(m.id, 'show-intro')}
+                      <button class="btn small" onclick={() => runCmd(m.id, 'show-intro')}>Einführung</button>
+                    {/if}
+                    {#if hasCmd(m.id, 'clear-data')}
+                      <button class="btn small warn" onclick={() => clearData(m.id, m.name)}>Daten löschen</button>
+                    {/if}
+                    {#if isRemote(m.id)}
+                      <button class="btn small danger" onclick={() => uninstall(m.id)}>
+                        <Icon name="trash" size={14} /> Deinstallieren
+                      </button>
+                    {/if}
+                  </div>
+                {/if}
               </div>
             {/each}
           </section>
@@ -312,7 +339,17 @@
     background: var(--danger, #e5484d); color: #fff; border-color: transparent;
   }
   .btn.danger:hover { filter: brightness(1.08); }
+  .btn.small { padding: 6px 12px; font-size: 0.8rem; }
+  .btn.warn {
+    background: color-mix(in srgb, #e5903b 16%, transparent);
+    border-color: color-mix(in srgb, #e5903b 42%, transparent);
+    color: #e5903b;
+  }
   .btn:disabled { opacity: 0.5; cursor: default; }
+  .card-main { display: flex; align-items: flex-start; gap: var(--space-4); }
+  .card-main .card-body { flex: 1; min-width: 0; }
+  .top-actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
+  .card-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: 2px; }
   .link-row { display: flex; gap: var(--space-2); }
   .input {
     flex: 1; background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
