@@ -6,23 +6,11 @@ import type { PluginModule } from '@core/loader';
 import type { Bundle } from '@core/index';
 import { installCapabilities } from '@platform/index';
 
-// Phase 1: plugins are statically imported. Later phases load them from
-// GitHub links / a registry at runtime.
-import WelcomePlugin, { manifest as welcomeManifest } from './plugins/welcome/index';
-import ThemePlugin, { manifest as themeManifest } from './plugins/theme/index';
-import SkwdWallPlugin, { manifest as skwdWallManifest } from './plugins/skwd-wall/index';
-
-// Builtins ship ONLY in the dev build (live-reload convenience, so Jonas keeps
-// his existing library). The real, shareable APK (production) bundles NO feature
-// plugin — everything comes from the store. In that build this array is empty and
-// onboarding installs the chosen plugins from orbit-plugins.
-const modules: PluginModule[] = import.meta.env.DEV
-  ? [
-      { manifest: welcomeManifest, default: WelcomePlugin },
-      { manifest: themeManifest, default: ThemePlugin },
-      { manifest: skwdWallManifest, default: SkwdWallPlugin },
-    ]
-  : [];
+// The APK/app bundles NO feature plugin — "alles ist ein Plugin" und alle Plugins
+// kommen aus dem Store (orbit-plugins). Der Kern bootet leer; Onboarding bzw. der
+// Plugins-Bereich installieren alles zur Laufzeit. (Plugin-Quellcode lebt weiter in
+// src/plugins/ und wird separat via scripts/assemble-registry.mjs gebaut.)
+const modules: PluginModule[] = [];
 
 // Preset bundles for first-run onboarding. Defined here (composition root), not
 // in the core — the core never names a specific plugin. "Eigenes" (free pick)
@@ -60,18 +48,13 @@ async function main() {
     app.config.save();
   }
 
-  // First run = truly empty config. Fresh installs go through onboarding (the
-  // bundle picker) instead of an auto-seed. Existing testers (config already
-  // populated) are marked onboarded so the dialog never interrupts them, and
-  // keep the dev convenience of having SKWD Wall on.
+  // First run = truly empty config → onboarding (bundle picker, installs from the
+  // store). Existing testers (config already populated) are marked onboarded so the
+  // dialog doesn't interrupt them; their plugins return when (re)installed from the
+  // store (same plugin id → existing config/IndexedDB is reused, library intact).
   const fresh = Object.keys(app.config.getAll().plugins).length === 0;
-  if (!fresh) {
-    if (app.config.getPluginConfig('skwd-wall') === undefined) {
-      app.config.enablePlugin('skwd-wall');
-    }
-    if (app.config.get('core', 'onboarded') === undefined) {
-      app.config.set('core', 'onboarded', true);
-    }
+  if (!fresh && app.config.get('core', 'onboarded') === undefined) {
+    app.config.set('core', 'onboarded', true);
   }
 
   // Install the platform-specific capabilities BEFORE plugins load, so a plugin

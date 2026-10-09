@@ -48,12 +48,18 @@ export interface SourceConfig {
   url: string;
 }
 
-/** Curated default source. The repo/file may not exist yet → empty store. */
+/**
+ * Curated default source — served via jsDelivr (CDN over GitHub), NOT
+ * raw.githubusercontent: raw serves .js as text/plain, which the browser
+ * refuses to `import()` as a module (MIME check). jsDelivr serves the correct
+ * application/javascript + permissive CORS. Relative `main` paths in the
+ * registry resolve against this URL, so plugin code loads from jsDelivr too.
+ */
 export const DEFAULT_SOURCES: SourceConfig[] = [
   {
     id: 'orbit-official',
     label: 'Orbit (offiziell)',
-    url: 'https://raw.githubusercontent.com/Entwicklerfuchs26/orbit-plugins/main/registry.json',
+    url: 'https://cdn.jsdelivr.net/gh/Entwicklerfuchs26/orbit-plugins@main/registry.json',
   },
 ];
 

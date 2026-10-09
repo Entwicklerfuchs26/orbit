@@ -11,6 +11,7 @@
   let { app, bundles, onDone }: Props = $props();
 
   const CUSTOM = '__custom__';
+  const NONE = '__none__';
 
   // Plugins the user can pick in "Eigenes" — everything registered that runs on
   // this platform.
@@ -26,13 +27,19 @@
   let busy = $state(false);
 
   let chosenIds = $derived(
-    selected === CUSTOM
-      ? pickable.filter((m) => custom[m.id]).map((m) => m.id)
-      : (bundles.find((b) => b.id === selected)?.plugins ?? []),
+    selected === NONE
+      ? []
+      : selected === CUSTOM
+        ? pickable.filter((m) => custom[m.id]).map((m) => m.id)
+        : (bundles.find((b) => b.id === selected)?.plugins ?? []),
   );
 
+  // "Leer starten" is a valid choice (install nothing); every other option needs
+  // at least one plugin selected.
+  let canStart = $derived(selected === NONE || chosenIds.length > 0);
+
   async function start() {
-    if (busy || chosenIds.length === 0) return;
+    if (busy || !canStart) return;
     busy = true;
     await app.completeOnboarding(chosenIds);
     onDone();
@@ -62,6 +69,11 @@
         <span class="opt-desc">Plugins einzeln auswählen.</span>
       </button>
 
+      <button class="opt" class:sel={selected === NONE} onclick={() => (selected = NONE)}>
+        <div class="opt-head"><span class="opt-name">Leer starten</span></div>
+        <span class="opt-desc">Keine Plugins installieren — alles später selbst im Plugins-Bereich hinzufügen.</span>
+      </button>
+
       {#if selected === CUSTOM}
         <div class="custom-list">
           {#each pickable as m (m.id)}
@@ -77,7 +89,7 @@
     </div>
 
     <footer>
-      <button class="go" onclick={start} disabled={busy || chosenIds.length === 0}>
+      <button class="go" onclick={start} disabled={busy || !canStart}>
         <Icon name="check" size={16} /> Los geht's
       </button>
     </footer>
