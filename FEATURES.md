@@ -217,9 +217,9 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
-### 21. Platz oben + Card-Hand-Verschieben (bitte testen)
-- [ ] **Einstellungen & „Wallpaper hinzufügen": weniger Leerraum oben** — die Überschrift sitzt jetzt direkt unter der SKWD-Wall-Leiste (doppelte Safe-Area war schuld)
-- [ ] **Card Hand → „Fächer verschieben (horizontal)"** — schiebt den ganzen Kartenfächer nach links/rechts
+### 21. Platz oben + Card-Hand-Verschieben
+- [x] **Einstellungen & „Wallpaper hinzufügen": weniger Leerraum oben** — die Überschrift sitzt jetzt direkt unter der SKWD-Wall-Leiste (doppelte Safe-Area war schuld)
+- [x] **Card Hand → „Fächer verschieben (horizontal)"** — schiebt den ganzen Kartenfächer nach links/rechts
 
 ### 20. Fehlbedienung + 2 neue View-Regler (bitte testen)
 - [ ] **Öffnen der Einstellungen schaltet nichts aus Versehen** — die ersten ~0,3 s nach dem Öffnen reagieren Schalter/Regler nicht (das Zahnrad liegt über dem „Suchleiste immer"-Schalter)
@@ -251,6 +251,12 @@ vertikal (oben↔unten)**, nie horizontal. Reine Web-Änderung → nur neu laden
 
 ## Bekannte Kleinigkeiten
 - Foto-Effekte waren bei großen Bildern leicht verpixelt → Grenze auf 4K erhöht (bitte erneut prüfen).
+- **Video-Wallpaper in der App ruckelt (offen, später fixen):** Ein Video als
+  Hintergrund **in der App** macht die ganze App dauerhaft ruckelig (auch das
+  Hintergrundbild). Der **echte System-Hintergrund** (Home-/Sperrbildschirm, Live-
+  Wallpaper) läuft dagegen **flüssig** — nur beim Aufwachen (dunkel → Sperrbildschirm)
+  ganz kurz ein Mini-Ruckler, danach smooth. Jonas will aktuell keine bewegten
+  Wallpaper, aber das In-App-Video-Rendering soll später entruckelt werden.
 
 ## Plan / Roadmap (SKWD aufs Handy → dann Sync)
 **A. Rest SKWD-Features (Web-Arbeit, autonom, kein Rot/Hardware):**
