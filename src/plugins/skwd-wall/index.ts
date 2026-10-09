@@ -59,6 +59,7 @@ class PickerView extends View {
         target: this.containerEl,
         props: {
           app: this.app,
+          manager: this.manager,
           onDone: () => {
             this.app.config.set('skwd-wall', 'introSeen', true);
             if (this.intro) {
@@ -129,6 +130,10 @@ export default class WallpaperPlugin extends Plugin {
       name: 'Daten löschen',
       callback: () => {
         void this.manager.clearAllData();
+        // Clearing all data = a fresh start → show the setup again.
+        this.app.config.set('skwd-wall', 'introSeen', false);
+        this.app.workspace.closeView(VIEW_ID);
+        this.app.workspace.openView(VIEW_ID);
       },
     });
 

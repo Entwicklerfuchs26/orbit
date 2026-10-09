@@ -539,6 +539,10 @@ export class WallpaperManager {
     const s = this.state.get();
     if (s.paletteBehaviour === 'keep') return;
     const active = this.getActive();
+    // Don't hijack Orbit's base theme on a fresh install with an empty library:
+    // only take over the palette once there's an active wallpaper to derive it
+    // from (or when the user explicitly chose a fixed seed).
+    if (!active && s.paletteBehaviour !== 'fixed') return;
     const seed =
       s.paletteBehaviour === 'fixed' ? s.fixedSeed : (active?.accent ?? s.fixedSeed);
     const { tokens, roles } = generateTheme(

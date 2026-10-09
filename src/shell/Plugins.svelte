@@ -123,7 +123,10 @@
     const ok = confirm(
       `Alle Daten von „${name}" löschen?\n\nEntfernt die gespeicherten Inhalte dieses Plugins (z. B. Bibliothek, Einstellungen) endgültig. Das Plugin selbst bleibt installiert.`,
     );
-    if (ok) runCmd(id, 'clear-data');
+    if (ok) {
+      runCmd(id, 'clear-data');
+      onClose(); // let the plugin's view (e.g. its setup) show immediately
+    }
   }
   // Already in the app — either built in (registered) or installed from the store.
   // Such catalog entries aren't offered for install, just marked as present.
@@ -191,7 +194,7 @@
                 {#if hasCmd(m.id, 'show-intro') || hasCmd(m.id, 'clear-data') || isRemote(m.id)}
                   <div class="card-actions">
                     {#if hasCmd(m.id, 'show-intro')}
-                      <button class="btn small" onclick={() => runCmd(m.id, 'show-intro')}>Einführung</button>
+                      <button class="btn small" onclick={() => { runCmd(m.id, 'show-intro'); onClose(); }}>Einführung</button>
                     {/if}
                     {#if hasCmd(m.id, 'clear-data')}
                       <button class="btn small warn" onclick={() => clearData(m.id, m.name)}>Daten löschen</button>

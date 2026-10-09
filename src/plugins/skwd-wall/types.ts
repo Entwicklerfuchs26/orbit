@@ -352,7 +352,7 @@ export const DEFAULT_STATE: WallpaperState = {
   randomSetLock: false,
   transitionType: 'fade',
   transitionMs: 600,
-  deviceMobile: true,
+  deviceMobile: false,
   liveWallpaper: false,
   collections: [],
   activeCollectionId: null,

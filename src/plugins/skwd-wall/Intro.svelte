@@ -1,45 +1,78 @@
 <script lang="ts">
   import type { App } from '@core/index';
+  import type { WallpaperManager } from './manager';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
 
   interface Props {
     app: App;
+    manager: WallpaperManager;
     onDone: () => void;
   }
-  let { app, onDone }: Props = $props();
+  let { app, manager, onDone }: Props = $props();
 
-  const steps = [
+  type Step = { kind: 'info' | 'mobile' | 'done'; kicker: string; title: string; body: string };
+
+  const steps: Step[] = [
     {
+      kind: 'info',
       kicker: 'Willkommen',
       title: 'SKWD Wall',
       body: 'Sammle, gestalte und erlebe deine Hintergründe neu. SKWD Wall macht aus deinem Startbildschirm eine Bühne – kuratiert von dir, abgestimmt bis auf die Farbe.',
     },
     {
+      kind: 'info',
       kicker: 'Steuerung',
       title: 'Alles in einer Wischgeste',
       body: 'Zieh vom Bildschirmrand nach innen – die Leiste gleitet herein. Hinzufügen, Sortieren, Favoriten, Farbe und Hell/Dunkel sind immer einen Wisch entfernt und verschwinden von selbst wieder.',
     },
     {
+      kind: 'info',
       kicker: 'Deine Motive',
       title: 'Alle Quellen, eine Galerie',
       body: 'Eigene Fotos und Videos, Millionen Motive aus Wallhaven oder ein ganzer Ordner deines Geräts – alles an einem Ort. Ordner werden verknüpft, nicht kopiert.',
     },
     {
+      kind: 'info',
       kicker: 'Ansicht & Farbe',
       title: 'Sieben Ansichten, ein Gespür für Farbe',
       body: 'Blättere durch wandfüllende Raster, Waben und Fächer. Das aktive Bild färbt die ganze App automatisch – ein Design, das sich mit deinem Hintergrund wandelt.',
     },
     {
-      kicker: 'Startbildschirm',
-      title: 'Direkt aufs Handy',
-      body: 'Setz dein Motiv als System-Hintergrund oder als animiertes Live-Wallpaper – mit sanften Übergängen und automatischem Wechsel, auch wenn die App geschlossen ist.',
+      kind: 'mobile',
+      kicker: 'Einrichten',
+      title: 'Dein Handy mit einbeziehen',
+      body: 'SKWD Wall kann dein gewähltes Motiv direkt auf den Startbildschirm bringen. Das ist standardmäßig aus – aktiviere nur, was du möchtest. Später jederzeit änderbar unter Einstellungen → Geräte.',
+    },
+    {
+      kind: 'done',
+      kicker: 'Fertig',
+      title: 'Startklar',
+      body: 'Alles bereit. Füge dein erstes Wallpaper über die Leiste hinzu – und mach deinen Startbildschirm zu deinem.',
     },
   ];
 
   let i = $state(0);
+  let step = $derived(steps[i]);
   let last = $derived(i === steps.length - 1);
   const pad = (n: number) => String(n + 1).padStart(2, '0');
+
+  // Interactive setup state, applied immediately to the plugin.
+  let mobileOn = $state(manager.state.get().deviceMobile);
+  let liveOn = $state(manager.state.get().liveWallpaper);
+
+  function setMobile(on: boolean) {
+    mobileOn = on;
+    manager.setDeviceMobile(on);
+    if (!on && liveOn) {
+      liveOn = false;
+      manager.setLiveWallpaper(false);
+    }
+  }
+  function setLive(on: boolean) {
+    liveOn = on;
+    manager.setLiveWallpaper(on);
+  }
 
   function next() {
     if (last) onDone();
@@ -50,7 +83,6 @@
   }
 </script>
 
-<!-- Shared gradient + soft shadow used by every illustration. -->
 <svg class="defs" aria-hidden="true" focusable="false">
   <defs>
     <linearGradient id="skwdGrad" x1="0" y1="0" x2="1" y2="1">
@@ -68,13 +100,12 @@
   <div class="aurora a1"></div>
   <div class="aurora a2"></div>
 
-  <button class="skip" onclick={onDone}>Überspringen</button>
+  {#if !last}<button class="skip" onclick={onDone}>Überspringen</button>{/if}
 
   <div class="stage">
     {#key i}
       <div class="art" in:fade={{ duration: 420 }}>
         {#if i === 0}
-          <!-- Brand: phone with wallpaper + orbiting dots -->
           <svg viewBox="0 0 260 210" class="il">
             <g class="spin" style="transform-origin:130px 105px">
               <ellipse cx="130" cy="105" rx="96" ry="60" class="ring" />
@@ -89,7 +120,6 @@
             </g>
           </svg>
         {:else if i === 1}
-          <!-- Swipe rail sliding in from the edge -->
           <svg viewBox="0 0 260 210" class="il">
             <rect x="60" y="30" width="140" height="150" rx="18" class="phone" />
             <rect x="68" y="38" width="124" height="134" rx="12" fill="url(#skwdGradSoft)" />
@@ -103,7 +133,6 @@
             <circle cx="150" cy="105" r="12" class="touch ping" />
           </svg>
         {:else if i === 2}
-          <!-- Sources converging into a gallery grid -->
           <svg viewBox="0 0 260 210" class="il">
             <g class="float">
               <rect x="150" y="70" width="80" height="80" rx="12" class="phone" />
@@ -121,7 +150,6 @@
             <path d="M64 152 C110 152 120 110 150 120" class="flow" style="animation-delay:1200ms" />
           </svg>
         {:else if i === 3}
-          <!-- Fanned cards + extracted colour palette -->
           <svg viewBox="0 0 260 210" class="il">
             <g class="float">
               <rect x="92" y="54" width="76" height="104" rx="12" class="card c3" fill="url(#skwdGradSoft)" />
@@ -131,26 +159,34 @@
             </g>
             <g class="swatches">
               {#each [0, 1, 2, 3, 4] as k}
-                <circle cx={96 + k * 17} cy="176" r="7" class="sw s{k}" style="animation-delay:{k * 120}ms" />
+                <circle cx={96 + k * 17} cy="176" r="7" class="swatch s{k}" style="animation-delay:{k * 120}ms" />
               {/each}
             </g>
           </svg>
-        {:else}
-          <!-- Home screen with live wallpaper waves -->
+        {:else if step.kind === 'mobile'}
+          <!-- Phone with a glowing home wallpaper (consistent 2:1 aspect) -->
           <svg viewBox="0 0 260 210" class="il">
             <g class="float">
-              <rect x="97" y="26" width="66" height="158" rx="16" class="phone" />
-              <clipPath id="screenClip"><rect x="104" y="33" width="52" height="144" rx="10" /></clipPath>
-              <g clip-path="url(#screenClip)">
-                <rect x="104" y="33" width="52" height="144" fill="url(#skwdGradSoft)" />
-                <path class="wave" d="M90 120 q16 -16 32 0 t32 0 t32 0 t32 0 V180 H90 Z" fill="url(#skwdGrad)" opacity="0.9" />
-                <path class="wave w2" d="M90 136 q16 -14 32 0 t32 0 t32 0 t32 0 V180 H90 Z" fill="url(#skwdGrad)" opacity="0.55" />
+              <rect x="100" y="20" width="60" height="170" rx="15" class="phone" />
+              <clipPath id="mClip"><rect x="106" y="26" width="48" height="158" rx="10" /></clipPath>
+              <g clip-path="url(#mClip)">
+                <rect x="106" y="26" width="48" height="158" fill="url(#skwdGradSoft)" />
+                <path class="wave" d="M96 110 q14 -14 28 0 t28 0 t28 0 t28 0 V190 H96 Z" fill="url(#skwdGrad)" opacity="0.9" />
               </g>
-              {#each [0, 1, 2, 3, 4, 5, 6, 7] as k}
-                <rect x={110 + (k % 4) * 12} y={44 + Math.floor(k / 4) * 12} width="8" height="8" rx="2.5" class="appdot" />
+              {#each [0, 1, 2, 3, 4, 5] as k}
+                <rect x={112 + (k % 3) * 13} y={34 + Math.floor(k / 3) * 13} width="9" height="9" rx="2.5" class="appdot" />
               {/each}
             </g>
-            <circle cx="130" cy="150" r="6" class="live" />
+            <circle cx="186" cy="150" r="14" class="switch-knob {mobileOn ? 'on' : ''}" />
+          </svg>
+        {:else}
+          <!-- Done: checkmark inside an orbit -->
+          <svg viewBox="0 0 260 210" class="il">
+            <g class="spin" style="transform-origin:130px 105px">
+              <ellipse cx="130" cy="105" rx="80" ry="80" class="ring" />
+            </g>
+            <circle cx="130" cy="105" r="46" fill="url(#skwdGrad)" class="float" />
+            <path d="M110 106 l14 14 l26 -30" class="check" />
           </svg>
         {/if}
       </div>
@@ -160,9 +196,29 @@
   <div class="copy">
     {#key i}
       <div in:fly={{ y: 16, duration: 420, easing: cubicOut }}>
-        <span class="kicker">{pad(i)} · {steps[i].kicker}</span>
-        <h1>{steps[i].title}</h1>
-        <p>{steps[i].body}</p>
+        <span class="kicker">{pad(i)} · {step.kicker}</span>
+        <h1>{step.title}</h1>
+        <p>{step.body}</p>
+
+        {#if step.kind === 'mobile'}
+          <div class="toggles">
+            <button class="toggle" class:on={mobileOn} onclick={() => setMobile(!mobileOn)}>
+              <span class="t-text">
+                <span class="t-title">Hintergrund aufs Handy setzen</span>
+                <span class="t-desc">Dein Motiv als System-Hintergrund (Start- & Sperrbildschirm).</span>
+              </span>
+              <span class="sw" aria-hidden="true"><span class="knob"></span></span>
+            </button>
+
+            <button class="toggle" class:on={liveOn} class:disabled={!mobileOn} disabled={!mobileOn} onclick={() => setLive(!liveOn)}>
+              <span class="t-text">
+                <span class="t-title">Live-Wallpaper (animiert)</span>
+                <span class="t-desc">Sanfte Übergänge & automatischer Wechsel direkt am Homescreen.</span>
+              </span>
+              <span class="sw" aria-hidden="true"><span class="knob"></span></span>
+            </button>
+          </div>
+        {/if}
       </div>
     {/key}
   </div>
@@ -203,114 +259,57 @@
     padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px);
   }
 
-  .aurora {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  .a1 {
-    width: 320px; height: 320px; top: -80px; right: -120px;
-    background: radial-gradient(circle, color-mix(in srgb, var(--accent, #6aa0ff) 60%, transparent), transparent 70%);
-    animation: drift1 14s ease-in-out infinite;
-  }
-  .a2 {
-    width: 300px; height: 300px; bottom: -100px; left: -120px;
-    background: radial-gradient(circle, color-mix(in srgb, #b06cf0 55%, transparent), transparent 70%);
-    animation: drift2 18s ease-in-out infinite;
-  }
+  .aurora { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.5; pointer-events: none; }
+  .a1 { width: 320px; height: 320px; top: -80px; right: -120px; background: radial-gradient(circle, color-mix(in srgb, var(--accent, #6aa0ff) 60%, transparent), transparent 70%); animation: drift1 14s ease-in-out infinite; }
+  .a2 { width: 300px; height: 300px; bottom: -100px; left: -120px; background: radial-gradient(circle, color-mix(in srgb, #b06cf0 55%, transparent), transparent 70%); animation: drift2 18s ease-in-out infinite; }
   @keyframes drift1 { 50% { transform: translate(-30px, 40px) scale(1.1); } }
   @keyframes drift2 { 50% { transform: translate(40px, -30px) scale(1.08); } }
 
   .skip {
-    position: absolute;
-    top: calc(env(safe-area-inset-top) + 16px);
-    right: 20px;
-    z-index: 2;
-    background: color-mix(in srgb, var(--text, #fff) 8%, transparent);
-    border: none;
-    color: var(--text-muted, #c7c9d1);
-    font-size: 0.82rem;
-    padding: 7px 14px;
-    border-radius: 999px;
-    backdrop-filter: blur(6px);
-    cursor: pointer;
+    position: absolute; top: calc(env(safe-area-inset-top) + 16px); right: 20px; z-index: 2;
+    background: color-mix(in srgb, var(--text, #fff) 8%, transparent); border: none;
+    color: var(--text-muted, #c7c9d1); font-size: 0.82rem; padding: 7px 14px;
+    border-radius: 999px; backdrop-filter: blur(6px); cursor: pointer;
   }
   .skip:active { transform: scale(0.96); }
 
-  .stage {
-    flex: 1;
-    display: grid;
-    place-items: center;
-    position: relative;
-    min-height: 0;
-  }
+  .stage { flex: 1; display: grid; place-items: center; position: relative; min-height: 0; }
   .art { grid-area: 1 / 1; }
-  .il { width: min(78vw, 300px); height: auto; overflow: visible; }
+  .il { width: min(66vw, 260px); height: auto; overflow: visible; }
 
   .copy { position: relative; text-align: center; padding: 4px 4px 10px; }
-  .copy > div { position: absolute; inset: 0; }
-  .copy > div:last-child { position: relative; }
-  .kicker {
-    display: inline-block;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent, #6aa0ff);
-    font-weight: 700;
-    margin-bottom: 10px;
+  .kicker { display: inline-block; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent, #6aa0ff); font-weight: 700; margin-bottom: 10px; }
+  h1 { margin: 0 0 12px; font-size: clamp(1.4rem, 6.5vw, 1.9rem); line-height: 1.12; letter-spacing: -0.02em; font-weight: 800; }
+  p { margin: 0 auto; max-width: 30rem; color: var(--text-muted, #c7c9d1); line-height: 1.55; font-size: 0.95rem; }
+
+  .toggles { display: flex; flex-direction: column; gap: 10px; margin: 18px auto 0; max-width: 30rem; text-align: left; }
+  .toggle {
+    display: flex; align-items: center; gap: 14px;
+    background: color-mix(in srgb, var(--text, #fff) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text, #fff) 12%, transparent);
+    border-radius: 16px; padding: 14px 16px; cursor: pointer; transition: border-color 0.2s, background 0.2s;
   }
-  h1 {
-    margin: 0 0 12px;
-    font-size: clamp(1.5rem, 7vw, 2rem);
-    line-height: 1.12;
-    letter-spacing: -0.02em;
-    font-weight: 800;
-  }
-  p {
-    margin: 0 auto;
-    max-width: 30rem;
-    color: var(--text-muted, #c7c9d1);
-    line-height: 1.6;
-    font-size: 0.98rem;
-  }
+  .toggle.on { border-color: color-mix(in srgb, var(--accent, #6aa0ff) 60%, transparent); background: color-mix(in srgb, var(--accent, #6aa0ff) 12%, transparent); }
+  .toggle.disabled { opacity: 0.45; cursor: default; }
+  .t-text { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .t-title { font-weight: 700; font-size: 0.95rem; }
+  .t-desc { font-size: 0.8rem; color: var(--text-muted, #c7c9d1); line-height: 1.4; }
+  .sw { flex-shrink: 0; width: 46px; height: 28px; border-radius: 999px; background: color-mix(in srgb, var(--text, #fff) 20%, transparent); position: relative; transition: background 0.2s; }
+  .toggle.on .sw { background: var(--accent, #6aa0ff); }
+  .knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform 0.22s cubic-bezier(.2,.8,.2,1); }
+  .toggle.on .knob { transform: translateX(18px); }
 
   .footer { position: relative; z-index: 2; }
   .dots { display: flex; justify-content: center; gap: 8px; margin: 18px 0 20px; }
-  .dot-btn {
-    width: 7px; height: 7px; padding: 0; border: none; border-radius: 999px;
-    background: color-mix(in srgb, var(--text, #fff) 22%, transparent);
-    transition: width 0.3s cubic-bezier(.2,.8,.2,1), background 0.3s;
-    cursor: pointer;
-  }
+  .dot-btn { width: 7px; height: 7px; padding: 0; border: none; border-radius: 999px; background: color-mix(in srgb, var(--text, #fff) 22%, transparent); transition: width 0.3s cubic-bezier(.2,.8,.2,1), background 0.3s; cursor: pointer; }
   .dot-btn.on { width: 24px; background: var(--accent, #6aa0ff); }
 
   .actions { display: flex; gap: 10px; }
-  .ghost, .go {
-    height: 52px;
-    border-radius: 15px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.12s, filter 0.2s;
-  }
-  .ghost {
-    flex: 0 0 auto; padding: 0 22px;
-    background: color-mix(in srgb, var(--text, #fff) 9%, transparent);
-    border: 1px solid color-mix(in srgb, var(--text, #fff) 14%, transparent);
-    color: var(--text, #fff);
-  }
-  .go {
-    flex: 1;
-    border: none;
-    color: #fff;
-    background: linear-gradient(135deg, var(--accent, #6aa0ff), color-mix(in srgb, var(--accent, #6aa0ff) 55%, #b06cf0));
-    box-shadow: 0 10px 30px color-mix(in srgb, var(--accent, #6aa0ff) 40%, transparent);
-  }
+  .ghost, .go { height: 52px; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.12s, filter 0.2s; }
+  .ghost { flex: 0 0 auto; padding: 0 22px; background: color-mix(in srgb, var(--text, #fff) 9%, transparent); border: 1px solid color-mix(in srgb, var(--text, #fff) 14%, transparent); color: var(--text, #fff); }
+  .go { flex: 1; border: none; color: #fff; background: linear-gradient(135deg, var(--accent, #6aa0ff), color-mix(in srgb, var(--accent, #6aa0ff) 55%, #b06cf0)); box-shadow: 0 10px 30px color-mix(in srgb, var(--accent, #6aa0ff) 40%, transparent); }
   .go:active, .ghost:active { transform: scale(0.98); }
 
-  /* ---- illustration primitives ---- */
   .phone { fill: color-mix(in srgb, var(--text, #fff) 7%, transparent); stroke: color-mix(in srgb, var(--text, #fff) 20%, transparent); stroke-width: 2; }
   .ring { fill: none; stroke: color-mix(in srgb, var(--text, #fff) 16%, transparent); stroke-width: 1.5; stroke-dasharray: 2 7; stroke-linecap: round; }
   .dot { fill: color-mix(in srgb, var(--text, #fff) 40%, transparent); }
@@ -329,14 +328,16 @@
   .c1 { transform: rotate(-9deg); transform-origin: 130px 106px; }
   .c2 { transform: rotate(3deg); transform-origin: 130px 106px; opacity: 0.85; }
   .c3 { transform: rotate(13deg); transform-origin: 130px 106px; opacity: 0.6; }
-  .sw { stroke: color-mix(in srgb, var(--text, #fff) 14%, transparent); stroke-width: 1; opacity: 0; animation: pop 0.5s cubic-bezier(.2,.9,.3,1.3) forwards; }
-  .s0 { fill: var(--accent, #6aa0ff); }
-  .s1 { fill: color-mix(in srgb, var(--accent, #6aa0ff) 60%, #b06cf0); }
-  .s2 { fill: #e9a23b; }
-  .s3 { fill: #4bb58b; }
-  .s4 { fill: color-mix(in srgb, var(--text, #fff) 70%, transparent); }
+  .swatches .s0 { fill: var(--accent, #6aa0ff); }
+  .swatches .s1 { fill: color-mix(in srgb, var(--accent, #6aa0ff) 60%, #b06cf0); }
+  .swatches .s2 { fill: #e9a23b; }
+  .swatches .s3 { fill: #4bb58b; }
+  .swatches .s4 { fill: color-mix(in srgb, var(--text, #fff) 70%, transparent); }
+  .swatches circle { stroke: color-mix(in srgb, var(--text, #fff) 14%, transparent); stroke-width: 1; opacity: 0; animation: pop 0.5s cubic-bezier(.2,.9,.3,1.3) forwards; }
   .appdot { fill: color-mix(in srgb, #fff 45%, transparent); }
-  .live { fill: var(--accent, #6aa0ff); animation: livepulse 1.8s ease-in-out infinite; }
+  .switch-knob { fill: color-mix(in srgb, var(--text, #fff) 35%, transparent); transition: fill 0.25s; }
+  .switch-knob.on { fill: var(--accent, #6aa0ff); animation: livepulse 1.8s ease-in-out infinite; }
+  .check { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 70; stroke-dashoffset: 70; animation: draw 0.6s 0.2s cubic-bezier(.2,.8,.2,1) forwards; }
 
   .float { animation: floaty 5s ease-in-out infinite; transform-origin: center; }
   .spin { animation: spin 22s linear infinite; }
@@ -344,7 +345,6 @@
   .slidein { animation: slidein 0.7s cubic-bezier(.2,.8,.2,1) both; }
   .ping { animation: ping 1.8s ease-out infinite; transform-origin: 150px 105px; }
   .wave { animation: waveshift 3.5s ease-in-out infinite; }
-  .wave.w2 { animation-duration: 4.5s; }
 
   @keyframes floaty { 50% { transform: translateY(-8px); } }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -352,11 +352,13 @@
   @keyframes dashmove { to { stroke-dashoffset: -28; } }
   @keyframes slidein { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: translateX(0); } }
   @keyframes ping { 0% { transform: scale(1); opacity: 0.7; } 80%, 100% { transform: scale(2.4); opacity: 0; } }
-  @keyframes livepulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-  @keyframes waveshift { 50% { transform: translateX(-14px) translateY(-3px); } }
+  @keyframes livepulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes waveshift { 50% { transform: translateX(-12px) translateY(-3px); } }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .float, .spin, .chip, .slidein, .ping, .wave, .tile, .flow, .sw, .live, .aurora { animation: none !important; }
-    .tile, .sw, .chip { opacity: 1; }
+    .float, .spin, .chip, .slidein, .ping, .wave, .tile, .flow, .switch-knob, .aurora, .swatches circle, .check { animation: none !important; }
+    .tile, .chip, .swatches circle { opacity: 1; }
+    .check { stroke-dashoffset: 0; }
   }
 </style>
