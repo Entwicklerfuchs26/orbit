@@ -57,8 +57,15 @@ export class WallpaperManager {
     });
     const hadDupes = deduped.length !== (merged.items ?? []).length;
     merged.items = deduped;
+    // Migration: old hex default (9 columns) made tiny tiles + too few rows to
+    // scroll on a phone. Clamp to a mobile-sensible count.
+    let migrated = hadDupes;
+    if (merged.hexColumns > 6) {
+      merged.hexColumns = 3;
+      migrated = true;
+    }
     this.state = new Store<WallpaperState>(merged);
-    if (hadDupes) this.persist();
+    if (migrated) this.persist();
   }
 
   private rotationTimer: ReturnType<typeof setInterval> | null = null;

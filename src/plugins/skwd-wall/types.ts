@@ -333,7 +333,7 @@ export const DEFAULT_STATE: WallpaperState = {
   slicesHeight: 7,
   hexSize: 0,
   hexRows: 3,
-  hexColumns: 9,
+  hexColumns: 3,
   hexScrollStep: 1,
   hexArc: true,
   hexArcIntensity: 12,
