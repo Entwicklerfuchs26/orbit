@@ -29,7 +29,7 @@ class PickerView extends View {
     return VIEW_ID;
   }
   getDisplayName() {
-    return 'Wallpaper';
+    return 'SKWD Wall';
   }
   getIcon() {
     return 'image';
@@ -66,14 +66,14 @@ export default class WallpaperPlugin extends Plugin {
 
     this.addNavigationItem({
       id: VIEW_ID,
-      name: 'Wallpaper',
+      name: 'SKWD Wall',
       icon: 'image',
       priority: 5,
     });
 
     this.addCommand({
       id: 'open',
-      name: 'Wallpaper-Picker öffnen',
+      name: 'SKWD Wall öffnen',
       callback: () => this.app.workspace.openView(VIEW_ID),
     });
 
@@ -81,7 +81,7 @@ export default class WallpaperPlugin extends Plugin {
     let settingsComponent: ReturnType<typeof mount> | null = null;
     this.addSettingTab({
       id: 'wallpaper-settings',
-      name: 'Wallpaper',
+      name: 'SKWD Wall',
       icon: 'image',
       render: (el) => {
         settingsComponent = mount(WallpaperSettings, {

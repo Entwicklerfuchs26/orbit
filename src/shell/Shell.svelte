@@ -122,5 +122,10 @@
     bottom: 0;
     z-index: 801;
     box-shadow: var(--shadow);
+    background: var(--bg-elevated);
+    /* Respect the status bar (top) and gesture/home bar (bottom) so the menu
+       header isn't under the clock and "Einstellungen" isn't under the home bar. */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 </style>
