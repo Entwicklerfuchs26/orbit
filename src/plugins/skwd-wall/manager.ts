@@ -263,6 +263,24 @@ export class WallpaperManager {
     }
   }
 
+  /** Free a folder-backed object URL once its tile scrolls far off screen, so
+   *  a big external folder keeps only the on-screen images in memory. IndexedDB
+   *  blobs are cheap to keep; only folder sources (full-res, native reads) are
+   *  released. Never releases the active item. */
+  releaseUrl(id: string): void {
+    if (id === this.state.get().activeId) return;
+    const item = this.state.get().items.find((it) => it.id === id);
+    if (!item?.folderId) return;
+    const url = this.urls.get()[id];
+    if (!url) return;
+    URL.revokeObjectURL(url);
+    this.urls.update((m) => {
+      const n = { ...m };
+      delete n[id];
+      return n;
+    });
+  }
+
   getUrl(id: string): string | undefined {
     return this.urls.get()[id];
   }

@@ -300,9 +300,22 @@
   // SAF reads to what's actually on screen).
   function ensure(node: HTMLElement, id: string) {
     let currentId = id;
+    let releaseTimer: ReturnType<typeof setTimeout> | null = null;
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) if (e.isIntersecting) void manager.ensureUrl(currentId);
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            if (releaseTimer) {
+              clearTimeout(releaseTimer);
+              releaseTimer = null;
+            }
+            void manager.ensureUrl(currentId);
+          } else {
+            // Free the (full-res, folder-backed) image shortly after it leaves
+            // the viewport so memory stays bounded while scrolling a big folder.
+            releaseTimer = setTimeout(() => manager.releaseUrl(currentId), 1500);
+          }
+        }
       },
       { rootMargin: '250px' },
     );
@@ -313,6 +326,7 @@
         void manager.ensureUrl(nid);
       },
       destroy() {
+        if (releaseTimer) clearTimeout(releaseTimer);
         io.disconnect();
       },
     };

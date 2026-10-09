@@ -176,8 +176,10 @@ export async function folderFileUrl(folderId: string, locator: string): Promise<
   if (isNative()) {
     try {
       const { data, mime } = await Native.readFile({ uri: locator });
-      const bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
-      return URL.createObjectURL(new Blob([bytes], { type: mime }));
+      // Let the browser decode the base64 (native, off the hot path) instead of
+      // an atob() char loop on the main thread — much less scroll jank.
+      const blob = await (await fetch(`data:${mime};base64,${data}`)).blob();
+      return URL.createObjectURL(blob);
     } catch {
       return null;
     }
