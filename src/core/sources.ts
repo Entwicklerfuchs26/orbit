@@ -32,6 +32,18 @@ export interface StorePluginEntry {
   main: string;
   /** Which source advertised it (filled in by the store). */
   sourceId?: string;
+  /** Older builds still installable for rollback (newest first). */
+  versions?: VersionRef[];
+}
+
+/** One installable build of a plugin (for update history / rollback). */
+export interface VersionRef {
+  /** Display label, e.g. "0.1.0+ab12cd3". */
+  label: string;
+  version?: string;
+  built?: string;
+  /** Immutable (SHA-pinned) URL of this build's main.js. */
+  main: string;
 }
 
 /** A catalog provider. `list()` may throw or return [] when offline/missing. */
@@ -78,13 +90,21 @@ function normalizeMain(url: string): string {
 
 /** Fetch + normalise a manifest list, resolving relative `main` URLs. */
 async function fetchManifestList(url: string): Promise<StorePluginEntry[]> {
-  const res = await fetch(url, { cache: 'no-store' });
+  // GitHub raw's edge cache keys on the query string, so a cache-buster makes
+  // the registry (update checks) fresh even within its ~5 min TTL. Plugin code
+  // itself loads from immutable SHA-pinned URLs, so it never needs busting.
+  const sep = url.includes('?') ? '&' : '?';
+  const res = await fetch(`${url}${sep}cb=${Date.now()}`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = (await res.json()) as StorePluginEntry[] | { plugins?: StorePluginEntry[] };
   const list = Array.isArray(data) ? data : (data.plugins ?? []);
   return list
     .filter((e) => e && e.id && e.main)
-    .map((e) => ({ ...e, main: new URL(e.main, url).href }));
+    .map((e) => ({
+      ...e,
+      main: new URL(e.main, url).href,
+      versions: e.versions?.map((v) => ({ ...v, main: new URL(v.main, url).href })),
+    }));
 }
 
 /**
@@ -115,6 +135,10 @@ export async function resolveDirectLink(manifestUrl: string): Promise<StorePlugi
 export class PluginStore {
   /** Installed remote plugins (persisted in config core.installed). */
   readonly installedStore = new Store<StorePluginEntry[]>([]);
+  /** Ids of installed plugins that have a newer build in the catalog. */
+  readonly updatesStore = new Store<string[]>([]);
+  /** Last fetched catalog, for the UI (update buttons, version pickers). */
+  private catalogCache: StorePluginEntry[] = [];
 
   constructor(
     private config: ConfigManager,
@@ -143,7 +167,34 @@ export class PluginStore {
         errors.push({ source: s.label, error: (e as Error)?.message ?? String(e) });
       }
     }
+    this.catalogCache = entries;
     return { entries, errors };
+  }
+
+  /** The cached catalog entry for an id (from the last catalog() fetch). */
+  catalogEntry(id: string): StorePluginEntry | undefined {
+    return this.catalogCache.find((e) => e.id === id);
+  }
+
+  /** Fetch the catalog and recompute which installed plugins have an update. */
+  async refreshUpdates(): Promise<void> {
+    await this.catalog();
+    const updates = this.getInstalled()
+      .filter((e) => {
+        const c = this.catalogEntry(e.id);
+        return c && c.main !== e.main; // different (SHA-pinned) build = newer
+      })
+      .map((e) => e.id);
+    this.updatesStore.set(updates);
+  }
+
+  /** Update one plugin to the latest catalog build (install overwrites it). */
+  async update(id: string): Promise<{ ok: boolean; error?: string }> {
+    const c = this.catalogEntry(id);
+    if (!c) return { ok: false, error: 'Kein Katalog-Eintrag gefunden.' };
+    const res = await this.install(c);
+    if (res.ok) this.updatesStore.set(this.updatesStore.get().filter((x) => x !== id));
+    return res;
   }
 
   // ---- Installed ----
@@ -170,6 +221,7 @@ export class PluginStore {
     list.push(entry);
     this.persistInstalled(list);
     this.config.set(entry.id, 'enable', true);
+    this.updatesStore.set(this.updatesStore.get().filter((x) => x !== entry.id));
     return { ok: true };
   }
 
@@ -199,5 +251,7 @@ export class PluginStore {
         console.warn(`[store] Installiertes Plugin "${entry.id}" nicht geladen: ${result.error}`);
       }
     }
+    // Check for newer builds in the background (non-blocking).
+    void this.refreshUpdates().catch(() => {});
   }
 }

@@ -17,6 +17,7 @@
 
   const navItems = useStore(app.navigation.store);
   const activeTab = useStore(app.workspace.activeTabId);
+  const updates = useStore(app.pluginStore.updatesStore);
 
   function open(viewId: string) {
     app.workspace.openView(viewId);
@@ -56,8 +57,11 @@
 
   <div class="bottom">
     <button class="nav-item" onclick={onOpenPlugins} title="Plugins">
-      <Icon name="plugin" size={20} />
-      {#if !collapsed}<span>Plugins</span>{/if}
+      <span class="ic-wrap">
+        <Icon name="plugin" size={20} />
+        {#if updates.value.length > 0}<span class="badge-dot" title="Update verfügbar"></span>{/if}
+      </span>
+      {#if !collapsed}<span>Plugins{#if updates.value.length > 0}<span class="badge-count">{updates.value.length}</span>{/if}</span>{/if}
     </button>
     <button class="nav-item" onclick={onOpenSettings} title="Einstellungen">
       <Icon name="settings" size={20} />
@@ -167,5 +171,15 @@
   .bottom {
     border-top: 1px solid var(--border);
     padding-top: var(--space-2);
+  }
+  .ic-wrap { position: relative; display: inline-grid; place-items: center; }
+  .badge-dot {
+    position: absolute; top: -2px; right: -2px; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-elevated);
+  }
+  .badge-count {
+    margin-left: 6px; font-size: 0.7rem; font-weight: 700;
+    background: var(--accent); color: var(--accent-text);
+    padding: 0 6px; border-radius: 999px;
   }
 </style>

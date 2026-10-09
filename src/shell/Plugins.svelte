@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SojusApp } from '@core/app';
   import type { SettingTab } from '@core/types';
-  import type { StorePluginEntry } from '@core/index';
+  import type { StorePluginEntry, VersionRef } from '@core/index';
   import { resolveDirectLink } from '@core/index';
   import { useStore } from './reactive.svelte';
   import Icon from './Icon.svelte';
@@ -15,6 +15,7 @@
 
   const loaded = useStore(app.plugins.loadedStore);
   const installedStore = useStore(app.pluginStore.installedStore);
+  const updates = useStore(app.pluginStore.updatesStore);
 
   let tab = $state<'installed' | 'store'>('installed');
 
@@ -69,9 +70,37 @@
     catalogLoading = false;
     catalogLoaded = true;
   }
+  // Load the catalog once the panel opens (any tab) so the Installiert list can
+  // show update buttons + version pickers, not only the Store tab.
   $effect(() => {
-    if (open && tab === 'store' && !catalogLoaded) void loadCatalog();
+    if (open && !catalogLoaded) void loadCatalog();
   });
+
+  function catalogEntry(id: string): StorePluginEntry | undefined {
+    return catalog.find((e) => e.id === id);
+  }
+  function hasUpdate(id: string): boolean {
+    return updates.value.includes(id);
+  }
+  async function doUpdate(id: string) {
+    installing = id;
+    installError = '';
+    const res = await app.pluginStore.update(id);
+    installing = null;
+    if (!res.ok) installError = `Update ${id}: ${res.error}`;
+  }
+  async function installVersion(id: string, v: VersionRef) {
+    const base = catalogEntry(id);
+    if (!base) return;
+    installing = id;
+    installError = '';
+    const res = await app.pluginStore.install({ ...base, main: v.main, version: v.version ?? base.version });
+    installing = null;
+    if (!res.ok) installError = `Version ${v.label}: ${res.error}`;
+  }
+  function installedVersionMain(id: string): string | undefined {
+    return installedStore.value.find((e) => e.id === id)?.main;
+  }
 
   // --- Direct link ---
   let linkUrl = $state('');
@@ -161,6 +190,12 @@
         {:else if tab === 'installed'}
           <section>
             <h3>Installiert</h3>
+            {#if updates.value.length > 0}
+              <div class="banner">
+                <Icon name="sync" size={16} />
+                {updates.value.length === 1 ? '1 Update verfügbar' : `${updates.value.length} Updates verfügbar`}
+              </div>
+            {/if}
             {#each registered as m (m.id)}
               <div class="card">
                 {#if m.screenshots?.length}
@@ -191,8 +226,24 @@
                     </label>
                   </div>
                 </div>
-                {#if hasCmd(m.id, 'show-intro') || hasCmd(m.id, 'clear-data') || isRemote(m.id)}
+                {#if hasUpdate(m.id) || hasCmd(m.id, 'show-intro') || hasCmd(m.id, 'clear-data') || isRemote(m.id) || (catalogEntry(m.id)?.versions?.length ?? 0) > 1}
                   <div class="card-actions">
+                    {#if hasUpdate(m.id)}
+                      <button class="btn small primary" onclick={() => doUpdate(m.id)} disabled={installing === m.id}>
+                        <Icon name="sync" size={14} /> {installing === m.id ? 'Aktualisiere…' : `Aktualisieren${catalogEntry(m.id)?.version ? ` → v${catalogEntry(m.id)?.version}` : ''}`}
+                      </button>
+                    {/if}
+                    {#if (catalogEntry(m.id)?.versions?.length ?? 0) > 1}
+                      <select class="ver" title="Version" value={installedVersionMain(m.id)}
+                        onchange={(e) => {
+                          const v = catalogEntry(m.id)?.versions?.find((x) => x.main === e.currentTarget.value);
+                          if (v) void installVersion(m.id, v);
+                        }}>
+                        {#each catalogEntry(m.id)?.versions ?? [] as v (v.main)}
+                          <option value={v.main}>{v.label}</option>
+                        {/each}
+                      </select>
+                    {/if}
                     {#if hasCmd(m.id, 'show-intro')}
                       <button class="btn small" onclick={() => { runCmd(m.id, 'show-intro'); onClose(); }}>Einführung</button>
                     {/if}
@@ -352,7 +403,19 @@
   .card-main { display: flex; align-items: flex-start; gap: var(--space-4); }
   .card-main .card-body { flex: 1; min-width: 0; }
   .top-actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
-  .card-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: 2px; }
+  .card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: 2px; }
+  .banner {
+    display: flex; align-items: center; gap: 8px;
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: var(--radius-md); padding: 9px 12px; font-size: 0.85rem; font-weight: 600;
+    margin-bottom: var(--space-3);
+  }
+  .ver {
+    background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: var(--radius-md); padding: 5px 8px; font-size: 0.76rem;
+  }
   .link-row { display: flex; gap: var(--space-2); }
   .input {
     flex: 1; background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);

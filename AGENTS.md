@@ -23,7 +23,9 @@ GL-Live-Wallpaper).
   müssen grün sein.
 - Store-Plugin bauen (eigenständiges ESM): `PLUGIN=<id> npm run build:plugin` →
   `plugins-dist/<id>/main.js` (nur `@core` external → `globalThis.Orbit`, Rest gebündelt).
-  Alle Store-Plugins + Repo-Layout fürs orbit-plugins-Repo: `node scripts/assemble-registry.mjs`.
+  Veröffentlichen (SHA-gepinnt + Versionshistorie, pusht nach orbit-plugins):
+  `node scripts/publish-plugins.mjs <klon-von-orbit-plugins>` (baut, committet Plugin-
+  Dateien, pinnt registry.json auf den Commit-SHA → deterministisch frisch + Rollback).
 - Android-APK: `nix-shell android-shell.nix --run "CAP_SERVER_URL=http://192.168.1.40:5173 npx cap sync android && cd android && ./gradlew assembleDebug"`.
   APK-Download: `http://192.168.1.40:5173/wallpaper.apk` (serveApk-Middleware liest
   direkt aus dem Build-Output — **nicht** nach `static/` kopieren, sonst wandert
