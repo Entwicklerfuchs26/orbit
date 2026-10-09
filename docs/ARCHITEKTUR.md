@@ -62,7 +62,16 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
   plattformfrei; `main.ts` (Composition Root) verdrahtet Plattform → Kern.
   Plugins deklarieren benötigte Capabilities im Manifest (`capabilities: [...]`) und
   degradieren sauber, wo eine fehlt. skwd-wall nutzt ausschließlich diese API.
-- **Offen / als Nächstes (Kern-Phase):** Standard-Startseite, Onboarding,
+- **Navigations-API + Startseite (Kern-Phase Block 2, erledigt):** Plugins
+  registrieren wie bisher Navigationspunkte/Views/Commands; ein Nav-Item kann sich
+  per `isStartPage: true` als Standard-Startseite anbieten
+  (`navigation.defaultStartPageId()`). Die effektive Startseite = Nutzerwahl
+  (Config `core.startPage`) → Plugin-Default → sonst nichts; sie öffnet beim Boot,
+  wenn die Sitzung keine Tabs wiederherstellt (`app.resolveStartPageId`). Auswahl in
+  Settings → Allgemein → Start (`app.getStartPagePref` / `setStartPagePref`,
+  `LAST_SESSION` = Sitzung wiederherstellen). Groundwork für die spätere eigene
+  Launcher-Ansicht + Gesten-Hooks.
+- **Offen / als Nächstes (Kern-Phase):** Onboarding,
   Plugin-Store (JS-Plugins, evtl. GitHub), eigenständige teilbare APK (bringt kein
   Plugin mit), danach PC↔Handy-Sync. Deklarative Plugin-Verwaltung auf dem PC
   (NixOS/Home-Manager) ist angedacht.

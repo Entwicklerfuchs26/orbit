@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SojusApp } from '@core/app';
+  import { LAST_SESSION } from '@core/app';
   import type { SettingTab } from '@core/types';
   import { useStore } from './reactive.svelte';
   import Icon from './Icon.svelte';
@@ -13,6 +14,15 @@
 
   const loaded = useStore(app.plugins.loadedStore);
   const themeMode = useStore(app.theme.mode);
+  const navItems = useStore(app.navigation.store);
+
+  // Start-page choice: "Letzte Sitzung" or any registered view.
+  let startPage = $state(app.getStartPagePref());
+  let startCandidates = $derived(navItems.value.map((i) => ({ id: i.viewId, name: i.name })));
+  function setStartPage(v: string) {
+    startPage = v;
+    app.setStartPagePref(v);
+  }
 
   let activeSection = $state<string>('general');
   let tabContainer = $state<HTMLElement>();
@@ -90,6 +100,19 @@
                 {/each}
               </div>
             </div>
+          </section>
+          <section>
+            <h3>Start</h3>
+            <div class="row">
+              <span>Startseite</span>
+              <select class="select" value={startPage} onchange={(e) => setStartPage(e.currentTarget.value)}>
+                <option value={LAST_SESSION}>Letzte Sitzung</option>
+                {#each startCandidates as c (c.id)}
+                  <option value={c.id}>{c.name}</option>
+                {/each}
+              </select>
+            </div>
+            <p class="hint">Was beim Öffnen der App erscheint. „Letzte Sitzung" stellt die zuletzt offenen Tabs wieder her.</p>
           </section>
         {:else if activeSection === 'plugins'}
           <section>
@@ -244,6 +267,20 @@
   .segmented button.active {
     background: var(--accent);
     color: var(--accent-text);
+  }
+  .select {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.85rem;
+    max-width: 60%;
+  }
+  .hint {
+    color: var(--text-faint);
+    font-size: 0.8rem;
+    margin: var(--space-1) 0 0;
   }
   .plugin-row {
     display: flex;

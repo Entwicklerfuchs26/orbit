@@ -9,6 +9,9 @@ import { detectPlatform } from './platform';
 import { CapabilityRegistry } from './capabilities';
 import type { PluginModule } from './loader';
 
+/** Start-page preference meaning "reopen whatever was open last session". */
+export const LAST_SESSION = '__last__';
+
 /**
  * The App is the kernel instance passed to every plugin. It wires together
  * the four core services (config, commands, workspace, loader) plus the
@@ -62,6 +65,16 @@ export class SojusApp implements IApp {
     for (const id of saved?.openTabs ?? []) {
       if (this.workspace.hasView(id)) this.workspace.openView(id);
     }
+
+    // Start page: open the home when the session restored no tabs, so the app
+    // lands somewhere instead of on an empty screen. Which view is the home is
+    // the user's choice (Settings → Allgemein) or, unset, the one a plugin
+    // flagged as default. The explicit "Letzte Sitzung" choice opens nothing.
+    const startId = this.resolveStartPageId();
+    if (this.workspace.tabs.get().length === 0 && startId && this.workspace.hasView(startId)) {
+      this.workspace.openView(startId);
+    }
+
     if (saved?.activeTab && this.workspace.hasView(saved.activeTab)) {
       this.workspace.openView(saved.activeTab); // ensures it's open AND active
     }
@@ -75,6 +88,36 @@ export class SojusApp implements IApp {
     };
     this.workspace.tabs.subscribe(persist);
     this.workspace.activeTabId.subscribe(persist);
+  }
+
+  /** The view id to open as the home, or null for "Letzte Sitzung" / none. */
+  private resolveStartPageId(): string | null {
+    const pref = this.config.get<string>('core', 'startPage');
+    if (pref === LAST_SESSION) return null;
+    if (pref && this.workspace.hasView(pref)) return pref;
+    return this.navigation.defaultStartPageId();
+  }
+
+  /**
+   * The current start-page preference for the settings UI: the stored choice,
+   * or — when unset — the plugin-flagged default (falling back to "last
+   * session" if no plugin offers one). A value of LAST_SESSION means restore.
+   */
+  getStartPagePref(): string {
+    const stored = this.config.get<string>('core', 'startPage');
+    if (stored) return stored;
+    return this.navigation.defaultStartPageId() ?? LAST_SESSION;
+  }
+
+  /**
+   * Set the start page. A concrete view id also opens that view now, so the
+   * change is immediately visible rather than only on the next launch.
+   */
+  setStartPagePref(value: string): void {
+    this.config.set('core', 'startPage', value);
+    if (value !== LAST_SESSION && this.workspace.hasView(value)) {
+      this.workspace.openView(value);
+    }
   }
 
   private registerCoreCommands(): void {

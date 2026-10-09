@@ -293,6 +293,16 @@ diesen Block, da nur umverdrahtet).*
 - [ ] „Als Hintergrund" (Home/Sperrbildschirm) setzt den System-Hintergrund
 - [ ] Live-Wallpaper aktivieren + Auto-Wechsel-Pool laufen wie vorher
 
+## 18. Kern-Phase · Block 2 — Startseite wählbar (bitte testen)
+*Neuer Kern-Punkt: ein Plugin kann sich als Standard-Startseite anbieten, und du kannst
+die Startseite selbst wählen. Reine Web-Änderung → nur App neu laden.*
+
+- [ ] Einstellungen → **Allgemein** → neuer Block **Start** mit Auswahl **Startseite**
+- [ ] Auswahl listet **Letzte Sitzung** + alle verfügbaren Ansichten (z. B. SKWD Wall)
+- [ ] Startseite auf **SKWD Wall** stellen → die Ansicht öffnet sofort
+- [ ] Alle Tabs schließen + App neu laden → bei fester Startseite öffnet genau diese; bei **Letzte Sitzung** bleibt leer (bzw. kommt später das Onboarding)
+- [ ] Frischer Start (neues Profil / leerer Speicher) landet automatisch auf SKWD Wall statt auf leerem Bildschirm
+
 ## Bekannte Kleinigkeiten
 - Foto-Effekte waren bei großen Bildern leicht verpixelt → Grenze auf 4K erhöht (bitte erneut prüfen).
 - **Video-Wallpaper in der App ruckelt (offen, später fixen):** Ein Video als

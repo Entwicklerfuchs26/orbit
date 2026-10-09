@@ -72,6 +72,8 @@ export default class WallpaperPlugin extends Plugin {
       name: 'SKWD Wall',
       icon: 'image',
       priority: 5,
+      // The star feature — the sensible default home until the user picks another.
+      isStartPage: true,
     });
 
     this.addCommand({

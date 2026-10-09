@@ -32,6 +32,16 @@ export class Navigation {
     );
   }
 
+  /**
+   * The view a plugin flagged as the default start page (lowest priority wins
+   * when several do). Null if no plugin suggests one. This is only the seed
+   * default — the user's choice in config overrides it (see app.restoreWorkspace).
+   */
+  defaultStartPageId(): string | null {
+    const flagged = this.getAll().find((i) => i.isStartPage);
+    return flagged?.viewId ?? null;
+  }
+
   private sync(): void {
     this.store.set(this.getAll());
   }

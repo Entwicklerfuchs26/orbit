@@ -42,6 +42,12 @@ export interface NavigationItem {
   priority?: number;
   /** View type to open when the item is clicked. Defaults to item id. */
   viewId?: string;
+  /**
+   * The plugin suggests this view as the default start page (the home shown on
+   * first launch / an empty session). The user can override the choice in
+   * Settings → Allgemein → Startseite; this is only the seed default.
+   */
+  isStartPage?: boolean;
 }
 
 export interface Command {
