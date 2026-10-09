@@ -1006,6 +1006,10 @@ export class WallpaperManager {
     this.persist();
     if (on) this.pushLive();
   }
+  /** Open Android's live-wallpaper chooser so SKWD Wall becomes the active one. */
+  openLivePicker(): void {
+    void this.live?.openPicker();
+  }
   setWallColumns(n: number): void {
     this.state.update((s) => ({ ...s, wallColumns: n }));
     this.persist();

@@ -105,8 +105,15 @@
   }
 
   function next() {
-    if (last) onDone();
-    else i += 1;
+    if (last) {
+      // If the user enabled live wallpaper in the setup, activate it right away
+      // (open Android's live-wallpaper chooser) instead of making them hunt in
+      // settings. No-op where unsupported (web/desktop).
+      if (liveOn) manager.openLivePicker();
+      onDone();
+    } else {
+      i += 1;
+    }
   }
   function back() {
     if (i > 0) i -= 1;

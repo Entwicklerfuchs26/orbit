@@ -1,6 +1,23 @@
-// Wallhaven search + download, routed through the Vite proxy (/wh/*) to avoid
-// CORS. The app loads from the dev server, so these relative paths work both
-// in the browser and the live-reload Android app.
+// Wallhaven search + download.
+//  - Web / dev: routed through the Vite proxy (/wh/*) to avoid CORS.
+//  - Standalone native app (no dev server): call Wallhaven DIRECTLY. The JSON
+//    API is CORS-fetched via CapacitorHttp (native, bypasses CORS) and images
+//    load straight from th./w.wallhaven.cc (cross-origin <img> needs no CORS).
+import { Capacitor, CapacitorHttp } from '@capacitor/core';
+
+const native = Capacitor.isNativePlatform();
+
+/** Fetch JSON from Wallhaven — native uses CapacitorHttp (no CORS), web uses the proxy. */
+async function whJson(url: string): Promise<any> {
+  if (native) {
+    const res = await CapacitorHttp.get({ url });
+    if (res.status < 200 || res.status >= 300) throw new Error(`Wallhaven ${res.status}`);
+    return typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+  }
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Wallhaven ${res.status}`);
+  return res.json();
+}
 
 export interface WhResult {
   id: string;
@@ -41,10 +58,15 @@ export const DEFAULT_WH_FILTERS: WhFilters = {
 };
 
 function proxify(url: string): string {
+  // Native: use the real URLs (images load cross-origin in <img> without CORS).
+  if (native) return url;
   return url
     .replace('https://th.wallhaven.cc', '/wh/th')
     .replace('https://w.wallhaven.cc', '/wh/img');
 }
+
+/** Base for the search API: direct on native, proxied on web. */
+const WH_API = native ? 'https://wallhaven.cc/api/v1' : '/wh/api';
 
 /** Search Wallhaven (SFW only). Returns a page of results + the last page no. */
 export async function searchWallhaven(
@@ -67,9 +89,7 @@ export async function searchWallhaven(
   if (f.ratio === 'landscape') params.set('ratios', 'landscape');
   else if (f.ratio === 'portrait') params.set('ratios', 'portrait');
 
-  const res = await fetch(`/wh/api/search?${params.toString()}`);
-  if (!res.ok) throw new Error(`Wallhaven ${res.status}`);
-  const json = await res.json();
+  const json = await whJson(`${WH_API}/search?${params.toString()}`);
   const data: any[] = json?.data ?? [];
   const lastPage: number = json?.meta?.last_page ?? page;
   return {
@@ -87,9 +107,18 @@ export async function searchWallhaven(
 
 /** Download a full image (proxied URL) as a File for import. */
 export async function downloadWallhaven(r: WhResult): Promise<File> {
-  const res = await fetch(r.full);
-  if (!res.ok) throw new Error(`Download ${res.status}`);
-  const blob = await res.blob();
+  let blob: Blob;
+  if (native) {
+    // Direct URL → CapacitorHttp (bypasses CORS); returns the body as base64.
+    const res = await CapacitorHttp.get({ url: r.full, responseType: 'blob' });
+    if (res.status < 200 || res.status >= 300) throw new Error(`Download ${res.status}`);
+    const mime = res.headers?.['Content-Type'] || res.headers?.['content-type'] || 'image/jpeg';
+    blob = await (await fetch(`data:${mime};base64,${res.data}`)).blob();
+  } else {
+    const res = await fetch(r.full);
+    if (!res.ok) throw new Error(`Download ${res.status}`);
+    blob = await res.blob();
+  }
   const ext = (blob.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
   return new File([blob], `wallhaven-${r.id}.${ext}`, { type: blob.type });
 }

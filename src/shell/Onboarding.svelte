@@ -40,8 +40,12 @@
 
   const exploreSlides = [
     {
+      title: 'Eine Oberfläche für alles',
+      body: 'Die Idee hinter Orbit: Programme, Apps, Web-Dienste – alles bekommt dieselbe, durchdachte und wirklich schöne Oberfläche. Ein einheitliches, erstklassiges Bedienerlebnis, egal was du gerade tust, statt für jedes Tool ein anderes Design zu lernen.',
+    },
+    {
       title: 'Alles ist ein Plugin',
-      body: 'Orbit selbst ist nur ein schlanker Kern. Chat, Notizen, Wallpaper, Design – alles kommt als Plugin dazu. Du baust dir genau das, was du brauchst.',
+      body: 'Der Kern ist bewusst schlank. Chat, Notizen, Wallpaper, Nextcloud, Design – alles kommt als Plugin dazu und fügt sich nahtlos in dasselbe Design ein. Du baust dir genau das, was du brauchst.',
     },
     {
       title: 'Ein Store ohne Server',
@@ -49,7 +53,7 @@
     },
     {
       title: 'Überall dein Orbit',
-      body: 'Dieselbe Oberfläche auf Handy, Desktop und Web – mit einem Theme, das sich anpasst. Später wird Orbit sogar dein Android-Startbildschirm.',
+      body: 'Dasselbe Zuhause auf Handy, Desktop und Web – mit einem Theme, das sich anpasst. Später wird Orbit sogar dein Android-Startbildschirm.',
     },
   ];
 
