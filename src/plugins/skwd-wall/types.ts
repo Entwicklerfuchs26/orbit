@@ -285,6 +285,14 @@ export interface WallpaperState {
   trashedItems: TrashItem[];
   trashRetentionDays: number;
   trashAutoDelete: boolean;
+  // --- AI connection (just the connection details; tagging backend comes later) ---
+  aiEnabled: boolean;
+  aiEndpoint: string;
+  aiModel: string;
+  aiApiKey: string;
+  // --- Storage paths (native folder integration comes later) ---
+  wallpaperDir: string;
+  videoDir: string;
 }
 
 export const DEFAULT_STATE: WallpaperState = {
@@ -349,6 +357,12 @@ export const DEFAULT_STATE: WallpaperState = {
   trashedItems: [],
   trashRetentionDays: 30,
   trashAutoDelete: false,
+  aiEnabled: false,
+  aiEndpoint: 'http://localhost:11434',
+  aiModel: '',
+  aiApiKey: '',
+  wallpaperDir: '',
+  videoDir: '',
 };
 
 export const VIEW_MODES: { value: ViewMode; label: string; icon: string }[] = [

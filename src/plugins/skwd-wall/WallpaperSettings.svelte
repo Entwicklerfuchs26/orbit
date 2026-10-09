@@ -170,6 +170,26 @@
         { key: 'whApiKey', type: 'text', label: 'API-Key (für NSFW)', placeholder: 'Wallhaven API-Key' },
       ],
     },
+    // KI (nur Anschluss — Tagging-Backend folgt)
+    {
+      title: 'KI',
+      defs: [
+        { key: 'aiEnabled', type: 'toggle', label: 'KI anschließen', desc: 'Später: automatisches Tagging. Vorerst nur die Verbindungsdaten.' },
+        { key: 'aiEndpoint', type: 'text', label: 'Endpunkt', placeholder: 'http://localhost:11434', show: () => s.aiEnabled },
+        { key: 'aiModel', type: 'text', label: 'Modell', placeholder: 'z. B. llava / wd14-tagger', show: () => s.aiEnabled },
+        { key: 'aiApiKey', type: 'text', label: 'API-Key (optional)', placeholder: 'falls nötig', show: () => s.aiEnabled },
+        { type: 'custom', customId: 'aiNote', show: () => s.aiEnabled },
+      ],
+    },
+    // Speicherort / Pfade
+    {
+      title: 'Speicherort',
+      defs: [
+        { key: 'wallpaperDir', type: 'text', label: 'Wallpaper-Ordner', placeholder: 'Standard (App-Speicher)' },
+        { key: 'videoDir', type: 'text', label: 'Video-Wallpaper-Ordner', placeholder: 'Standard = Wallpaper-Ordner' },
+        { type: 'custom', customId: 'pathsNote' },
+      ],
+    },
     // Menü
     {
       title: 'Menü',
@@ -221,7 +241,7 @@
   }
 </script>
 
-<SettingsView {schema} custom={{ live, presets, themePresets, osTargets, schedule, trash }} />
+<SettingsView {schema} custom={{ live, presets, themePresets, osTargets, schedule, trash, aiNote, pathsNote }} />
 
 {#snippet live()}
   {#if liveActive === true}<p class="hint ok">✓ „SKWD Wall" ist als Live-Wallpaper aktiv.</p>
@@ -320,6 +340,14 @@
     </div>
     <button class="btn danger" onclick={() => manager.emptyTrash()}>Papierkorb leeren</button>
   {/if}
+{/snippet}
+
+{#snippet aiNote()}
+  <p class="hint">Nur die Verbindung — das eigentliche KI-Tagging (für Anime am besten ein WD14-/DeepDanbooru-Tagger) kommt als eigener Block.</p>
+{/snippet}
+
+{#snippet pathsNote()}
+  <p class="hint">Leer = App-Speicher (Standard). Eigene Ordner + „direkt ohne Hochladen nutzen" brauchen Datei-Zugriff am Gerät — das kommt als nativer Block; die Pfade werden schon gemerkt.</p>
 {/snippet}
 
 {#if pickerRuleId}
