@@ -148,6 +148,10 @@ export class PluginLoader {
         return { ok: false, error: 'Ungültiges Plugin: manifest.id oder default-Export fehlt.' };
       }
       this.register({ manifest: mod.manifest, default: mod.default });
+      // Hot-swap: if an older build is already loaded (update/reinstall in the
+      // same session), unload it first — otherwise load() short-circuits on
+      // "already loaded" and the old instance keeps running (stale UI/commands).
+      if (this.loaded.has(mod.manifest.id)) await this.unload(mod.manifest.id);
       await this.load(mod.manifest.id);
       if (!this.loaded.has(mod.manifest.id)) {
         return { ok: false, error: 'Plugin konnte nicht geladen werden (siehe Konsole).' };
