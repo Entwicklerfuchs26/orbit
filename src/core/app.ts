@@ -8,6 +8,7 @@ import { ThemeEngine } from './theme';
 import { detectPlatform } from './platform';
 import { CapabilityRegistry } from './capabilities';
 import { PluginStore } from './sources';
+import type { StorePluginEntry } from './sources';
 import { installRuntime } from './runtime';
 import type { PluginModule } from './loader';
 
@@ -111,8 +112,20 @@ export class SojusApp implements IApp {
    * views/nav/commands), mark onboarding done, and open the resulting home.
    */
   async completeOnboarding(pluginIds: string[]): Promise<void> {
+    const registered = new Set(this.plugins.getRegistered().map((m) => m.id));
+    // In the production APK the chosen plugins aren't built in → install them
+    // from the store. In dev they're already registered → just enable.
+    const needStore = pluginIds.some((id) => !registered.has(id));
+    let catalog: StorePluginEntry[] = [];
+    if (needStore) catalog = (await this.pluginStore.catalog()).entries;
+
     for (const id of pluginIds) {
-      await this.plugins.setEnabled(id, true);
+      if (registered.has(id)) {
+        await this.plugins.setEnabled(id, true);
+      } else {
+        const entry = catalog.find((e) => e.id === id);
+        if (entry) await this.pluginStore.install(entry);
+      }
     }
     this.config.set('core', 'onboarded', true);
     const startId = this.resolveStartPageId();

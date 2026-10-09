@@ -110,6 +110,14 @@
   function platformOk(id: string) {
     return app.plugins.supportsPlatform(id);
   }
+  // Already in the app — either built in (registered) or installed from the store.
+  // Such catalog entries aren't offered for install, just marked as present.
+  function isPresent(id: string) {
+    return (
+      (loaded.value, app.plugins.getRegistered().some((m) => m.id === id)) ||
+      app.pluginStore.isInstalled(id)
+    );
+  }
 </script>
 
 {#if open}
@@ -217,8 +225,8 @@
                     {#if e.description}<p class="desc">{e.description}</p>{/if}
                   </div>
                   <div class="actions">
-                    {#if app.pluginStore.isInstalled(e.id)}
-                      <span class="done"><Icon name="check" size={16} /> Installiert</span>
+                    {#if isPresent(e.id)}
+                      <span class="done"><Icon name="check" size={16} /> Bereits vorhanden</span>
                     {:else}
                       <button class="btn primary" onclick={() => install(e)} disabled={installing === e.id}>
                         {installing === e.id ? 'Installiere…' : 'Installieren'}

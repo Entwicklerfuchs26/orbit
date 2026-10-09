@@ -12,11 +12,17 @@ import WelcomePlugin, { manifest as welcomeManifest } from './plugins/welcome/in
 import ThemePlugin, { manifest as themeManifest } from './plugins/theme/index';
 import SkwdWallPlugin, { manifest as skwdWallManifest } from './plugins/skwd-wall/index';
 
-const modules: PluginModule[] = [
-  { manifest: welcomeManifest, default: WelcomePlugin },
-  { manifest: themeManifest, default: ThemePlugin },
-  { manifest: skwdWallManifest, default: SkwdWallPlugin },
-];
+// Builtins ship ONLY in the dev build (live-reload convenience, so Jonas keeps
+// his existing library). The real, shareable APK (production) bundles NO feature
+// plugin — everything comes from the store. In that build this array is empty and
+// onboarding installs the chosen plugins from orbit-plugins.
+const modules: PluginModule[] = import.meta.env.DEV
+  ? [
+      { manifest: welcomeManifest, default: WelcomePlugin },
+      { manifest: themeManifest, default: ThemePlugin },
+      { manifest: skwdWallManifest, default: SkwdWallPlugin },
+    ]
+  : [];
 
 // Preset bundles for first-run onboarding. Defined here (composition root), not
 // in the core — the core never names a specific plugin. "Eigenes" (free pick)
