@@ -89,7 +89,7 @@
   let mode = $derived(wpState.value.viewMode);
   let allItems = $derived(wpState.value.items);
   let activeId = $derived(wpState.value.activeId);
-  let railShown = $derived(pinned || railVisible);
+  let railShown = $derived(pinned || railVisible || wpState.value.alwaysFilterBar);
 
   // ---- Filters & sorting ----
   let search = $state('');
@@ -362,26 +362,39 @@
       : 'repeat(auto-fill, minmax(var(--tile-size, 130px), 1fr))',
   );
 
-  // ---- Honeycomb geometry (geometric mode) ----
-  let hexW = $derived(
-    wpState.value.hexSize > 0
-      ? wpState.value.hexSize
-      : galleryWidth > 0 && galleryWidth < 420
-        ? 84
-        : 108,
-  );
-  const hexGap = 6;
+  // ---- Honeycomb geometry (geometric mode) — horizontal arc scroller (SKWD-style) ----
+  // Fixed number of rows (hexRows); items fill column by column and the strip
+  // scrolls horizontally. With "Arc" on, tiles curve and fade toward the edges.
+  let hexRowCount = $derived(Math.max(1, wpState.value.hexRows));
+  let hexW = $derived.by(() => {
+    if (wpState.value.hexSize > 0) return wpState.value.hexSize;
+    const cols = Math.max(1, wpState.value.hexColumns);
+    return galleryWidth > 0 ? Math.max(56, Math.floor((galleryWidth / cols) * 1.08)) : 108;
+  });
   let hexH = $derived(Math.round(hexW * 1.1547));
-  let hexStepX = $derived(hexW + hexGap);
-  let hexVStep = $derived(Math.round(hexH * 0.75) + 4);
-  let hexCols = $derived(Math.max(1, Math.floor((galleryWidth || hexStepX) / hexStepX)));
-  let hexRows = $derived(items.length ? Math.floor((items.length - 1) / hexCols) : 0);
-  let hexWrapW = $derived(hexCols * hexStepX + hexStepX / 2);
-  let hexWrapH = $derived(hexRows * hexVStep + hexH);
-  function hexPos(i: number) {
-    const row = Math.floor(i / hexCols);
-    const col = i % hexCols;
-    return { x: col * hexStepX + (row % 2 ? hexStepX / 2 : 0), y: row * hexVStep };
+  let hexStepX = $derived(Math.round(hexW * 0.78) + 4);
+  let hexVStep = $derived(hexH + 6);
+  let hexColCount = $derived(Math.ceil(items.length / hexRowCount));
+  let hexWrapW = $derived(hexColCount * hexStepX + hexW);
+  let hexWrapH = $derived(hexRowCount * hexVStep + hexVStep / 2 + 14);
+  let hexScroll = $state(0);
+  function hexBase(i: number) {
+    const col = Math.floor(i / hexRowCount);
+    const row = i % hexRowCount;
+    return { x: col * hexStepX, y: row * hexVStep + (col % 2 ? hexVStep / 2 : 0) };
+  }
+  function hexStyle(i: number): string {
+    const b = hexBase(i);
+    let ty = 0;
+    let op = 1;
+    if (wpState.value.hexArc && galleryWidth > 0) {
+      const centerX = hexScroll + galleryWidth / 2;
+      const d = (b.x + hexW / 2 - centerX) / (galleryWidth / 2); // -1..1 across viewport
+      ty = wpState.value.hexArcIntensity * 1.3 * (d * d); // edges dip down → arc
+      const ad = Math.abs(d);
+      op = ad > 0.78 ? Math.max(0, 1 - (ad - 0.78) / 0.22) : 1; // fade outer ~22%
+    }
+    return `left:${b.x}px;top:${b.y}px;width:${hexW}px;height:${hexH}px;transform:translateY(${ty}px);opacity:${op};`;
   }
 
   // ---- Card hand (fan) transforms ----
@@ -635,7 +648,17 @@
   }
   function select(id: string) {
     manager.setActive(id);
+    // "Close on selection": collapse the rail/panels right after picking.
+    if (wpState.value.closeOnSelection) {
+      activePanel = null;
+      railVisible = false;
+    }
   }
+
+  // "Always show search bar": keep the search panel open.
+  $effect(() => {
+    if (wpState.value.alwaysSearchBar && !activePanel) activePanel = 'search';
+  });
 </script>
 
 {#snippet tileInner(item: WallpaperItem)}
@@ -695,13 +718,15 @@
         <button class="upload-cta" onclick={clearFilters}>Filter zurücksetzen</button>
       </div>
     {:else if mode === 'geometric'}
-      <div class="hexwrap" style="width:{hexWrapW}px;height:{hexWrapH}px">
-        {#each items as item, i (item.id)}
-          <button class="tile hex" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
-            style="left:{hexPos(i).x}px;top:{hexPos(i).y}px;width:{hexW}px;height:{hexH}px;{bg(item.id)}" title={item.name}>
-            {@render tileInner(item)}
-          </button>
-        {/each}
+      <div class="hexscroll" style="height:{hexWrapH}px" onscroll={(e) => (hexScroll = (e.currentTarget as HTMLElement).scrollLeft)}>
+        <div class="hexwrap" style="width:{hexWrapW}px;height:{hexWrapH}px">
+          {#each items as item, i (item.id)}
+            <button class="tile hex" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+              style="{hexStyle(i)}{bg(item.id)}" title={item.name}>
+              {@render tileInner(item)}
+            </button>
+          {/each}
+        </div>
       </div>
     {:else if mode === 'sandy'}
       <div class="sandy">
@@ -737,7 +762,9 @@
     {:else}
       <div class="gallery">
         {#each items as item (item.id)}
-          <button class="tile" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }} style={bg(item.id)} title={item.name}>
+          <button class="tile" class:active={item.id === activeId}
+            class:featured={mode === 'slices' && wpState.value.slicesFeatured && item.id === activeId}
+            use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }} style={bg(item.id)} title={item.name}>
             {@render tileInner(item)}
           </button>
         {/each}
@@ -877,7 +904,7 @@
         </div>
         {#if whError}<p class="wh-error">{whError}</p>{/if}
         <div class="wh-scroll" onscroll={onWhScroll}>
-          <div class="wh-grid">
+          <div class="wh-grid" style="grid-template-columns:repeat({wpState.value.whColumns}, 1fr)">
             {#each whResults as r (r.id)}
               <button class="wh-tile" onclick={() => (whPreview = r)} style="background-image:url({r.thumb})" title="Ansehen">
                 <span class="wh-res">{r.resolution}</span>
@@ -1030,6 +1057,7 @@
   [data-mode='slices'] .gallery { grid-template-columns: 1fr; gap: 10px; }
   [data-mode='slices'] .tile { aspect-ratio: var(--slices-aspect, 24 / 7); transform: skewX(calc(-1 * var(--slices-skew, 9deg))); border-radius: 4px; }
   [data-mode='slices'] .tile:nth-child(even) { transform: skewX(var(--slices-skew, 9deg)); }
+  [data-mode='slices'] .tile.featured { aspect-ratio: 24 / 13; outline: 2px solid var(--color-primary); outline-offset: -2px; }
 
   /* ---- Depth (perspective column) ---- */
   [data-mode='depth'] .gallery { grid-template-columns: 1fr; gap: var(--space-4); max-width: 420px; margin: 0 auto; perspective: 1000px; }
@@ -1037,7 +1065,8 @@
   [data-mode='depth'] .tile.active { transform: rotateX(0deg) scale(1.02); }
 
   /* ---- Geometric (honeycomb) ---- */
-  .hexwrap { position: relative; margin: 0 auto; }
+  .hexscroll { width: 100%; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+  .hexwrap { position: relative; }
   .tile.hex { position: absolute; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border-radius: 0; border: none; }
   .tile.hex.active { outline: none; box-shadow: inset 0 0 0 4px var(--color-primary); }
 

@@ -183,6 +183,34 @@ Einstellungen → Ansicht → Modus wählen, direkt darunter erscheinen die pass
 - [ ] **Video** als aktiv wählen → läuft als bewegter System-Hintergrund (stumm, Schleife)
 - [ ] Auto-Wechsel / Zeitplan wechseln auch den Live-Hintergrund mit
 
+## 16. Orbit-Umbau + SKWD-Einstellungen + Papierkorb (bitte testen)
+*Projekt heißt jetzt „Orbit", Plugin „SKWD Wall". Alle Einstellungen laufen über ein
+einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu laden.*
+
+### Einheitliches Aussehen
+- [ ] Alle Einstellungen sehen gleich aus (Name links, Bedienelement rechts)
+- [ ] Menüpunkt heißt „SKWD Wall"; Mobile-Menü sitzt nicht mehr unter Statusleiste/Gestenbalken
+
+### Neue Einstellungen
+- [ ] Ansicht → pro Modus die passenden Regler (Wall-Spalten; Slices Neigung/Höhe/**Featured**; **Hex: Wabengröße/Reihen/Spalten/Scroll-Schritt/Bogen/Bogen-Intensität**; Depth-Neigung; Hand-Fächerung)
+- [ ] **Geometrie-Presets C1–C4**: leeres C tippen speichert die aktuelle Geometrie, gefülltes wendet an, × löscht
+- [ ] Video: **Stummschalten** + **Lautstärke**
+- [ ] Wallpaper: **Neue Wallpaper auto-umfärben** + **Umfärb-Palette** (App-Theme/Catppuccin/Gruvbox/Nord) → beim Hochladen entsteht eine umgefärbte Kopie
+- [ ] Übergang: **Zufalls-Shader pro Wechsel** (statt fester Typ)
+- [ ] Automatischer Wechsel: **Bilder/Videos einschließen**
+- [ ] Verhalten: **Beim Antippen schließen**, **Filterleiste immer zeigen**, **Suchleiste immer zeigen**
+- [ ] Wallhaven: **Spalten** wirken im Online-Raster; **API-Key** gespeichert (NSFW-Freischaltung folgt)
+
+### Papierkorb
+- [ ] Wallpaper löschen (Flip-Karte → Löschen) → landet im **Papierkorb** (Einstellungen → Papierkorb) statt endgültig weg
+- [ ] Papierkorb: **Wiederherstellen** holt es zurück; **Löschen** entfernt endgültig; **Papierkorb leeren**
+- [ ] „Automatisch endgültig löschen" + Aufbewahrungstage (räumt alte beim App-Start)
+
+### View-Fixes (NEU, bitte genau ansehen — erste Version)
+- [ ] **Hex**: scrollt **horizontal**, Waben in **fester Reihenzahl**, bei „Bogen" an krümmen sie sich und **blenden am Rand aus** (Intensität/Größe regelbar)
+- [ ] **Slices**: mit „Großes Bild in der Mitte" wird das aktive Bild größer hervorgehoben
+- [ ] (Depth/Sandy/Hand/Collection bewusst erstmal gelassen — „egal")
+
 ---
 
 ## Bekannte Kleinigkeiten
