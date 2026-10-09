@@ -65,6 +65,17 @@ export const DEFAULT_SOURCES: SourceConfig[] = [
 
 const NS = 'core';
 
+/**
+ * Rewrite an old jsDelivr gh URL to the raw.githubusercontent equivalent, so
+ * entries installed under the previous default source load fresh (jsDelivr's
+ * branch cache served stale builds). No-op for any other URL.
+ *   https://cdn.jsdelivr.net/gh/U/R@REF/path → https://raw.githubusercontent.com/U/R/REF/path
+ */
+function normalizeMain(url: string): string {
+  const m = url.match(/^https:\/\/cdn\.jsdelivr\.net\/gh\/([^/]+)\/([^@/]+)@([^/]+)\/(.+)$/);
+  return m ? `https://raw.githubusercontent.com/${m[1]}/${m[2]}/${m[3]}/${m[4]}` : url;
+}
+
 /** Fetch + normalise a manifest list, resolving relative `main` URLs. */
 async function fetchManifestList(url: string): Promise<StorePluginEntry[]> {
   const res = await fetch(url, { cache: 'no-store' });
@@ -171,8 +182,17 @@ export class PluginStore {
 
   /** Boot: load every installed remote plugin that is enabled. */
   async loadInstalled(): Promise<void> {
-    this.installedStore.set(this.getInstalled());
-    for (const entry of this.getInstalled()) {
+    // Migrate any stored jsDelivr URLs to raw so they load the current build.
+    let changed = false;
+    const list = this.getInstalled().map((e) => {
+      const main = normalizeMain(e.main);
+      if (main !== e.main) changed = true;
+      return { ...e, main };
+    });
+    if (changed) this.persistInstalled(list);
+    else this.installedStore.set(list);
+
+    for (const entry of list) {
       if (this.config.get<boolean>(entry.id, 'enable') === false) continue;
       const result = await this.loader.loadFromUrl(entry.main);
       if (!result.ok) {
