@@ -48,9 +48,13 @@ class PickerView extends View {
       },
     });
 
-    // First-run intro: a click-through that explains the plugin. Shown once,
-    // flag persisted in the plugin's own config.
-    if (this.app.config.get<boolean>('skwd-wall', 'introSeen') !== true) {
+    // First-run intro: a full-screen click-through that explains the plugin.
+    // Phone-only (it's about the swipe rail, live wallpaper, home screen) and
+    // shown once; flag persisted in the plugin's own config.
+    if (
+      this.app.platform.isMobile &&
+      this.app.config.get<boolean>('skwd-wall', 'introSeen') !== true
+    ) {
       this.intro = mount(Intro, {
         target: this.containerEl,
         props: {
