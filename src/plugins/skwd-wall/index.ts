@@ -53,7 +53,14 @@ class PickerView extends View {
   }
   /** Mount the full-screen intro/setup overlay (idempotent). */
   showIntro() {
-    if (this.intro || !this.containerEl) return;
+    if (this.intro) return;
+    // The view's container is assigned by the ViewHost on a later tick, so a
+    // freshly-opened view has no containerEl yet — retry next frame instead of
+    // silently giving up (that left an empty tab when triggered from Plugins).
+    if (!this.containerEl) {
+      requestAnimationFrame(() => this.showIntro());
+      return;
+    }
     this.intro = mount(Intro, {
       target: this.containerEl,
       props: {

@@ -10,9 +10,10 @@
     onToggleCollapse: () => void;
     onOpenSettings: () => void;
     onOpenPlugins: () => void;
+    onGoHome: () => void;
     onOpenCommandPalette: () => void;
   }
-  let { app, collapsed, onToggleCollapse, onOpenSettings, onOpenPlugins, onOpenCommandPalette }: Props =
+  let { app, collapsed, onToggleCollapse, onOpenSettings, onOpenPlugins, onGoHome, onOpenCommandPalette }: Props =
     $props();
 
   const navItems = useStore(app.navigation.store);
@@ -26,10 +27,12 @@
 
 <nav class="sidebar" class:collapsed>
   <div class="top">
-    <button class="icon-btn brand" onclick={onToggleCollapse} title="Menü">
+    <button class="icon-btn" onclick={onToggleCollapse} title="Menü">
       <Icon name="menu" size={22} />
-      {#if !collapsed && SHOW_WORDMARK}<span class="brand-text">{APP_NAME}</span>{/if}
     </button>
+    {#if !collapsed && SHOW_WORDMARK}
+      <button class="brand-text" onclick={onGoHome} title="Zur Startseite">{APP_NAME}</button>
+    {/if}
   </div>
 
   <button class="search-btn" onclick={onOpenCommandPalette} title="Befehle (Ctrl+P)">
@@ -38,6 +41,10 @@
   </button>
 
   <div class="items">
+    <button class="nav-item" onclick={onGoHome} title="Start">
+      <Icon name="home" size={20} />
+      {#if !collapsed}<span>Start</span>{/if}
+    </button>
     {#each navItems.value as item (item.id)}
       <button
         class="nav-item"
@@ -88,19 +95,23 @@
     min-width: var(--sidebar-width-collapsed);
   }
   .top {
-    margin-bottom: var(--space-2);
-  }
-  .brand {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--text);
-    width: 100%;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
   }
   .brand-text {
+    background: transparent;
+    border: none;
     color: var(--accent);
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+  .brand-text:hover {
+    background: var(--bg-hover);
   }
   .search-btn {
     display: flex;

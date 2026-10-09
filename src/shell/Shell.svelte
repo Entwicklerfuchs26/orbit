@@ -8,7 +8,9 @@
   import Settings from './Settings.svelte';
   import Plugins from './Plugins.svelte';
   import Onboarding from './Onboarding.svelte';
+  import { HomeView } from './home';
   import type { Bundle } from '@core/index';
+  import { onMount } from 'svelte';
 
   interface Props {
     app: SojusApp;
@@ -18,6 +20,22 @@
 
   // First run shows the bundle picker; it enables plugins, then this hides.
   let showOnboarding = $state(!app.isOnboarded());
+
+  // Register the Orbit home view so the wordmark / "Start" can switch back to it.
+  onMount(() => {
+    app.workspace.registerView(
+      HomeView.ID,
+      () =>
+        new HomeView(app, {
+          onOpenPlugins: () => (pluginsOpen = true),
+          onOpenSettings: () => (settingsOpen = true),
+          openView: (viewId) => app.workspace.openView(viewId),
+        }),
+    );
+  });
+  function goHome() {
+    app.workspace.openView(HomeView.ID);
+  }
 
   let collapsed = $state(app.platform.isMobile);
   let paletteOpen = $state(false);
@@ -62,6 +80,10 @@
             pluginsOpen = true;
             mobileNavOpen = false;
           }}
+          onGoHome={() => {
+            goHome();
+            mobileNavOpen = false;
+          }}
           onOpenCommandPalette={() => {
             paletteOpen = true;
             mobileNavOpen = false;
@@ -76,6 +98,7 @@
       onToggleCollapse={() => (collapsed = !collapsed)}
       onOpenSettings={() => (settingsOpen = true)}
       onOpenPlugins={() => (pluginsOpen = true)}
+      onGoHome={goHome}
       onOpenCommandPalette={() => (paletteOpen = true)}
     />
   {/if}
