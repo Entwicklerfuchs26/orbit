@@ -12,6 +12,23 @@
   function visible(show?: () => boolean): boolean {
     return show ? !!show() : true;
   }
+
+  // Distinct categories (in order) among visible sections → tab bar.
+  let cats = $derived.by(() => {
+    const seen: string[] = [];
+    for (const s of schema.sections) {
+      if (s.category && visible(s.show) && !seen.includes(s.category)) seen.push(s.category);
+    }
+    return seen;
+  });
+  let activeCat = $state('');
+  $effect(() => {
+    if (cats.length && !cats.includes(activeCat)) activeCat = cats[0];
+  });
+  function sectionVisible(sec: { show?: () => boolean; category?: string }): boolean {
+    if (!visible(sec.show)) return false;
+    return cats.length === 0 || sec.category === activeCat;
+  }
   function num(e: Event): number {
     return Number((e.target as HTMLInputElement).value);
   }
@@ -21,8 +38,15 @@
 </script>
 
 <div class="settings">
+  {#if cats.length > 1}
+    <div class="cat-tabs">
+      {#each cats as c (c)}
+        <button class="cat-tab" class:on={activeCat === c} onclick={() => (activeCat = c)}>{c}</button>
+      {/each}
+    </div>
+  {/if}
   {#each schema.sections as section (section.title ?? section.defs)}
-    {#if visible(section.show)}
+    {#if sectionVisible(section)}
       {#if section.title}<h3>{section.title}</h3>{/if}
       {#each section.defs as def (def.key ?? def.label ?? def.customId)}
         {#if visible(def.show)}
@@ -91,6 +115,16 @@
 
 <style>
   .settings { display: flex; flex-direction: column; gap: var(--space-4); }
+  .cat-tabs {
+    position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; flex-wrap: wrap;
+    padding-bottom: var(--space-2); margin: calc(-1 * var(--space-2)) 0 0;
+    background: linear-gradient(var(--bg-elevated, var(--bg)) 80%, transparent);
+  }
+  .cat-tab {
+    padding: 6px 14px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; color: var(--text-muted); font-size: 0.85rem; white-space: nowrap;
+  }
+  .cat-tab.on { background: var(--color-primary); color: #fff; border-color: transparent; font-weight: 600; }
   h3 { margin: var(--space-2) 0 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); }
   h3:first-child { margin-top: 0; }
   .subhead { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-faint); margin-top: var(--space-1); }

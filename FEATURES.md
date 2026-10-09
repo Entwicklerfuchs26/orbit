@@ -211,6 +211,12 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] **Slices**: mit „Großes Bild in der Mitte" wird das aktive Bild größer hervorgehoben
 - [ ] (Depth/Sandy/Hand/Collection bewusst erstmal gelassen — „egal")
 
+### 17. Hex vertikal + Einstellungs-Reiter (bitte testen)
+- [ ] **Hex scrollt vertikal** (hoch/runter), lässt sich wieder scrollen
+- [ ] Mit „Bogen": Waben **krümmen sich** + werden zum Rand kleiner und blenden oben/unten aus (Kurve aus dem SKWD-Original adaptiert)
+- [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
+- [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
+
 ---
 
 ## Bekannte Kleinigkeiten

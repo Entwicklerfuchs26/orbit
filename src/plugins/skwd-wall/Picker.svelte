@@ -383,18 +383,24 @@
     const col = i % hexColCount;
     return { x: col * hexStepX + (row % 2 ? hexStepX / 2 : 0), y: row * hexVStep };
   }
+  const smoothstep = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
   function hexStyle(i: number): string {
     const b = hexBase(i);
     let tx = 0;
+    let sc = 1;
     let op = 1;
     if (wpState.value.hexArc && galleryHeight > 0) {
       const centerY = hexScrollTop + galleryHeight / 2;
       const d = (b.y + hexH / 2 - centerY) / (galleryHeight / 2); // -1..1 across viewport (vertical)
-      tx = wpState.value.hexArcIntensity * 1.3 * (d * d); // top/bottom curve outward → arc
       const ad = Math.abs(d);
-      op = ad > 0.82 ? Math.max(0, 1 - (ad - 0.82) / 0.18) : 1; // fade at top/bottom
+      // SKWD arc curve (cross-axis offset ∝ normalized²) — flipped to horizontal for vertical scroll.
+      tx = wpState.value.hexArcIntensity * 1.3 * (d * d);
+      // SKWD edge shrink: 1 → 0.8 via smoothstep((|d|-0.7)/0.3).
+      sc = 1 - 0.2 * smoothstep((ad - 0.7) / 0.3);
+      // Fade out at the very top/bottom.
+      op = ad > 0.9 ? Math.max(0, 1 - (ad - 0.9) / 0.25) : 1;
     }
-    return `left:${b.x}px;top:${b.y}px;width:${hexW}px;height:${hexH}px;transform:translateX(${tx}px);opacity:${op};`;
+    return `left:${b.x}px;top:${b.y}px;width:${hexW}px;height:${hexH}px;transform:translateX(${tx}px) scale(${sc});opacity:${op};`;
   }
 
   // ---- Card hand (fan) transforms ----

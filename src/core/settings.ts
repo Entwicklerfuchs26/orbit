@@ -51,6 +51,10 @@ export interface SettingDef {
 export interface SettingSection {
   title?: string;
   defs: SettingDef[];
+  /** Optional category — sections with the same category share a tab. When any
+   *  section has a category, <SettingsView> renders a tab bar and shows one
+   *  category at a time (keeps long settings from being one endless scroll). */
+  category?: string;
   /** Only show this whole section when true. */
   show?: () => boolean;
 }

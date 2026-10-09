@@ -54,7 +54,7 @@
     ...(native
       ? [
           {
-            title: 'Geräte',
+            title: 'Geräte', category: 'Verhalten',
             defs: [
               { key: 'deviceMobile', type: 'toggle', label: 'Handy (Android)', desc: 'Systemhintergrund, Live-Wallpaper, Auto-OS. Aus: reine In-App-Ansicht.' },
               { key: 'liveWallpaper', type: 'toggle', label: 'Live-Wallpaper', desc: 'Animierter Systemhintergrund (Bild-Übergänge + Video).', show: () => s.deviceMobile },
@@ -65,7 +65,7 @@
       : []),
     // Ansicht
     {
-      title: 'Ansicht',
+      title: 'Ansicht', category: 'Ansicht',
       defs: [
         { key: 'viewMode', type: 'segment', label: 'Anordnung', options: opt(VIEW_MODES) },
         // per-mode geometry
@@ -84,7 +84,7 @@
     },
     // Erscheinungsbild
     {
-      title: 'Erscheinungsbild',
+      title: 'Erscheinungsbild', category: 'Darstellung',
       defs: [
         { key: 'themeMode', type: 'segment', label: 'Modus', options: [{ value: 'auto', label: 'Auto' }, { value: 'light', label: 'Hell' }, { value: 'dark', label: 'Dunkel' }] },
         { key: 'schemeCharacter', type: 'segment', label: 'Farbcharakter', options: opt(SCHEME_CHARACTERS) },
@@ -98,7 +98,7 @@
     },
     // Wallpaper
     {
-      title: 'Wallpaper',
+      title: 'Wallpaper', category: 'Darstellung',
       defs: [
         { key: 'fillMode', type: 'segment', label: 'Anpassung', options: opt(FILL_MODES) },
         { key: 'dim', type: 'slider', label: 'Abdunkeln', min: 0, max: 0.85, step: 0.05 },
@@ -108,7 +108,7 @@
     },
     // Video
     {
-      title: 'Video',
+      title: 'Video', category: 'Darstellung',
       defs: [
         { key: 'muteVideo', type: 'toggle', label: 'Video stummschalten' },
         { key: 'videoVolume', type: 'slider', label: 'Lautstärke', min: 0, max: 100, step: 5, unit: '%', show: () => !s.muteVideo },
@@ -116,7 +116,7 @@
     },
     // Kacheln
     {
-      title: 'Kacheln',
+      title: 'Kacheln', category: 'Darstellung',
       defs: [
         { key: 'tileSize', type: 'slider', label: 'Größe', min: 80, max: 240, step: 10, unit: 'px' },
         { key: 'tileRadius', type: 'slider', label: 'Eckenradius', min: 0, max: 28, step: 2, unit: 'px' },
@@ -124,7 +124,7 @@
     },
     // Übergang
     {
-      title: 'Übergang beim Wechsel',
+      title: 'Übergang beim Wechsel', category: 'Darstellung',
       defs: [
         { key: 'transitionType', type: 'segment', label: 'Animation', options: opt(TRANSITIONS), show: () => !s.randomShader },
         { key: 'randomShader', type: 'toggle', label: 'Zufalls-Shader pro Wechsel', desc: 'Jedes Mal ein anderer GPU-Übergang.' },
@@ -133,7 +133,7 @@
     },
     // Automatischer Wechsel
     {
-      title: 'Automatischer Wechsel',
+      title: 'Automatischer Wechsel', category: 'Automatik',
       defs: [
         { key: 'randomEnabled', type: 'toggle', label: 'Wallpaper automatisch wechseln' },
         { key: 'randomIntervalSec', type: 'slider', label: 'Intervall', min: 10, max: 3600, step: 10, unit: 's', show: () => s.randomEnabled },
@@ -145,7 +145,7 @@
     },
     // Zeitplan
     {
-      title: 'Zeitplan',
+      title: 'Zeitplan', category: 'Automatik',
       defs: [
         { key: 'scheduleEnabled', type: 'toggle', label: 'Wallpaper nach Uhrzeit wechseln' },
         { type: 'custom', customId: 'schedule', show: () => s.scheduleEnabled },
@@ -153,7 +153,7 @@
     },
     // Verhalten
     {
-      title: 'Verhalten',
+      title: 'Verhalten', category: 'Verhalten',
       defs: [
         { key: 'closeOnSelection', type: 'toggle', label: 'Beim Antippen schließen', desc: 'Picker schließt sich, sobald ein Wallpaper gewählt wird.' },
         { key: 'alwaysFilterBar', type: 'toggle', label: 'Filterleiste immer zeigen' },
@@ -162,7 +162,7 @@
     },
     // Wallhaven
     {
-      title: 'Wallhaven',
+      title: 'Wallhaven', category: 'Quellen',
       defs: [
         { key: 'whColumns', type: 'slider', label: 'Spalten', min: 2, max: 6, step: 1 },
         { key: 'whApiKey', type: 'text', label: 'API-Key (für NSFW)', placeholder: 'Wallhaven API-Key' },
@@ -170,7 +170,7 @@
     },
     // KI (nur Anschluss — Tagging-Backend folgt)
     {
-      title: 'KI',
+      title: 'KI', category: 'Quellen',
       defs: [
         { key: 'aiEnabled', type: 'toggle', label: 'KI anschließen', desc: 'Später: automatisches Tagging. Vorerst nur die Verbindungsdaten.' },
         { key: 'aiEndpoint', type: 'text', label: 'Endpunkt', placeholder: 'http://localhost:11434', show: () => s.aiEnabled },
@@ -181,7 +181,7 @@
     },
     // Speicherort / Pfade
     {
-      title: 'Speicherort',
+      title: 'Speicherort', category: 'Quellen',
       defs: [
         { key: 'wallpaperDir', type: 'text', label: 'Wallpaper-Ordner', placeholder: 'Standard (App-Speicher)' },
         { key: 'videoDir', type: 'text', label: 'Video-Wallpaper-Ordner', placeholder: 'Standard = Wallpaper-Ordner' },
@@ -190,7 +190,7 @@
     },
     // Menü
     {
-      title: 'Menü',
+      title: 'Menü', category: 'Verhalten',
       defs: [
         { key: 'menuSide', type: 'segment', label: 'Seite', options: [{ value: 'left', label: 'Links' }, { value: 'right', label: 'Rechts' }] },
         { key: 'menuMode', type: 'segment', label: 'Verhalten', options: [{ value: 'auto', label: 'Ausblenden' }, { value: 'pinned', label: 'Fest' }] },
@@ -199,7 +199,7 @@
     },
     // Papierkorb
     {
-      title: 'Papierkorb',
+      title: 'Papierkorb', category: 'Daten',
       defs: [
         { key: 'trashAutoDelete', type: 'toggle', label: 'Automatisch endgültig löschen' },
         { key: 'trashRetentionDays', type: 'slider', label: 'Aufbewahrung', min: 1, max: 90, step: 1, unit: ' Tage', show: () => s.trashAutoDelete },
