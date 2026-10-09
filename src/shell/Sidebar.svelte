@@ -9,9 +9,10 @@
     collapsed: boolean;
     onToggleCollapse: () => void;
     onOpenSettings: () => void;
+    onOpenPlugins: () => void;
     onOpenCommandPalette: () => void;
   }
-  let { app, collapsed, onToggleCollapse, onOpenSettings, onOpenCommandPalette }: Props =
+  let { app, collapsed, onToggleCollapse, onOpenSettings, onOpenPlugins, onOpenCommandPalette }: Props =
     $props();
 
   const navItems = useStore(app.navigation.store);
@@ -54,6 +55,10 @@
   </div>
 
   <div class="bottom">
+    <button class="nav-item" onclick={onOpenPlugins} title="Plugins">
+      <Icon name="plugin" size={20} />
+      {#if !collapsed}<span>Plugins</span>{/if}
+    </button>
     <button class="nav-item" onclick={onOpenSettings} title="Einstellungen">
       <Icon name="settings" size={20} />
       {#if !collapsed}<span>Einstellungen</span>{/if}

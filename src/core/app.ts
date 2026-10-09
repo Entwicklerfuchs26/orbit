@@ -7,6 +7,8 @@ import { PluginLoader } from './loader';
 import { ThemeEngine } from './theme';
 import { detectPlatform } from './platform';
 import { CapabilityRegistry } from './capabilities';
+import { PluginStore } from './sources';
+import { installRuntime } from './runtime';
 import type { PluginModule } from './loader';
 
 /** Start-page preference meaning "reopen whatever was open last session". */
@@ -23,6 +25,7 @@ export class SojusApp implements IApp {
   readonly workspace: WorkspaceManager;
   readonly navigation: Navigation;
   readonly plugins: PluginLoader;
+  readonly pluginStore: PluginStore;
   readonly theme: ThemeEngine;
   readonly platform = detectPlatform();
   /** Platform-specific powers (folders, wallpaper…), filled by installCapabilities. */
@@ -35,17 +38,25 @@ export class SojusApp implements IApp {
     this.navigation = new Navigation();
     this.theme = new ThemeEngine();
     this.plugins = new PluginLoader(this, this.config);
+    this.pluginStore = new PluginStore(this.config, this.plugins);
   }
 
   /** Boot sequence: load config, register plugins, load the enabled ones. */
   async boot(modules: PluginModule[]): Promise<void> {
     this.config.load();
     this.theme.init();
+
+    // Publish the core API so remotely-loaded store plugins can bind to it.
+    installRuntime();
+
     this.plugins.registerMany(modules);
 
     // First run: if config is empty, enable nothing yet — the shell shows
     // an onboarding state. Bundles will seed the config in a later phase.
     await this.plugins.loadEnabled();
+
+    // Load plugins installed from the store (remote ESM), enabled ones only.
+    await this.pluginStore.loadInstalled();
 
     this.registerCoreCommands();
     this.restoreWorkspace();

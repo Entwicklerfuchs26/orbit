@@ -96,9 +96,21 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
   Abschluss: `app.completeOnboarding(ids)` aktiviert die Plugins, setzt
   `core.onboarded` und öffnet die Startseite. Kein Auto-Seed mehr; Bestandstester
   werden beim Boot als onboarded markiert. `Bundle`-Typ im Kern (`types.ts`).
-- **Offen / als Nächstes (Kern-Phase):**
-  Plugin-Store (JS-Plugins, evtl. GitHub), eigenständige teilbare APK (bringt kein
-  Plugin mit), danach PC↔Handy-Sync. Deklarative Plugin-Verwaltung auf dem PC
+- **Plugins-Bereich/Store (Kern-Phase Block 4, Fundament erledigt):** Eigener
+  Shell-Bereich `Plugins.svelte` (Sidebar-Punkt neben Einstellungen) mit Tabs
+  Installiert/Store. Quellen-Abstraktion `PluginSource` + `PluginStore`
+  (`src/core/sources.ts`): kuratierte Manifest-Liste (GitHub-JSON) + Direkt-Link
+  (`resolveDirectLink`) heute, spätere Orbit-Webseite als weitere Quelle. Remote-
+  Laden via `loader.loadFromUrl` (dynamischer ESM-`import`) gegen den Laufzeit-Shim
+  `globalThis.Orbit` (`src/core/runtime.ts`, ABI `ORBIT_API_VERSION`), damit fremd-
+  gebaute Plugins die Kern-API teilen statt eine eigene Kopie. Installierte Remote-
+  Plugins + Quellen stehen in Config `core.installed`/`core.sources`; Boot lädt
+  aktivierte nach (`pluginStore.loadInstalled`). OFFEN: ein extern gebautes
+  Beispiel-Plugin zum Beweisen des Pfads; Settings→Plugins ggf. später ausdünnen.
+- **Offen / als Nächstes (Kern-Phase):** Eingebaute Feature-Plugins aus dem APK
+  herauslösen (gegen die Kern-API als „external" bauen, in den Store), **eigenständige
+  teilbare APK** (bringt kein Plugin mit, Wallhaven eigenständig, kein Dev-Server-
+  Zwang), danach PC↔Handy-Sync. Deklarative Plugin-Verwaltung auf dem PC
   (NixOS/Home-Manager) ist angedacht.
 
 ## Schichtenmodell

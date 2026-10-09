@@ -316,6 +316,25 @@ Testen: im Browser Anwendungsdaten/localStorage leeren und neu laden.*
 - [ ] Nach Abschluss erscheint der Dialog bei normalem Neuladen **nicht mehr**
 - [ ] Bestehende Installation (schon Plugins drin) zeigt den Dialog **gar nicht**
 
+## 20. Kern-Phase · Block 4 — Plugins-Bereich/Store (bitte testen)
+*Neuer eigener Punkt **Plugins** in der Sidebar (unten, neben Einstellungen). Tabs
+**Installiert** + **Store** (Manifest-Liste + Direkt-Link). Der Remote-Lade-Weg ist
+gebaut (lädt fremd-gebaute Plugins zur Laufzeit gegen `globalThis.Orbit`); voll
+beweisbar wird er erst mit einem extern gebauten Beispiel-Plugin (Block 5). Reine
+Web-Änderung → nur App neu laden.*
+
+### Installiert
+- [ ] Sidebar unten: **Plugins** öffnet den Bereich
+- [ ] **Installiert** listet die eingebauten Plugins (Name, Typ, Beschreibung) mit An/Aus-Schalter
+- [ ] Zahnrad öffnet die Plugin-Einstellungen inline (z. B. SKWD Wall) + **Zurück**
+- [ ] An/Aus wirkt sofort (Plugin lädt/entlädt, Menüpunkt kommt/geht)
+
+### Store
+- [ ] Tab **Store**: Feld **„Aus GitHub-Link laden"** (Link zur rohen manifest.json)
+- [ ] **Prüfen** mit Unsinn-Link → verständliche Fehlermeldung
+- [ ] Katalog zeigt „noch keine Plugins / Quelle nicht erreichbar" (offizielle Liste existiert noch nicht) — kein Absturz
+- [ ] (Später, mit Beispiel-Plugin:) Installieren lädt + aktiviert ein echtes Remote-Plugin; **Deinstallieren** entfernt es wieder
+
 ## Bekannte Kleinigkeiten
 - Foto-Effekte waren bei großen Bildern leicht verpixelt → Grenze auf 4K erhöht (bitte erneut prüfen).
 - **Video-Wallpaper in der App ruckelt (offen, später fixen):** Ein Video als

@@ -6,6 +6,7 @@
   import ViewHost from './ViewHost.svelte';
   import CommandPalette from './CommandPalette.svelte';
   import Settings from './Settings.svelte';
+  import Plugins from './Plugins.svelte';
   import Onboarding from './Onboarding.svelte';
   import type { Bundle } from '@core/index';
 
@@ -21,6 +22,7 @@
   let collapsed = $state(app.platform.isMobile);
   let paletteOpen = $state(false);
   let settingsOpen = $state(false);
+  let pluginsOpen = $state(false);
   let mobileNavOpen = $state(false);
 
   const activeTab = useStore(app.workspace.activeTabId);
@@ -56,6 +58,10 @@
             settingsOpen = true;
             mobileNavOpen = false;
           }}
+          onOpenPlugins={() => {
+            pluginsOpen = true;
+            mobileNavOpen = false;
+          }}
           onOpenCommandPalette={() => {
             paletteOpen = true;
             mobileNavOpen = false;
@@ -69,6 +75,7 @@
       {collapsed}
       onToggleCollapse={() => (collapsed = !collapsed)}
       onOpenSettings={() => (settingsOpen = true)}
+      onOpenPlugins={() => (pluginsOpen = true)}
       onOpenCommandPalette={() => (paletteOpen = true)}
     />
   {/if}
@@ -86,6 +93,7 @@
 
 <CommandPalette {app} open={paletteOpen} onClose={() => (paletteOpen = false)} />
 <Settings {app} open={settingsOpen} onClose={() => (settingsOpen = false)} />
+<Plugins {app} open={pluginsOpen} onClose={() => (pluginsOpen = false)} />
 
 {#if showOnboarding}
   <Onboarding {app} {bundles} onDone={() => (showOnboarding = false)} />

@@ -120,6 +120,32 @@ export class PluginLoader {
     }
   }
 
+  /**
+   * Load a plugin from a remote ESM URL (store install / direct link). The
+   * module must `export const manifest` + `export default` a Plugin subclass,
+   * built against the runtime API (globalThis.Orbit). Registers + loads it.
+   * Returns a result instead of throwing so the store UI can show the error.
+   */
+  async loadFromUrl(url: string): Promise<{ ok: boolean; id?: string; error?: string }> {
+    try {
+      const mod = (await import(/* @vite-ignore */ url)) as {
+        manifest?: PluginManifest;
+        default?: new (app: App, manifest: PluginManifest) => Plugin;
+      };
+      if (!mod.manifest?.id || typeof mod.default !== 'function') {
+        return { ok: false, error: 'Ungültiges Plugin: manifest.id oder default-Export fehlt.' };
+      }
+      this.register({ manifest: mod.manifest, default: mod.default });
+      await this.load(mod.manifest.id);
+      if (!this.loaded.has(mod.manifest.id)) {
+        return { ok: false, error: 'Plugin konnte nicht geladen werden (siehe Konsole).' };
+      }
+      return { ok: true, id: mod.manifest.id };
+    } catch (e) {
+      return { ok: false, error: (e as Error)?.message ?? String(e) };
+    }
+  }
+
   async unload(id: string): Promise<void> {
     const loaded = this.loaded.get(id);
     if (!loaded) return;

@@ -24,6 +24,10 @@ export interface PluginManifest {
    * (`app.capabilities.has(x)`). The kernel does not block loading on it yet.
    */
   capabilities?: CapabilityName[];
+  /** Store metadata: preview images, source links (optional). */
+  screenshots?: string[];
+  repo?: string;
+  homepage?: string;
 }
 
 export interface PluginConfig {
