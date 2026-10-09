@@ -14,7 +14,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const PLUGINS = ['welcome', 'theme', 'skwd-wall'];
+const PLUGINS = ['skwd-wall'];
 const outDir = resolve(root, 'plugins-dist/registry');
 
 // Minimal runtime shim so we can import a built plugin and read its manifest

@@ -23,12 +23,6 @@ const bundles: Bundle[] = [
     plugins: ['skwd-wall'],
     recommended: true,
   },
-  {
-    id: 'wall-design',
-    name: 'Wallpaper + Design',
-    description: 'SKWD Wall plus das Design-Plugin für eigene Theme-Sets (Farbe, Schrift, Dichte).',
-    plugins: ['skwd-wall', 'theme'],
-  },
 ];
 
 async function main() {

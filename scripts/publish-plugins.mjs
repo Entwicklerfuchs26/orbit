@@ -20,7 +20,7 @@ const clone = process.argv[2];
 if (!clone) throw new Error('Usage: node scripts/publish-plugins.mjs <clone-dir>');
 
 const REPO = 'Entwicklerfuchs26/orbit-plugins';
-const PLUGINS = ['welcome', 'theme', 'skwd-wall'];
+const PLUGINS = ['skwd-wall'];
 const MAX_HISTORY = 12;
 
 // Shim so we can import a built plugin and read its manifest in Node.
