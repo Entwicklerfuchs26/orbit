@@ -12,6 +12,31 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
 
 ---
 
+## 0.1 Verbindliche Entscheidungen (09.10.2026)
+
+1. **Launcher-Modus: JA (Ziel).** Orbit wird (auch) der **Android-Homescreen/
+   Launcher**: überall dasselbe, sich anpassendes Theme, nativer KI-Chat + viele
+   Features direkt im Launcher (Vision: z. B. Obsidian eingebaut). Nur als Launcher
+   sind Homescreen-Gesten („Kreis zeichnen → Plugin öffnet") möglich. Muss nicht
+   zuerst gebaut werden, aber Kern (Navigation, Einstiegspunkte, Gesten-Hooks) wird
+   so angelegt, dass der Launcher später sauber andockt.
+2. **Kern-Aufteilung: universeller Kern + plattformspezifische Kern-Teile.** Ein
+   plattformunabhängiger Kern (überall identisch) PLUS pro Plattform nur die dort
+   sinnvollen Capability-Implementierungen (Android-APIs nur in der Android-App, iOS
+   nur iOS, Desktop/Web eigene). macOS schleppt keine Android-APIs mit. Plugins
+   fragen Capabilities über die Kern-API ab (`hasCapability('folders')`…) und
+   deklarieren benötigte Plattformen/Capabilities.
+3. **Plugin-Store: kein gehosteter Upload-Server (vorerst).** Eigener Bereich
+   **„Plugins"** als eigener Punkt neben den Orbit-Einstellungen. Funktionen:
+   Plugins installieren + updaten; pro Plugin **Screenshots**, Beschreibung,
+   Download-/Aufruf-Zahlen (wenn machbar), **Zielplattform** (welches OS/Handy).
+   Backend-Mechanismus bewusst simpel (z. B. GitHub-Repo/Manifest-Liste) — kein
+   eigener Upload-Server/Mietserver. **APK bringt KEIN Plugin mit**; man lädt sie
+   erst aus dem Plugins-Bereich.
+4. **Deklarative Plugin-Verwaltung am PC (NixOS/Home-Manager): angestrebt.** Kleine
+   Config-Quellen-Abstraktion (localStorage-Default + Datei `~/.config/orbit/
+   config.json`), die ein Home-Manager-Modul schreiben kann.
+
 ## 0. Ist-Zustand (Stand 09.10.2026)
 
 - **Stack entschieden:** TypeScript + **Svelte 5** (Runes) + Vite 6, Mobile via
