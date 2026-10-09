@@ -107,11 +107,23 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
   Plugins + Quellen stehen in Config `core.installed`/`core.sources`; Boot lädt
   aktivierte nach (`pluginStore.loadInstalled`). OFFEN: ein extern gebautes
   Beispiel-Plugin zum Beweisen des Pfads; Settings→Plugins ggf. später ausdünnen.
-- **Offen / als Nächstes (Kern-Phase):** Eingebaute Feature-Plugins aus dem APK
-  herauslösen (gegen die Kern-API als „external" bauen, in den Store), **eigenständige
-  teilbare APK** (bringt kein Plugin mit, Wallhaven eigenständig, kein Dev-Server-
-  Zwang), danach PC↔Handy-Sync. Deklarative Plugin-Verwaltung auf dem PC
-  (NixOS/Home-Manager) ist angedacht.
+- **Plugin-Externalisierung (Kern-Phase Block 5, Pipeline erledigt):**
+  `vite.plugin.config.ts` baut EIN Plugin (`PLUGIN=<id> npm run build:plugin`) als
+  eigenständiges ESM (`plugins-dist/<id>/main.js`): nur `@core` ist external und wird
+  zur Laufzeit an `globalThis.Orbit` gebunden, alles andere (Svelte-Runtime mit
+  `emitCss:false` → Styles im JS, `@shell`, Libraries) wird gebündelt.
+  `scripts/assemble-registry.mjs` baut die Store-Plugins (welcome/theme/skwd-wall) und
+  erzeugt das Repo-fertige Layout `plugins-dist/registry/` (registry.json + pro Plugin
+  main.js/manifest.json) für das **orbit-plugins**-Repo
+  (`github.com/Entwicklerfuchs26/orbit-plugins`, raw registry.json ist die Default-
+  Quelle; relative `main`-Pfade lösen gegen die registry-URL auf). Verifiziert: alle
+  drei Plugins bauen, binden an `globalThis.Orbit`, exportieren manifest+default.
+- **Offen / als Nächstes (braucht Gerät + orbit-plugins live):** eingebaute Plugins
+  aus `main.ts` entfernen (APK bringt kein Feature-Plugin mit), Onboarding installiert
+  dann aus dem Store statt builtins zu aktivieren; **eigenständige APK** (kein
+  Dev-Server-Zwang) + **Wallhaven eigenständig** (im skwd-wall-Plugin: nativer Direkt-
+  Abruf via CapacitorHttp statt Vite-Proxy); danach PC↔Handy-Sync. Deklarative
+  Plugin-Verwaltung auf dem PC (NixOS/Home-Manager) ist angedacht.
 
 ## Schichtenmodell
 

@@ -21,6 +21,9 @@ GL-Live-Wallpaper).
 
 - `npm run dev` → Dev-Server :5173. `npm run check` (Typen) + `npm run build`
   müssen grün sein.
+- Store-Plugin bauen (eigenständiges ESM): `PLUGIN=<id> npm run build:plugin` →
+  `plugins-dist/<id>/main.js` (nur `@core` external → `globalThis.Orbit`, Rest gebündelt).
+  Alle Store-Plugins + Repo-Layout fürs orbit-plugins-Repo: `node scripts/assemble-registry.mjs`.
 - Android-APK: `nix-shell android-shell.nix --run "CAP_SERVER_URL=http://192.168.1.40:5173 npx cap sync android && cd android && ./gradlew assembleDebug"`.
   APK-Download: `http://192.168.1.40:5173/wallpaper.apk` (serveApk-Middleware liest
   direkt aus dem Build-Output — **nicht** nach `static/` kopieren, sonst wandert

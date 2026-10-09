@@ -335,6 +335,18 @@ Web-Änderung → nur App neu laden.*
 - [ ] Katalog zeigt „noch keine Plugins / Quelle nicht erreichbar" (offizielle Liste existiert noch nicht) — kein Absturz
 - [ ] (Später, mit Beispiel-Plugin:) Installieren lädt + aktiviert ein echtes Remote-Plugin; **Deinstallieren** entfernt es wieder
 
+## 21. Kern-Phase · Block 5 — Plugin-Externalisierung (Pipeline, noch nicht im App-Verhalten)
+*Grundlage für „APK bringt kein Plugin mit": Plugins lassen sich jetzt als
+eigenständige Dateien bauen und über den Store nachladen. Noch NICHTS am sichtbaren
+App-Verhalten geändert — die drei Plugins sind weiterhin eingebaut, bis das
+orbit-plugins-Repo befüllt + getestet ist. Nichts zum Antippen hier; eher eine
+Bestätigung, dass der Weg steht.*
+
+- [x] `PLUGIN=welcome|theme|skwd-wall npm run build:plugin` baut je ein eigenständiges `main.js` (verifiziert: bindet an `globalThis.Orbit`, exportiert manifest+default; Styles stecken im JS)
+- [x] `node scripts/assemble-registry.mjs` erzeugt `plugins-dist/registry/` (registry.json + pro Plugin main.js/manifest.json) fürs orbit-plugins-Repo
+- [ ] NÄCHSTER SCHRITT (Gerät): orbit-plugins-Repo befüllen → im Store „Installieren" lädt ein echtes Remote-Plugin; dann eingebaute Plugins aus der APK entfernen + Onboarding installiert aus dem Store
+- [ ] Standalone-APK: Wallhaven ohne Dev-Proxy (nativer Direkt-Abruf), kein Dev-Server-Zwang
+
 ## Bekannte Kleinigkeiten
 - Foto-Effekte waren bei großen Bildern leicht verpixelt → Grenze auf 4K erhöht (bitte erneut prüfen).
 - **Video-Wallpaper in der App ruckelt (offen, später fixen):** Ein Video als

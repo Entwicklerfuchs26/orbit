@@ -53,7 +53,7 @@ export const DEFAULT_SOURCES: SourceConfig[] = [
   {
     id: 'orbit-official',
     label: 'Orbit (offiziell)',
-    url: 'https://raw.githubusercontent.com/entwicklerfuchs/orbit-plugins/main/registry.json',
+    url: 'https://raw.githubusercontent.com/Entwicklerfuchs26/orbit-plugins/main/registry.json',
   },
 ];
 
