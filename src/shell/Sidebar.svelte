@@ -41,10 +41,6 @@
   </button>
 
   <div class="items">
-    <button class="nav-item" onclick={onGoHome} title="Start">
-      <Icon name="home" size={20} />
-      {#if !collapsed}<span>Start</span>{/if}
-    </button>
     {#each navItems.value as item (item.id)}
       <button
         class="nav-item"
