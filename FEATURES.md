@@ -218,16 +218,18 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
 ### 18. Ansichten komplett neu aus SKWD-Quellcode (bitte testen)
-*Alle Modi außer Wall sind jetzt auf das **aktive Bild zentriert** (wie im SKWD-Original):
-antippen = wird zur Mitte, der Rest gleitet animiert nach. Reine Web-Änderung → nur neu laden.*
+*Alle Modi außer Wall sind auf das **aktive Bild zentriert** (wie im SKWD-Original):
+Nachbar antippen = wird zur Mitte, der Rest gleitet animiert nach. **Alles gleitet
+vertikal (oben↔unten)**, nie horizontal. Reine Web-Änderung → nur neu laden.*
+- [ ] **FREEZE weg**: In allen Modi (bes. Slices) öffnet die Swipe-Leiste wieder normal, nichts eingefroren
 - [ ] **Hex: Streifen verschieben** (Ansicht → Regler) schiebt das ganze Wabenmuster horizontal zum Zentrieren
-- [ ] **Slices**: Filmstreifen — aktives Bild breit in der Mitte, Nachbarn schmale Streifen, Ränder blenden aus; Nachbar antippen = gleitet in die Mitte
-- [ ] **Depth**: Tiefenstapel — aktives Bild groß mittig, nach außen logarithmisch kleiner werdend
-- [ ] **Sandy**: großes Hero-Bild oben + Thumbnail-Band unten, auf das aktive zentriert
-- [ ] **Hand**: Kartenfächer um das aktive Bild zentriert (Ränder nach unten/hinten gebogen)
+- [ ] **Slices**: aktives Bild groß in der Mitte, Nachbarn schmale Bänder **darüber/darunter**, Ränder blenden aus; Nachbar antippen = gleitet **vertikal** in die Mitte
+- [ ] **Depth**: Tiefenstapel **vertikal** — aktives Bild groß mittig, nach oben/unten logarithmisch kleiner
+- [ ] **Sandy**: großes Hero-Bild in der Mitte + **vertikale** Thumbnail-Spalte am Rand (gegenüber der Swipe-Leiste)
+- [ ] **Hand**: Kartenfächer **vertikal** um das aktive Bild (Karten biegen seitlich aus)
 - [ ] **Collection**: gekippter Kartenstapel, aktives Bild steht aufrecht groß vorn
 - [ ] **Wall**: unverändert (sauberes Raster)
-- [ ] Modus-Regler passen: Wall-Spalten · Slices-Neigung · Hand-Fächerung · Hex (Spalten/Größe/Bogen/Verschieben); tote Regler (Slices-Höhe/Featured, Depth-Neigung) sind raus
+- [ ] Modus-Regler passen: Wall-Spalten · Hand-Fächerung · Hex (Spalten/Größe/Bogen/Verschieben); tote Regler (Slices-Neigung/Höhe/Featured, Depth-Neigung) sind raus
 
 ---
 

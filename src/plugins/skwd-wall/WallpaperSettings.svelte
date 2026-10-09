@@ -70,7 +70,6 @@
         { key: 'viewMode', type: 'segment', label: 'Anordnung', options: opt(VIEW_MODES) },
         // per-mode geometry
         { key: 'wallColumns', type: 'slider', label: 'Spalten (0 = Auto)', min: 0, max: 8, step: 1, show: () => vm === 'wall' },
-        { key: 'slicesSkew', type: 'slider', label: 'Neigung der Streifen', min: 0, max: 20, step: 1, unit: '°', show: () => vm === 'slices' },
         { key: 'hexColumns', type: 'slider', label: 'Spalten (über die Breite)', min: 2, max: 6, step: 1, show: () => vm === 'geometric' },
         { key: 'hexSize', type: 'slider', label: 'Wabengröße (0 = Auto nach Spalten)', min: 0, max: 160, step: 4, unit: 'px', show: () => vm === 'geometric' },
         { key: 'hexArc', type: 'toggle', label: 'Bogen beim Scrollen', desc: 'Waben krümmen sich beim Hoch-/Runterscrollen und blenden oben/unten aus.', show: () => vm === 'geometric' },

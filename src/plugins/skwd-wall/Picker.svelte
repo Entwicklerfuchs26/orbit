@@ -414,31 +414,36 @@
   let cx = $derived(galleryWidth / 2);
   let cy = $derived(galleryHeight / 2);
 
-  // SLICES — horizontal filmstrip; the current item expands to a wide centre
-  // panel, neighbours become narrow slices, opacity fades toward the edges.
-  const SLICE_W = 46;
+  // All centred views arrange along the VERTICAL axis (phone is held upright):
+  // the current item sits at the centre, neighbours stack above/below and the
+  // motion on re-select reads top↔bottom. z-index stays well under the rail
+  // (25); the .stage forms its own stacking context so it can never cover it.
+
+  // SLICES — vertical filmstrip; the current item expands to a tall wide panel,
+  // neighbours become thin bands above/below, opacity fades top & bottom.
+  const SLICE_H = 46;
   const SLICE_GAP = 8;
-  let sliceExpandedW = $derived(Math.min(Math.max(galleryWidth * 0.6, 160), 440));
-  let sliceH = $derived(Math.min(Math.max(galleryHeight * 0.62, 180), 480));
+  let sliceW = $derived(Math.min(Math.max(galleryWidth * 0.82, 180), 520));
+  let sliceExpandedH = $derived(Math.min(Math.max(galleryHeight * 0.42, 150), 360));
   function slicesTf(i: number): string {
     const d = i - activeIndex;
-    const stride = SLICE_W + SLICE_GAP;
-    const w = d === 0 ? sliceExpandedW : SLICE_W;
+    const stride = SLICE_H + SLICE_GAP;
+    const h = d === 0 ? sliceExpandedH : SLICE_H;
     let center: number;
     if (d === 0) center = 0;
-    else if (d > 0) center = sliceExpandedW / 2 + SLICE_GAP + (d - 1) * stride + SLICE_W / 2;
-    else center = -(sliceExpandedW / 2 + SLICE_GAP + (-d - 1) * stride + SLICE_W / 2);
-    const half = Math.max(1, galleryWidth / 2);
+    else if (d > 0) center = sliceExpandedH / 2 + SLICE_GAP + (d - 1) * stride + SLICE_H / 2;
+    else center = -(sliceExpandedH / 2 + SLICE_GAP + (-d - 1) * stride + SLICE_H / 2);
+    const half = Math.max(1, galleryHeight / 2);
     const norm = Math.abs(center) / half;
-    const fullZone = Math.min(0.6, (sliceExpandedW / 2 + 2 * stride) / half);
+    const fullZone = Math.min(0.6, (sliceExpandedH / 2 + 2 * stride) / half);
     const op = norm <= fullZone ? 1 : Math.max(0, 1 - (norm - fullZone) / (1.2 - fullZone));
-    const left = cx + center - w / 2;
-    const top = cy - sliceH / 2;
-    return `left:${left}px;top:${top}px;width:${w}px;height:${sliceH}px;opacity:${op};z-index:${1000 - Math.abs(d)};`;
+    const top = cy + center - h / 2;
+    const left = cx - sliceW / 2;
+    return `left:${left}px;top:${top}px;width:${sliceW}px;height:${h}px;opacity:${op};z-index:${20 - Math.abs(d)};`;
   }
 
-  // DEPTH — horizontal log-depth stack; cards shrink and ease outward (ln
-  // falloff) from the big current card in the middle.
+  // DEPTH — vertical log-depth stack; cards shrink and ease outward (ln falloff)
+  // above and below the big current card in the middle.
   const DEPTH_VISIBLE = 11;
   const DEPTH_FALLOFF = 0.55;
   const depthOffset = (d: number) =>
@@ -447,53 +452,54 @@
     const n = i - activeIndex;
     const radius = (DEPTH_VISIBLE - 1) / 2;
     const scale = 1 / (1 + DEPTH_FALLOFF * Math.abs(n));
-    const baseW = Math.min(galleryWidth * 0.5, 360);
-    const baseH = Math.min(galleryHeight * 0.62, 420);
-    const spacing = baseW * 0.5;
-    const natSpan = depthOffset(radius) * spacing + baseW / 2 || 1;
-    const fit = Math.min((galleryWidth / 2 - 36) / natSpan, (galleryHeight * 0.7) / baseH, 1);
+    const baseW = Math.min(galleryWidth * 0.64, 400);
+    const baseH = Math.min(galleryHeight * 0.4, 300);
+    const spacing = baseH * 0.62;
+    const natSpan = depthOffset(radius) * spacing + baseH / 2 || 1;
+    const fit = Math.min((galleryHeight / 2 - 36) / natSpan, (galleryWidth * 0.82) / baseW, 1);
     const w = baseW * fit * scale;
     const h = baseH * fit * scale;
-    const centerX = depthOffset(n) * spacing * fit;
+    const centerY = depthOffset(n) * spacing * fit;
     const op = smoothstep(Math.max(0, Math.min(1, radius + 1 - Math.abs(n))));
-    const left = cx + centerX - w / 2;
-    const top = cy - h / 2;
-    return `left:${left}px;top:${top}px;width:${w}px;height:${h}px;opacity:${op};z-index:${1000 - Math.round(Math.abs(n) * 10)};`;
+    const left = cx - w / 2;
+    const top = cy + centerY - h / 2;
+    return `left:${left}px;top:${top}px;width:${w}px;height:${h}px;opacity:${op};z-index:${20 - Math.round(Math.abs(n) * 2)};`;
   }
 
-  // SANDY — big hero (current) up top + a horizontal thumbnail band at the
-  // bottom, centred on the current item with soft edge fade.
-  let sandyHeroW = $derived(Math.min(galleryWidth * 0.82, 520));
-  let sandyHeroH = $derived(Math.min(galleryHeight * 0.52, 360));
-  const SANDY_TW = 58;
-  const SANDY_TH = 76;
+  // SANDY — big hero (current) in the centre + a vertical thumbnail column on
+  // the edge opposite the rail, centred on the current item with top/bottom fade.
+  let sandyHeroW = $derived(Math.min(galleryWidth * 0.72, 460));
+  let sandyHeroH = $derived(Math.min(galleryHeight * 0.6, 420));
+  const SANDY_TW = 60;
+  const SANDY_TH = 48;
   const SANDY_GAP = 8;
   function sandyStripTf(i: number): string {
     const d = i - activeIndex;
-    const stride = SANDY_TW + SANDY_GAP;
-    const centerX = d * stride;
-    const half = Math.max(1, galleryWidth / 2);
-    const fade = Math.max(0, Math.min(1, (half - Math.abs(centerX)) / (half * 0.55)));
-    const sc = d === 0 ? 1.14 : 1;
+    const stride = SANDY_TH + SANDY_GAP;
+    const centerY = d * stride;
+    const half = Math.max(1, galleryHeight / 2);
+    const fade = Math.max(0, Math.min(1, (half - Math.abs(centerY)) / (half * 0.55)));
+    const sc = d === 0 ? 1.16 : 1;
     const w = SANDY_TW * sc;
     const h = SANDY_TH * sc;
-    const left = cx + centerX - w / 2;
-    const top = galleryHeight - h - 24;
-    return `left:${left}px;top:${top}px;width:${w}px;height:${h}px;opacity:${fade};z-index:${1000 - Math.abs(d)};`;
+    // Column hugs the edge opposite the swipe rail.
+    const colX = side === 'right' ? 18 + SANDY_TW / 2 : galleryWidth - 18 - SANDY_TW / 2;
+    const left = colX - w / 2;
+    const top = cy + centerY - h / 2;
+    return `left:${left}px;top:${top}px;width:${w}px;height:${h}px;opacity:${fade};z-index:${20 - Math.abs(d)};`;
   }
 
-  // HAND — card fan centred on the current card; edges arch down & back, the
-  // current card lifts forward. 2D projection of SKWD's pinhole fan_pose.
+  // HAND — card fan centred on the current card, fanning VERTICALLY: cards step
+  // top→bottom, bow out sideways, and the current card lifts forward.
   function handTf(i: number): string {
     const n = i - activeIndex;
     const an = Math.abs(n);
-    const spread = Math.max(18, wpState.value.handSpread * 4);
-    const x = n * spread;
-    const y = Math.pow(an, 1.7) * 14;
-    const roll = n * (wpState.value.handSpread * 0.6);
-    const sc = (n === 0 ? 1.06 : 1) * (1700 / (1700 + an * 90));
-    const sx = Math.cos(n * 0.12); // fan_angle → horizontal foreshorten
-    return `left:${cx}px;top:${cy}px;transform:translate(-50%,-50%) translate(${x}px,${y}px) rotate(${roll}deg) scale(${sc}) scaleX(${sx});z-index:${1000 - an};opacity:${an > 6 ? 0 : 1};`;
+    const spreadY = Math.max(26, wpState.value.handSpread * 5);
+    const y = n * spreadY;
+    const x = Math.pow(an, 1.7) * 12; // sideways bow
+    const roll = n * (wpState.value.handSpread * 0.5);
+    const sc = (n === 0 ? 1.08 : 1) * (1700 / (1700 + an * 90));
+    return `left:${cx}px;top:${cy}px;transform:translate(-50%,-50%) translate(${x}px,${y}px) rotate(${roll}deg) scale(${sc});z-index:${20 - an};opacity:${an > 6 ? 0 : 1};`;
   }
 
   // COLLECTION — vertical tilted deck; the current card sits big & upright in
@@ -506,7 +512,7 @@
     const sc = active ? 1 : Math.max(0.45, 1 - ad * 0.1);
     const yOff = active ? -size * 0.06 : size * 0.12 + d * size * 0.055;
     const tilt = active ? 0 : -34;
-    const z = active ? 3000 : 1000 - ad;
+    const z = active ? 30 : 20 - ad;
     const op = Math.max(0, Math.min(1, 6 - ad));
     const w = size;
     const h = size * 0.62;
@@ -852,7 +858,7 @@
       <div class="stage sandy">
         <button class="tile sandy-hero" class:active={items[activeIndex].id === activeId}
           use:longpress={{ onLong: () => openDetail(items[activeIndex]), onTap: () => select(items[activeIndex].id) }}
-          style="left:{cx}px;top:{cy - sandyHeroH * 0.28}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[activeIndex].id)}" title={items[activeIndex].name}>
+          style="left:{cx + (side === 'right' ? 28 : -28)}px;top:{cy}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[activeIndex].id)}" title={items[activeIndex].name}>
           {@render tileInner(items[activeIndex])}
         </button>
         {#each items as item, i (item.id)}
@@ -1179,9 +1185,8 @@
   [data-mode='sandy'] .gallery-scroll,
   [data-mode='hand'] .gallery-scroll,
   [data-mode='collection'] .gallery-scroll { overflow: hidden; padding: 0; }
-  .picker.pinned[data-side='right'] .stage,
-  .picker.pinned[data-side='left'] .stage { } /* stage uses true centre; rail floats over it */
-  .stage { position: relative; width: 100%; height: 100%; }
+  /* Own stacking context at z-index 0 → inner tiles can never cover the rail (25). */
+  .stage { position: relative; width: 100%; height: 100%; z-index: 0; }
   .stage.hand, .stage.collection { perspective: 1400px; }
   .stage .tile {
     position: absolute;
@@ -1191,9 +1196,9 @@
     will-change: left, top, transform, opacity;
   }
 
-  /* Slices — tall filmstrip panels, light skew for the reel feel */
-  .tile.slice { border-radius: 6px; transform: skewX(calc(-1 * var(--slices-skew, 6deg))); box-shadow: 0 8px 22px rgba(0,0,0,0.4); }
-  .tile.slice.active { transform: skewX(0deg); box-shadow: 0 14px 34px rgba(0,0,0,0.55); }
+  /* Slices — wide filmstrip bands stacked vertically; active expands tall */
+  .tile.slice { border-radius: 6px; box-shadow: 0 8px 22px rgba(0,0,0,0.4); }
+  .tile.slice.active { box-shadow: 0 14px 34px rgba(0,0,0,0.55); }
 
   /* Depth — log stack, soft shadow grows toward the front */
   .tile.depthcard { border-radius: var(--tile-radius, var(--radius-md)); box-shadow: 0 10px 26px rgba(0,0,0,0.4); }
