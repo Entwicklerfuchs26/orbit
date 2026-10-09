@@ -21,7 +21,9 @@
   // First run shows the bundle picker; it enables plugins, then this hides.
   let showOnboarding = $state(!app.isOnboarded());
 
-  // Register the Orbit home view so the wordmark / "Start" can switch back to it.
+  // Register the Orbit home view so the wordmark can switch back to it, and make
+  // it the universal base: whenever no view is active (first run, or the last
+  // plugin was closed), open Home instead of the bare empty state.
   onMount(() => {
     app.workspace.registerView(
       HomeView.ID,
@@ -32,6 +34,10 @@
           openView: (viewId) => app.workspace.openView(viewId),
         }),
     );
+    const ensureHome = () => {
+      if (!app.workspace.activeTabId.get()) app.workspace.openView(HomeView.ID);
+    };
+    app.workspace.activeTabId.subscribe(ensureHome);
   });
   function goHome() {
     app.workspace.openView(HomeView.ID);

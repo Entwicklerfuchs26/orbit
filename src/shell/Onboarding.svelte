@@ -4,6 +4,7 @@
   import { HomeView } from './home';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
+  import { onMount } from 'svelte';
   import Icon from './Icon.svelte';
 
   interface Props {
@@ -12,6 +13,12 @@
     onDone: () => void;
   }
   let { app, bundles, onDone }: Props = $props();
+
+  // Mark onboarding as seen as soon as it shows, so it never nags on later
+  // launches even if the user doesn't click all the way through this time.
+  onMount(() => {
+    app.config.set('core', 'onboarded', true);
+  });
 
   // Wizard: the welcome/choice screen branches into a quick "SKWD Wall" setup
   // or the fuller "Orbit entdecken" track.
