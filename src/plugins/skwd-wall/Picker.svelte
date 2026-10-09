@@ -403,17 +403,114 @@
     return `left:${b.x}px;top:${b.y}px;width:${hexW}px;height:${hexH}px;transform:translateX(${tx}px) scale(${sc});opacity:${op};`;
   }
 
-  // ---- Card hand (fan) transforms ----
-  function handTf(i: number, n: number) {
-    const c = (n - 1) / 2;
-    const rot = (i - c) * wpState.value.handSpread;
-    const lift = Math.pow(Math.abs(i - c), 1.3) * 9;
-    return `transform:rotate(${rot}deg) translateY(${lift}px);z-index:${i};`;
+  // ---- Centred-stage views (Slices / Depth / Sandy / Hand / Collection) ----
+  // Faithful 2D adaptation of SKWD: the ACTIVE item is the camera centre; every
+  // tile is positioned by its signed distance d = index − activeIndex and the
+  // stage animates via CSS transitions when the active item changes.
+  let activeIndex = $derived.by(() => {
+    const idx = items.findIndex((it) => it.id === activeId);
+    return idx < 0 ? 0 : idx;
+  });
+  let cx = $derived(galleryWidth / 2);
+  let cy = $derived(galleryHeight / 2);
+
+  // SLICES — horizontal filmstrip; the current item expands to a wide centre
+  // panel, neighbours become narrow slices, opacity fades toward the edges.
+  const SLICE_W = 46;
+  const SLICE_GAP = 8;
+  let sliceExpandedW = $derived(Math.min(Math.max(galleryWidth * 0.6, 160), 440));
+  let sliceH = $derived(Math.min(Math.max(galleryHeight * 0.62, 180), 480));
+  function slicesTf(i: number): string {
+    const d = i - activeIndex;
+    const stride = SLICE_W + SLICE_GAP;
+    const w = d === 0 ? sliceExpandedW : SLICE_W;
+    let center: number;
+    if (d === 0) center = 0;
+    else if (d > 0) center = sliceExpandedW / 2 + SLICE_GAP + (d - 1) * stride + SLICE_W / 2;
+    else center = -(sliceExpandedW / 2 + SLICE_GAP + (-d - 1) * stride + SLICE_W / 2);
+    const half = Math.max(1, galleryWidth / 2);
+    const norm = Math.abs(center) / half;
+    const fullZone = Math.min(0.6, (sliceExpandedW / 2 + 2 * stride) / half);
+    const op = norm <= fullZone ? 1 : Math.max(0, 1 - (norm - fullZone) / (1.2 - fullZone));
+    const left = cx + center - w / 2;
+    const top = cy - sliceH / 2;
+    return `left:${left}px;top:${top}px;width:${w}px;height:${sliceH}px;opacity:${op};z-index:${1000 - Math.abs(d)};`;
   }
-  // ---- Collection (tilted stack) transforms ----
-  function collTf(i: number, n: number) {
-    const c = (n - 1) / 2;
-    return `transform:translate(${(i - c) * 8}px, ${(i - c) * 4}px) rotate(${(i - c) * 2.5}deg);z-index:${i};`;
+
+  // DEPTH — horizontal log-depth stack; cards shrink and ease outward (ln
+  // falloff) from the big current card in the middle.
+  const DEPTH_VISIBLE = 11;
+  const DEPTH_FALLOFF = 0.55;
+  const depthOffset = (d: number) =>
+    DEPTH_FALLOFF < 1e-4 ? d : Math.sign(d) * (Math.log(1 + DEPTH_FALLOFF * Math.abs(d)) / DEPTH_FALLOFF);
+  function depthTf(i: number): string {
+    const n = i - activeIndex;
+    const radius = (DEPTH_VISIBLE - 1) / 2;
+    const scale = 1 / (1 + DEPTH_FALLOFF * Math.abs(n));
+    const baseW = Math.min(galleryWidth * 0.5, 360);
+    const baseH = Math.min(galleryHeight * 0.62, 420);
+    const spacing = baseW * 0.5;
+    const natSpan = depthOffset(radius) * spacing + baseW / 2 || 1;
+    const fit = Math.min((galleryWidth / 2 - 36) / natSpan, (galleryHeight * 0.7) / baseH, 1);
+    const w = baseW * fit * scale;
+    const h = baseH * fit * scale;
+    const centerX = depthOffset(n) * spacing * fit;
+    const op = smoothstep(Math.max(0, Math.min(1, radius + 1 - Math.abs(n))));
+    const left = cx + centerX - w / 2;
+    const top = cy - h / 2;
+    return `left:${left}px;top:${top}px;width:${w}px;height:${h}px;opacity:${op};z-index:${1000 - Math.round(Math.abs(n) * 10)};`;
+  }
+
+  // SANDY — big hero (current) up top + a horizontal thumbnail band at the
+  // bottom, centred on the current item with soft edge fade.
+  let sandyHeroW = $derived(Math.min(galleryWidth * 0.82, 520));
+  let sandyHeroH = $derived(Math.min(galleryHeight * 0.52, 360));
+  const SANDY_TW = 58;
+  const SANDY_TH = 76;
+  const SANDY_GAP = 8;
+  function sandyStripTf(i: number): string {
+    const d = i - activeIndex;
+    const stride = SANDY_TW + SANDY_GAP;
+    const centerX = d * stride;
+    const half = Math.max(1, galleryWidth / 2);
+    const fade = Math.max(0, Math.min(1, (half - Math.abs(centerX)) / (half * 0.55)));
+    const sc = d === 0 ? 1.14 : 1;
+    const w = SANDY_TW * sc;
+    const h = SANDY_TH * sc;
+    const left = cx + centerX - w / 2;
+    const top = galleryHeight - h - 24;
+    return `left:${left}px;top:${top}px;width:${w}px;height:${h}px;opacity:${fade};z-index:${1000 - Math.abs(d)};`;
+  }
+
+  // HAND — card fan centred on the current card; edges arch down & back, the
+  // current card lifts forward. 2D projection of SKWD's pinhole fan_pose.
+  function handTf(i: number): string {
+    const n = i - activeIndex;
+    const an = Math.abs(n);
+    const spread = Math.max(18, wpState.value.handSpread * 4);
+    const x = n * spread;
+    const y = Math.pow(an, 1.7) * 14;
+    const roll = n * (wpState.value.handSpread * 0.6);
+    const sc = (n === 0 ? 1.06 : 1) * (1700 / (1700 + an * 90));
+    const sx = Math.cos(n * 0.12); // fan_angle → horizontal foreshorten
+    return `left:${cx}px;top:${cy}px;transform:translate(-50%,-50%) translate(${x}px,${y}px) rotate(${roll}deg) scale(${sc}) scaleX(${sx});z-index:${1000 - an};opacity:${an > 6 ? 0 : 1};`;
+  }
+
+  // COLLECTION — vertical tilted deck; the current card sits big & upright in
+  // front, the rest recede below as a shrinking, tilted stack.
+  function collTf(i: number): string {
+    const d = i - activeIndex;
+    const ad = Math.abs(d);
+    const size = Math.min(galleryHeight * 0.5, galleryWidth * 0.7, 420);
+    const active = d === 0;
+    const sc = active ? 1 : Math.max(0.45, 1 - ad * 0.1);
+    const yOff = active ? -size * 0.06 : size * 0.12 + d * size * 0.055;
+    const tilt = active ? 0 : -34;
+    const z = active ? 3000 : 1000 - ad;
+    const op = Math.max(0, Math.min(1, 6 - ad));
+    const w = size;
+    const h = size * 0.62;
+    return `left:${cx}px;top:${cy}px;width:${w}px;height:${h}px;transform:translate(-50%,-50%) translateY(${yOff}px) rotateX(${tilt}deg) scale(${sc});z-index:${z};opacity:${op};`;
   }
 
   // ---- Vertical swipe-select rail (SKWD-style, right/left edge) ----
@@ -733,33 +830,50 @@
           </button>
         {/each}
       </div>
+    {:else if mode === 'slices'}
+      <div class="stage slices">
+        {#each items as item, i (item.id)}
+          <button class="tile slice" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+            style="{slicesTf(i)}{bg(item.id)}" title={item.name}>
+            {@render tileInner(item)}
+          </button>
+        {/each}
+      </div>
+    {:else if mode === 'depth'}
+      <div class="stage depth">
+        {#each items as item, i (item.id)}
+          <button class="tile depthcard" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+            style="{depthTf(i)}{bg(item.id)}" title={item.name}>
+            {@render tileInner(item)}
+          </button>
+        {/each}
+      </div>
     {:else if mode === 'sandy'}
-      <div class="sandy">
-        <button class="tile featured" class:active={items[0].id === activeId} use:longpress={{ onLong: () => openDetail(items[0]), onTap: () => select(items[0].id) }} style={bg(items[0].id)} title={items[0].name}>
-          {@render tileInner(items[0])}
+      <div class="stage sandy">
+        <button class="tile sandy-hero" class:active={items[activeIndex].id === activeId}
+          use:longpress={{ onLong: () => openDetail(items[activeIndex]), onTap: () => select(items[activeIndex].id) }}
+          style="left:{cx}px;top:{cy - sandyHeroH * 0.28}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[activeIndex].id)}" title={items[activeIndex].name}>
+          {@render tileInner(items[activeIndex])}
         </button>
-        {#if items.length > 1}
-          <div class="sandy-row">
-            {#each items.slice(1) as item (item.id)}
-              <button class="tile dot" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }} style={bg(item.id)} title={item.name}></button>
-            {/each}
-          </div>
-        {/if}
+        {#each items as item, i (item.id)}
+          <button class="tile sandy-thumb" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
+            style="{sandyStripTf(i)}{bg(item.id)}" title={item.name}></button>
+        {/each}
       </div>
     {:else if mode === 'hand'}
-      <div class="hand">
+      <div class="stage hand">
         {#each items as item, i (item.id)}
           <button class="tile fan" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
-            style="{handTf(i, items.length)}{bg(item.id)}" title={item.name}>
+            style="{handTf(i)}{bg(item.id)}" title={item.name}>
             {@render tileInner(item)}
           </button>
         {/each}
       </div>
     {:else if mode === 'collection'}
-      <div class="collection">
+      <div class="stage collection">
         {#each items as item, i (item.id)}
           <button class="tile stack" class:active={item.id === activeId} use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }}
-            style="{collTf(i, items.length)}{bg(item.id)}" title={item.name}>
+            style="{collTf(i)}{bg(item.id)}" title={item.name}>
             {@render tileInner(item)}
           </button>
         {/each}
@@ -768,7 +882,6 @@
       <div class="gallery">
         {#each items as item (item.id)}
           <button class="tile" class:active={item.id === activeId}
-            class:featured={mode === 'slices' && wpState.value.slicesFeatured && item.id === activeId}
             use:longpress={{ onLong: () => openDetail(item), onTap: () => select(item.id) }} style={bg(item.id)} title={item.name}>
             {@render tileInner(item)}
           </button>
@@ -1053,43 +1166,55 @@
   .picker.pinned[data-side='right'] .gallery-scroll { padding-right: 232px; }
   .picker.pinned[data-side='left'] .gallery-scroll { padding-left: 232px; }
 
-  /* ---- Wall ---- */
+  /* ---- Wall (uniform grid) ---- */
   .gallery { display: grid; gap: var(--space-3); }
   [data-mode='wall'] .gallery { grid-template-columns: var(--wall-grid, repeat(auto-fill, minmax(var(--tile-size, 130px), 1fr))); }
   [data-mode='wall'] .tile { aspect-ratio: 3 / 4; }
 
-  /* ---- Slices (skewed strips) ---- */
-  [data-mode='slices'] .gallery { grid-template-columns: 1fr; gap: 10px; }
-  [data-mode='slices'] .tile { aspect-ratio: var(--slices-aspect, 24 / 7); transform: skewX(calc(-1 * var(--slices-skew, 9deg))); border-radius: 4px; }
-  [data-mode='slices'] .tile:nth-child(even) { transform: skewX(var(--slices-skew, 9deg)); }
-  [data-mode='slices'] .tile.featured { aspect-ratio: 24 / 13; outline: 2px solid var(--color-primary); outline-offset: -2px; }
+  /* ---- Centred stages (Slices/Depth/Sandy/Hand/Collection) ----
+     The active item is the camera centre; tiles are absolutely placed by their
+     distance to it and glide into place via CSS transitions on re-select. */
+  [data-mode='slices'] .gallery-scroll,
+  [data-mode='depth'] .gallery-scroll,
+  [data-mode='sandy'] .gallery-scroll,
+  [data-mode='hand'] .gallery-scroll,
+  [data-mode='collection'] .gallery-scroll { overflow: hidden; padding: 0; }
+  .picker.pinned[data-side='right'] .stage,
+  .picker.pinned[data-side='left'] .stage { } /* stage uses true centre; rail floats over it */
+  .stage { position: relative; width: 100%; height: 100%; }
+  .stage.hand, .stage.collection { perspective: 1400px; }
+  .stage .tile {
+    position: absolute;
+    transition: left 0.36s cubic-bezier(0.22,0.61,0.36,1), top 0.36s cubic-bezier(0.22,0.61,0.36,1),
+      width 0.36s cubic-bezier(0.22,0.61,0.36,1), height 0.36s cubic-bezier(0.22,0.61,0.36,1),
+      transform 0.36s cubic-bezier(0.22,0.61,0.36,1), opacity 0.3s ease;
+    will-change: left, top, transform, opacity;
+  }
 
-  /* ---- Depth (perspective column) ---- */
-  [data-mode='depth'] .gallery { grid-template-columns: 1fr; gap: var(--space-4); max-width: 420px; margin: 0 auto; perspective: 1000px; }
-  [data-mode='depth'] .tile { aspect-ratio: 16 / 10; transform: rotateX(var(--depth-tilt, 8deg)); box-shadow: 0 16px 30px rgba(0,0,0,0.45); }
-  [data-mode='depth'] .tile.active { transform: rotateX(0deg) scale(1.02); }
+  /* Slices — tall filmstrip panels, light skew for the reel feel */
+  .tile.slice { border-radius: 6px; transform: skewX(calc(-1 * var(--slices-skew, 6deg))); box-shadow: 0 8px 22px rgba(0,0,0,0.4); }
+  .tile.slice.active { transform: skewX(0deg); box-shadow: 0 14px 34px rgba(0,0,0,0.55); }
 
-  /* ---- Geometric (honeycomb) ---- */
+  /* Depth — log stack, soft shadow grows toward the front */
+  .tile.depthcard { border-radius: var(--tile-radius, var(--radius-md)); box-shadow: 0 10px 26px rgba(0,0,0,0.4); }
+  .tile.depthcard.active { box-shadow: 0 20px 44px rgba(0,0,0,0.6); }
+
+  /* Geometric (honeycomb) */
   .hexwrap { position: relative; margin: 0 auto; }
   .tile.hex { position: absolute; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border-radius: 0; border: none; }
   .tile.hex.active { outline: none; box-shadow: inset 0 0 0 4px var(--color-primary); }
 
-  /* ---- Sandy (featured + circle row) ---- */
-  .sandy { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
-  .tile.featured { width: min(100%, 440px); aspect-ratio: 16 / 10; }
-  .sandy-row { display: flex; gap: var(--space-2); overflow-x: auto; max-width: 100%; padding: var(--space-2); }
-  .tile.dot { width: 58px; height: 58px; border-radius: 50%; flex: 0 0 auto; }
+  /* Sandy — big hero up top + thumbnail band along the bottom */
+  .tile.sandy-hero { transform: translate(-50%, -50%); border-radius: var(--tile-radius, var(--radius-md)); box-shadow: 0 18px 50px rgba(0,0,0,0.55); z-index: 1; }
+  .tile.sandy-thumb { border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
 
-  /* ---- Card hand (fan) ---- */
-  .hand { display: flex; justify-content: center; align-items: flex-end; min-height: 340px; padding-top: var(--space-6); }
-  .tile.fan { width: 130px; aspect-ratio: 2 / 3; margin-left: -46px; transform-origin: bottom center; }
-  .tile.fan:first-child { margin-left: 0; }
-  .tile.fan:hover, .tile.fan.active { z-index: 999 !important; }
+  /* Hand — card fan, centred on the active card */
+  .tile.fan { width: 128px; height: 200px; transform-origin: center; border-radius: 10px; box-shadow: 0 10px 26px rgba(0,0,0,0.45); }
+  .tile.fan.active { box-shadow: 0 18px 40px rgba(0,0,0,0.6); }
 
-  /* ---- Collection (stack) ---- */
-  .collection { position: relative; min-height: 360px; display: grid; place-items: center; }
-  .tile.stack { position: absolute; width: 200px; aspect-ratio: 3 / 4; transition: transform var(--transition); }
-  .tile.stack.active { outline-width: 4px; }
+  /* Collection — vertical tilted deck; active card flips upright to the front */
+  .tile.stack { transform-origin: center; border-radius: var(--tile-radius, var(--radius-md)); box-shadow: 0 14px 34px rgba(0,0,0,0.5); backface-visibility: hidden; }
+  .tile.stack.active { box-shadow: 0 24px 60px rgba(0,0,0,0.6); }
 
   /* ---- Tiles base ---- */
   .tile {

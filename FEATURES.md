@@ -217,6 +217,18 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
+### 18. Ansichten komplett neu aus SKWD-Quellcode (bitte testen)
+*Alle Modi außer Wall sind jetzt auf das **aktive Bild zentriert** (wie im SKWD-Original):
+antippen = wird zur Mitte, der Rest gleitet animiert nach. Reine Web-Änderung → nur neu laden.*
+- [ ] **Hex: Streifen verschieben** (Ansicht → Regler) schiebt das ganze Wabenmuster horizontal zum Zentrieren
+- [ ] **Slices**: Filmstreifen — aktives Bild breit in der Mitte, Nachbarn schmale Streifen, Ränder blenden aus; Nachbar antippen = gleitet in die Mitte
+- [ ] **Depth**: Tiefenstapel — aktives Bild groß mittig, nach außen logarithmisch kleiner werdend
+- [ ] **Sandy**: großes Hero-Bild oben + Thumbnail-Band unten, auf das aktive zentriert
+- [ ] **Hand**: Kartenfächer um das aktive Bild zentriert (Ränder nach unten/hinten gebogen)
+- [ ] **Collection**: gekippter Kartenstapel, aktives Bild steht aufrecht groß vorn
+- [ ] **Wall**: unverändert (sauberes Raster)
+- [ ] Modus-Regler passen: Wall-Spalten · Slices-Neigung · Hand-Fächerung · Hex (Spalten/Größe/Bogen/Verschieben); tote Regler (Slices-Höhe/Featured, Depth-Neigung) sind raus
+
 ---
 
 ## Bekannte Kleinigkeiten
