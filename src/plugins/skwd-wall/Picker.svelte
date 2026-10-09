@@ -395,10 +395,11 @@
       const ad = Math.abs(d);
       // SKWD arc curve (cross-axis offset ∝ normalized²) — flipped to horizontal for vertical scroll.
       tx = wpState.value.hexArcIntensity * 1.3 * (d * d);
-      // SKWD edge shrink: 1 → 0.8 via smoothstep((|d|-0.7)/0.3).
-      sc = 1 - 0.2 * smoothstep((ad - 0.7) / 0.3);
-      // Fade out at the very top/bottom.
-      op = ad > 0.9 ? Math.max(0, 1 - (ad - 0.9) / 0.25) : 1;
+      // Edge shrink + fade begin at `fs` (adjustable) and reach their max at the edge.
+      const fs = Math.min(0.95, Math.max(0.3, wpState.value.hexFadeStart / 100));
+      const span = Math.max(0.05, 1 - fs);
+      sc = 1 - 0.2 * smoothstep((ad - fs) / span);
+      op = ad > fs ? Math.max(0, 1 - (ad - fs) / span) : 1;
     }
     return `left:${b.x}px;top:${b.y}px;width:${hexW}px;height:${hexH}px;transform:translateX(${tx}px) scale(${sc});opacity:${op};`;
   }
@@ -537,7 +538,7 @@
     const w = SANDY_TW * sc;
     const h = SANDY_TH * sc;
     // Column hugs the edge opposite the swipe rail.
-    const colX = side === 'right' ? 18 + SANDY_TW / 2 : galleryWidth - 18 - SANDY_TW / 2;
+    const colX = wpState.value.sandySide === 'left' ? 18 + SANDY_TW / 2 : galleryWidth - 18 - SANDY_TW / 2;
     const left = colX - w / 2;
     const top = cy + centerY - h / 2;
     return `left:${left}px;top:${top}px;width:${w}px;height:${h}px;opacity:${fade};z-index:${20 - Math.abs(d)};`;
@@ -909,7 +910,7 @@
       <div class="stage sandy" onwheel={onStageWheel} onpointerdown={onStagePointerDown} onpointermove={onStagePointerMove} onpointerup={onStagePointerUp} onpointercancel={onStagePointerUp} role="presentation">
         <button class="tile sandy-hero" class:active={items[centerIndex].id === activeId}
           use:longpress={{ onLong: () => openDetail(items[centerIndex]), onTap: () => select(items[centerIndex].id) }}
-          style="left:{cx + (side === 'right' ? 28 : -28)}px;top:{cy}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[centerIndex].id)}" title={items[centerIndex].name}>
+          style="left:{cx + (wpState.value.sandySide === 'left' ? 28 : -28)}px;top:{cy}px;width:{sandyHeroW}px;height:{sandyHeroH}px;{bg(items[centerIndex].id)}" title={items[centerIndex].name}>
           {@render tileInner(items[centerIndex])}
         </button>
         {#each items as item, i (item.id)}

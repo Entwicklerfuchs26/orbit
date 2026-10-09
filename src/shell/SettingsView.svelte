@@ -29,11 +29,59 @@
     if (!visible(sec.show)) return false;
     return cats.length === 0 || sec.category === activeCat;
   }
-  function num(e: Event): number {
-    return Number((e.target as HTMLInputElement).value);
-  }
   function str(e: Event): string {
     return (e.target as HTMLInputElement | HTMLSelectElement).value;
+  }
+
+  // Settle guard: ignore control activation for a moment after the panel opens,
+  // so the tap that OPENED settings can't also flip the control beneath it.
+  let armed = $state(false);
+  $effect(() => {
+    const t = setTimeout(() => (armed = true), 320);
+    return () => clearTimeout(t);
+  });
+
+  // Custom slider: only a horizontal drag (or a deliberate tap) changes the
+  // value. Vertical drags fall through to the list scroll (touch-action: pan-y),
+  // so you can't nudge a slider while scrolling the settings.
+  let sliding: string | null = null;
+  function sliderValue(def: SettingDef): number {
+    return (schema.get(def.key!) as number) ?? (def.min ?? 0);
+  }
+  function sliderPct(def: SettingDef): number {
+    const min = def.min ?? 0;
+    const max = def.max ?? 100;
+    return max === min ? 0 : Math.max(0, Math.min(100, ((sliderValue(def) - min) / (max - min)) * 100));
+  }
+  function applySlider(def: SettingDef, clientX: number, el: HTMLElement) {
+    const rect = el.getBoundingClientRect();
+    const t = rect.width ? Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) : 0;
+    const min = def.min ?? 0;
+    const max = def.max ?? 100;
+    const step = def.step ?? 1;
+    let v = min + t * (max - min);
+    v = Math.round(v / step) * step;
+    v = Math.max(min, Math.min(max, v));
+    schema.set(def.key!, v);
+  }
+  function sliderDown(e: PointerEvent, def: SettingDef) {
+    if (!armed) return;
+    sliding = def.key!;
+    // Do NOT change on down — wait to see if it's a horizontal drag or a tap.
+  }
+  function sliderMove(e: PointerEvent, def: SettingDef) {
+    if (sliding !== def.key) return; // pan-y only delivers horizontal moves here
+    const el = e.currentTarget as HTMLElement;
+    el.setPointerCapture?.(e.pointerId);
+    applySlider(def, e.clientX, el);
+  }
+  function sliderUp(e: PointerEvent, def: SettingDef) {
+    if (sliding !== def.key) return;
+    sliding = null;
+    applySlider(def, e.clientX, e.currentTarget as HTMLElement); // deliberate tap commits
+  }
+  function sliderCancel(def: SettingDef) {
+    if (sliding === def.key) sliding = null; // vertical scroll took over
   }
 </script>
 
@@ -67,28 +115,33 @@
       <div class="meta"><span class="label">{def.label}</span>{#if def.desc}<span class="desc">{def.desc}</span>{/if}</div>
       <button type="button" class="toggle" class:on={!!schema.get(def.key!)} role="switch"
         aria-checked={!!schema.get(def.key!)} aria-label={def.label}
-        onclick={() => schema.set(def.key!, !schema.get(def.key!))}><span class="knob"></span></button>
+        onclick={() => armed && schema.set(def.key!, !schema.get(def.key!))}><span class="knob"></span></button>
     </div>
   {:else if def.type === 'slider'}
     <div class="field">
       <span class="label">{def.label}{#if def.desc} · <span class="inline-desc">{def.desc}</span>{/if}
         <span class="val">{schema.get(def.key!)}{def.unit ?? ''}</span></span>
-      <input type="range" min={def.min ?? 0} max={def.max ?? 100} step={def.step ?? 1}
-        value={schema.get(def.key!) as number} oninput={(e) => schema.set(def.key!, num(e))} />
+      <div class="slider" role="slider" tabindex="0"
+        aria-valuemin={def.min ?? 0} aria-valuemax={def.max ?? 100} aria-valuenow={sliderValue(def)} aria-label={def.label}
+        onpointerdown={(e) => sliderDown(e, def)} onpointermove={(e) => sliderMove(e, def)}
+        onpointerup={(e) => sliderUp(e, def)} onpointercancel={() => sliderCancel(def)}>
+        <div class="slider-track"><div class="slider-fill" style="width:{sliderPct(def)}%"></div></div>
+        <div class="slider-thumb" style="left:{sliderPct(def)}%"></div>
+      </div>
     </div>
   {:else if def.type === 'segment'}
     <div class="field">
       <span class="label">{def.label}</span>
       <div class="seg wrap">
         {#each def.options ?? [] as o (o.value)}
-          <button class:on={schema.get(def.key!) === o.value} onclick={() => schema.set(def.key!, o.value)}>{o.label}</button>
+          <button class:on={schema.get(def.key!) === o.value} onclick={() => armed && schema.set(def.key!, o.value)}>{o.label}</button>
         {/each}
       </div>
     </div>
   {:else if def.type === 'select'}
     <div class="field row">
       <div class="meta"><span class="label">{def.label}</span>{#if def.desc}<span class="desc">{def.desc}</span>{/if}</div>
-      <select value={schema.get(def.key!) as string} onchange={(e) => schema.set(def.key!, str(e))}>
+      <select value={schema.get(def.key!) as string} onchange={(e) => armed && schema.set(def.key!, str(e))}>
         {#each def.options ?? [] as o (o.value)}<option value={o.value}>{o.label}</option>{/each}
       </select>
     </div>
@@ -108,7 +161,7 @@
   {:else if def.type === 'button'}
     <div class="field row">
       <div class="meta"><span class="label">{def.label}</span>{#if def.desc}<span class="desc">{def.desc}</span>{/if}</div>
-      <button class="action" onclick={def.onClick}>{def.buttonLabel ?? 'OK'}</button>
+      <button class="action" onclick={() => armed && def.onClick?.()}>{def.buttonLabel ?? 'OK'}</button>
     </div>
   {/if}
 {/snippet}
@@ -134,8 +187,12 @@
   .label { font-size: 0.9rem; color: var(--text-muted); }
   .desc, .inline-desc { font-size: 0.78rem; color: var(--text-faint); line-height: 1.4; }
   .val { color: var(--text-faint); font-variant-numeric: tabular-nums; }
-  /* pan-y → a vertical drag scrolls the settings list instead of yanking the slider. */
-  input[type='range'] { width: 100%; accent-color: var(--color-primary); touch-action: pan-y; }
+  /* Custom slider: pan-y → vertical drags scroll the list; only horizontal
+     drags / deliberate taps move the value. Prevents accidental nudges. */
+  .slider { position: relative; width: 100%; height: 34px; display: flex; align-items: center; touch-action: pan-y; cursor: pointer; }
+  .slider-track { width: 100%; height: 6px; border-radius: 999px; background: var(--bg-elevated); box-shadow: inset 0 0 0 1px var(--border); overflow: hidden; }
+  .slider-fill { height: 100%; background: var(--color-primary); border-radius: 999px; }
+  .slider-thumb { position: absolute; top: 50%; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.4); transform: translate(-50%, -50%); pointer-events: none; }
   .seg { display: flex; gap: 4px; flex-wrap: wrap; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 3px; }
   .seg button { flex: 1; padding: var(--space-2) var(--space-3); background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-muted); font-size: 0.82rem; white-space: nowrap; }
   .seg button.on { background: var(--color-primary); color: #fff; }

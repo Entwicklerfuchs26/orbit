@@ -253,6 +253,10 @@ export interface WallpaperState {
   hexArcIntensity: number;
   /** Geometric: horizontal shift of the whole honeycomb strip (px). */
   hexOffsetX: number;
+  /** Geometric: where the edge fade/shrink begins (percent of half-height, 30–95). */
+  hexFadeStart: number;
+  /** Sandy: which side the thumbnail column sits on. */
+  sandySide: MenuSide;
   /** Slices: show a larger featured tile in the centre. */
   slicesFeatured: boolean;
   /** Depth: perspective tilt angle in degrees. */
@@ -340,6 +344,8 @@ export const DEFAULT_STATE: WallpaperState = {
   hexArc: true,
   hexArcIntensity: 12,
   hexOffsetX: 0,
+  hexFadeStart: 70,
+  sandySide: 'left',
   slicesFeatured: true,
   depthTilt: 8,
   handSpread: 7,
