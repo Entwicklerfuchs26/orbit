@@ -12,8 +12,10 @@ import type {
   PaletteBehaviour,
   FillMode,
   TransitionType,
+  GeometryPreset,
 } from './types';
-import { DEFAULT_STATE } from './types';
+import { DEFAULT_STATE, TRANSITIONS, RECOLOUR_PALETTES } from './types';
+import { applyEffect } from './effects';
 import { putImage, deleteImage, imageUrl } from './storage';
 import { generateTheme, seedFromImage, type SchemeCharacter, type Finish } from '../theme/palette';
 import {
@@ -66,6 +68,7 @@ export class WallpaperManager {
   async start(): Promise<void> {
     // Resolve object URLs for all stored items.
     await this.refreshUrls();
+    void this.cleanupTrash();
     this.applyActive();
     this.applyFill();
     this.restartRotation();
@@ -116,7 +119,12 @@ export class WallpaperManager {
   }
   private rotateOnce(): void {
     const s = this.state.get();
-    let pool = s.items;
+    let pool = s.items.filter((i) => {
+      const k = i.kind ?? 'image';
+      if (k === 'image' && !s.includeImages) return false;
+      if (k === 'video' && !s.includeVideos) return false;
+      return true;
+    });
     if (s.activeCollectionId) {
       const col = s.collections.find((c) => c.id === s.activeCollectionId);
       const ids = new Set(col?.itemIds ?? []);
@@ -208,7 +216,9 @@ export class WallpaperManager {
 
   private async refreshUrls(): Promise<void> {
     const map: Record<string, string> = {};
-    for (const item of this.state.get().items) {
+    const s = this.state.get();
+    // Resolve library items AND trashed items (so the trash view shows thumbnails).
+    for (const item of [...s.items, ...s.trashedItems]) {
       const url = await imageUrl(item.id);
       if (url) map[item.id] = url;
     }
@@ -217,6 +227,153 @@ export class WallpaperManager {
 
   getUrl(id: string): string | undefined {
     return this.urls.get()[id];
+  }
+
+  /**
+   * Generic setter used by the declarative settings UI (SettingsView): write any
+   * state field by key + run the right side effect. Keeps settings DRY.
+   */
+  setField(key: string, value: unknown): void {
+    this.state.update((s) => ({ ...s, [key]: value }) as WallpaperState);
+    this.persist();
+    switch (key) {
+      case 'schemeCharacter':
+      case 'finish':
+      case 'paletteBehaviour':
+      case 'fixedSeed':
+      case 'themeContrast':
+      case 'sourceColourIndex':
+        this.applyTheme();
+        break;
+      case 'uiScale':
+        this.applyTheme();
+        this.applyUiScale();
+        break;
+      case 'fillMode':
+        this.applyFill();
+        break;
+      case 'dim':
+        this.applyActive();
+        break;
+      case 'randomEnabled':
+      case 'randomIntervalSec':
+      case 'randomFavOnly':
+      case 'includeImages':
+      case 'includeVideos':
+      case 'activeCollectionId':
+        this.restartRotation();
+        this.lastLiveSig = null;
+        this.pushLive();
+        break;
+      case 'scheduleEnabled':
+        this.restartScheduler();
+        break;
+      case 'transitionType':
+      case 'transitionMs':
+      case 'randomShader':
+        this.syncLiveTransition();
+        break;
+      case 'liveWallpaper':
+      case 'deviceMobile':
+        this.lastLiveSig = null;
+        this.pushLive();
+        break;
+      case 'muteVideo':
+      case 'videoVolume':
+        this.applyVideoAudio();
+        break;
+    }
+  }
+
+  private randomGpuType(): TransitionType {
+    const gpu = TRANSITIONS.filter((t) => t.gpu).map((t) => t.value);
+    return gpu.length ? gpu[Math.floor(Math.random() * gpu.length)] : 'fade';
+  }
+
+  /** Apply mute/volume to the in-app background video (if any). */
+  private applyVideoAudio(): void {
+    const v = document.querySelector('#app-wallpaper video') as HTMLVideoElement | null;
+    if (!v) return;
+    const s = this.state.get();
+    v.muted = s.muteVideo;
+    v.volume = Math.max(0, Math.min(1, s.videoVolume / 100));
+  }
+
+  // --- Trash (soft-delete with recovery) ---
+  restoreFromTrash(id: string): void {
+    const t = this.state.get().trashedItems.find((x) => x.id === id);
+    if (!t) return;
+    this.state.update((s) => ({
+      ...s,
+      trashedItems: s.trashedItems.filter((x) => x.id !== id),
+      items: [...s.items, { id: t.id, name: t.name, kind: t.kind, accent: t.accent, tags: t.tags }],
+    }));
+    this.persist();
+    if (!this.state.get().activeId) this.setActive(id);
+    this.lastLiveSig = null;
+    this.pushLive();
+  }
+  async purgeFromTrash(id: string): Promise<void> {
+    await deleteImage(id);
+    const url = this.urls.get()[id];
+    if (url) URL.revokeObjectURL(url);
+    this.urls.update((m) => {
+      const n = { ...m };
+      delete n[id];
+      return n;
+    });
+    this.state.update((s) => ({ ...s, trashedItems: s.trashedItems.filter((x) => x.id !== id) }));
+    this.persist();
+  }
+  async emptyTrash(): Promise<void> {
+    for (const t of [...this.state.get().trashedItems]) await this.purgeFromTrash(t.id);
+  }
+  private async cleanupTrash(): Promise<void> {
+    const s = this.state.get();
+    if (!s.trashAutoDelete) return;
+    const cutoff = Date.now() - s.trashRetentionDays * 86400000;
+    for (const t of s.trashedItems.filter((x) => x.deletedAt < cutoff)) {
+      await this.purgeFromTrash(t.id);
+    }
+  }
+
+  // --- Geometry presets (SELECTOR C1–C4) ---
+  saveGeometryPreset(slot: number): void {
+    const s = this.state.get();
+    const snap: GeometryPreset = {
+      viewMode: s.viewMode,
+      wallColumns: s.wallColumns,
+      slicesSkew: s.slicesSkew,
+      slicesHeight: s.slicesHeight,
+      hexSize: s.hexSize,
+      hexRows: s.hexRows,
+      hexColumns: s.hexColumns,
+      hexScrollStep: s.hexScrollStep,
+      hexArc: s.hexArc,
+      hexArcIntensity: s.hexArcIntensity,
+      depthTilt: s.depthTilt,
+      handSpread: s.handSpread,
+    };
+    this.state.update((st) => {
+      const presets = [...st.geometryPresets];
+      presets[slot] = snap;
+      return { ...st, geometryPresets: presets };
+    });
+    this.persist();
+  }
+  applyGeometryPreset(slot: number): void {
+    const p = this.state.get().geometryPresets[slot];
+    if (!p) return;
+    this.state.update((s) => ({ ...s, ...p }));
+    this.persist();
+  }
+  clearGeometryPreset(slot: number): void {
+    this.state.update((st) => {
+      const presets = [...st.geometryPresets];
+      presets[slot] = null;
+      return { ...st, geometryPresets: presets };
+    });
+    this.persist();
   }
 
   getActive(): WallpaperItem | undefined {
@@ -228,14 +385,16 @@ export class WallpaperManager {
     const s = this.state.get();
     const active = this.getActive();
     const url = active ? (this.getUrl(active.id) ?? null) : null;
+    const type = s.randomShader ? this.randomGpuType() : s.transitionType;
     this.app.theme.setWallpaper({
       url,
       dim: s.dim,
-      transition: { type: s.transitionType, ms: s.transitionMs },
+      transition: { type, ms: s.transitionMs },
       kind: active?.kind ?? 'image',
     });
     this.applyTheme();
     this.applyUiScale();
+    this.applyVideoAudio();
   }
 
   /** Regenerate + apply the full theme (chrome tokens + palette roles). */
@@ -268,7 +427,7 @@ export class WallpaperManager {
     document.documentElement.style.fontSize = `${Math.round(16 * this.state.get().uiScale)}px`;
   }
 
-  async addImage(file: File): Promise<void> {
+  async addImage(file: File, opts?: { skipRecolour?: boolean }): Promise<void> {
     // Collision-proof id: time + random + per-session counter. The old
     // `wp-<len>-<counter>` scheme could repeat after a reload (see constructor).
     const id = `wp-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e9).toString(36)}-${this.idCounter++}`;
@@ -288,17 +447,32 @@ export class WallpaperManager {
     if (!this.state.get().activeId) this.setActive(id);
     this.lastLiveSig = null; // pool grew → re-sync live rotation
     this.pushLive();
+
+    // Auto-recolour: save a palette-recoloured copy alongside the original.
+    if (!opts?.skipRecolour && kind === 'image' && this.state.get().autoRecolour) {
+      void this.addRecolouredCopy(url, item.name).catch(() => {});
+    }
   }
 
+  private recolourColors(): string[] {
+    const s = this.state.get();
+    if (s.recolourPalette !== 'theme') {
+      const pal = RECOLOUR_PALETTES.find((p) => p.value === s.recolourPalette);
+      if (pal?.colors.length) return pal.colors;
+    }
+    const p = this.app.theme.palette.get();
+    return [p.primary, p.secondary, p.tertiary, p.surface, p.surfaceVariant, p.outline, p.onSurface, '#000000', '#ffffff'];
+  }
+
+  private async addRecolouredCopy(srcUrl: string, name: string): Promise<void> {
+    const blob = await applyEffect(srcUrl, 'recolor', this.recolourColors());
+    const file = new File([blob], `${name} · recolor.jpg`, { type: 'image/jpeg' });
+    await this.addImage(file, { skipRecolour: true });
+  }
+
+  /** Soft-delete: move to trash (keep the blob) so it can be restored. */
   async removeImage(id: string): Promise<void> {
-    await deleteImage(id);
-    const url = this.urls.get()[id];
-    if (url) URL.revokeObjectURL(url);
-    this.urls.update((m) => {
-      const n = { ...m };
-      delete n[id];
-      return n;
-    });
+    const item = this.state.get().items.find((i) => i.id === id);
     this.state.update((s) => {
       const items = s.items.filter((i) => i.id !== id);
       const activeId = s.activeId === id ? (items[0]?.id ?? null) : s.activeId;
@@ -307,7 +481,13 @@ export class WallpaperManager {
         ...c,
         itemIds: c.itemIds.filter((x) => x !== id),
       }));
-      return { ...s, items, activeId, collections };
+      const trashedItems = item
+        ? [
+            ...s.trashedItems,
+            { id: item.id, name: item.name, kind: item.kind, accent: item.accent, tags: item.tags, deletedAt: Date.now() },
+          ]
+        : s.trashedItems;
+      return { ...s, items, activeId, collections, trashedItems };
     });
     this.persist();
     this.applyActive();

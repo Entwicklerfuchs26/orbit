@@ -91,6 +91,53 @@ export interface ThemePreset {
   contrast: number;
 }
 
+/** A deleted wallpaper kept in the trash for possible recovery. */
+export interface TrashItem {
+  id: string;
+  name: string;
+  kind?: 'image' | 'video';
+  accent?: string;
+  tags?: string[];
+  /** epoch ms when it was moved to trash. */
+  deletedAt: number;
+}
+
+/** A saved geometry snapshot (SELECTOR custom presets C1–C4). */
+export interface GeometryPreset {
+  viewMode: ViewMode;
+  wallColumns: number;
+  slicesSkew: number;
+  slicesHeight: number;
+  hexSize: number;
+  hexRows: number;
+  hexColumns: number;
+  hexScrollStep: number;
+  hexArc: boolean;
+  hexArcIntensity: number;
+  depthTilt: number;
+  handSpread: number;
+}
+
+/** Named palettes for auto-recolour (SKWD "Recolour theme"). */
+export const RECOLOUR_PALETTES: { value: string; label: string; colors: string[] }[] = [
+  { value: 'theme', label: 'App-Theme', colors: [] }, // uses the live theme palette
+  {
+    value: 'catppuccin',
+    label: 'Catppuccin',
+    colors: ['#1e1e2e', '#313244', '#45475a', '#cdd6f4', '#f5c2e7', '#cba6f7', '#89b4fa', '#94e2d5', '#a6e3a1', '#f9e2af', '#fab387', '#f38ba8'],
+  },
+  {
+    value: 'gruvbox',
+    label: 'Gruvbox',
+    colors: ['#282828', '#3c3836', '#504945', '#ebdbb2', '#fb4934', '#b8bb26', '#fabd2f', '#83a598', '#d3869b', '#8ec07c', '#fe8019', '#d65d0e'],
+  },
+  {
+    value: 'nord',
+    label: 'Nord',
+    colors: ['#2e3440', '#3b4252', '#434c5e', '#eceff4', '#88c0d0', '#81a1c1', '#5e81ac', '#8fbcbb', '#a3be8c', '#ebcb8b', '#d08770', '#bf616a'],
+  },
+];
+
 /** A time-of-day rule: at `time`, switch to the given target. */
 export interface ScheduleRule {
   id: string;
@@ -198,10 +245,46 @@ export interface WallpaperState {
   slicesHeight: number;
   /** Geometric: hex cell width in px; 0 = auto by viewport. */
   hexSize: number;
+  /** Geometric: visible rows / columns, scroll step, arc layout + intensity (×10). */
+  hexRows: number;
+  hexColumns: number;
+  hexScrollStep: number;
+  hexArc: boolean;
+  hexArcIntensity: number;
+  /** Slices: show a larger featured tile in the centre. */
+  slicesFeatured: boolean;
   /** Depth: perspective tilt angle in degrees. */
   depthTilt: number;
   /** Card hand: fan spread, degrees per card. */
   handSpread: number;
+  /** Geometry presets C1–C4 (null = empty slot). */
+  geometryPresets: (GeometryPreset | null)[];
+  // --- Video playback ---
+  muteVideo: boolean;
+  videoVolume: number; // 0–100
+  // --- Auto-recolour new wallpapers ---
+  autoRecolour: boolean;
+  recolourPalette: string;
+  // --- Selector behaviour ---
+  closeOnSelection: boolean;
+  alwaysFilterBar: boolean;
+  alwaysSearchBar: boolean;
+  // --- Random pool content ---
+  includeImages: boolean;
+  includeVideos: boolean;
+  // --- Theme ---
+  /** Which palette slot to seed the theme from (0 = primary). */
+  sourceColourIndex: number;
+  // --- Transitions ---
+  /** Pick a random GPU shader for every transition. */
+  randomShader: boolean;
+  // --- Wallhaven ---
+  whColumns: number;
+  whApiKey: string;
+  // --- Trash ---
+  trashedItems: TrashItem[];
+  trashRetentionDays: number;
+  trashAutoDelete: boolean;
 }
 
 export const DEFAULT_STATE: WallpaperState = {
@@ -241,8 +324,31 @@ export const DEFAULT_STATE: WallpaperState = {
   slicesSkew: 9,
   slicesHeight: 7,
   hexSize: 0,
+  hexRows: 3,
+  hexColumns: 9,
+  hexScrollStep: 1,
+  hexArc: true,
+  hexArcIntensity: 12,
+  slicesFeatured: true,
   depthTilt: 8,
   handSpread: 7,
+  geometryPresets: [null, null, null, null],
+  muteVideo: true,
+  videoVolume: 100,
+  autoRecolour: false,
+  recolourPalette: 'theme',
+  closeOnSelection: false,
+  alwaysFilterBar: false,
+  alwaysSearchBar: false,
+  includeImages: true,
+  includeVideos: true,
+  sourceColourIndex: 0,
+  randomShader: false,
+  whColumns: 3,
+  whApiKey: '',
+  trashedItems: [],
+  trashRetentionDays: 30,
+  trashAutoDelete: false,
 };
 
 export const VIEW_MODES: { value: ViewMode; label: string; icon: string }[] = [
