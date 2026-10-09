@@ -230,6 +230,25 @@
         { type: 'custom', customId: 'trash' },
       ],
     },
+    // Hilfe
+    {
+      title: 'Hilfe', category: 'Verhalten',
+      defs: [
+        {
+          type: 'button',
+          label: 'Einführung',
+          desc: 'Die Willkommens-Tour erneut ansehen.',
+          buttonLabel: 'Erneut anzeigen',
+          show: () => s.deviceMobile,
+          onClick: () => {
+            app.config.set('skwd-wall', 'introSeen', false);
+            // Re-open the view so onOpen() shows the intro again.
+            app.workspace.closeView('wallpaper-picker');
+            app.workspace.openView('wallpaper-picker');
+          },
+        },
+      ],
+    },
   ]);
 
   const schema: SettingsSchema = {
