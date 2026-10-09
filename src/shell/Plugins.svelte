@@ -171,8 +171,8 @@
                     <span class="slider"></span>
                   </label>
                   {#if isRemote(m.id)}
-                    <button class="del" title="Deinstallieren" onclick={() => uninstall(m.id)}>
-                      <Icon name="trash" size={18} />
+                    <button class="btn danger" onclick={() => uninstall(m.id)}>
+                      <Icon name="trash" size={15} /> Deinstallieren
                     </button>
                   {/if}
                 </div>
@@ -296,18 +296,23 @@
   .plat.remote { color: var(--text-muted); background: var(--bg-active); }
   .desc { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
   .actions { display: flex; align-items: center; gap: var(--space-2); }
-  .gear, .del {
+  .gear {
     background: transparent; border: none; color: var(--text-muted);
     padding: var(--space-2); border-radius: var(--radius-md); display: grid; place-items: center;
   }
   .gear:hover { background: var(--bg-hover); color: var(--text); }
-  .del:hover { background: var(--bg-hover); color: var(--danger, #e5484d); }
   .btn {
+    display: inline-flex; align-items: center; gap: 6px;
     background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
     border-radius: var(--radius-md); padding: var(--space-2) var(--space-4); font-size: 0.85rem;
+    cursor: pointer; white-space: nowrap;
   }
   .btn.primary { background: var(--accent); color: var(--accent-text); border-color: transparent; }
-  .btn:disabled { opacity: 0.5; }
+  .btn.danger {
+    background: var(--danger, #e5484d); color: #fff; border-color: transparent;
+  }
+  .btn.danger:hover { filter: brightness(1.08); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
   .link-row { display: flex; gap: var(--space-2); }
   .input {
     flex: 1; background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);

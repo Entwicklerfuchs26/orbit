@@ -152,7 +152,11 @@ export class PluginStore {
 
   /** Install (or update) a plugin: remember it, enable it, load its code now. */
   async install(entry: StorePluginEntry): Promise<{ ok: boolean; error?: string }> {
-    const result = await this.loader.loadFromUrl(entry.main);
+    // Cache-bust the fetch so a (re)install always gets the current build, even
+    // if the browser cached the module URL. The CLEAN url is stored for boot
+    // (cacheable). Date.now is fine here — app runtime, not a workflow.
+    const sep = entry.main.includes('?') ? '&' : '?';
+    const result = await this.loader.loadFromUrl(`${entry.main}${sep}t=${Date.now()}`);
     if (!result.ok) return { ok: false, error: result.error };
     const list = this.getInstalled().filter((e) => e.id !== entry.id);
     list.push(entry);
@@ -161,10 +165,11 @@ export class PluginStore {
     return { ok: true };
   }
 
-  /** Remove a remote plugin: unload it and forget it. */
+  /** Remove a remote plugin: unload + unregister it, forget it, disable it. */
   async uninstall(id: string): Promise<void> {
-    await this.loader.unload(id);
+    await this.loader.unregister(id);
     this.persistInstalled(this.getInstalled().filter((e) => e.id !== id));
+    this.config.set(id, 'enable', false);
   }
 
   /** Boot: load every installed remote plugin that is enabled. */

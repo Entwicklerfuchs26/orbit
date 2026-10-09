@@ -4,6 +4,7 @@ import { mount, unmount } from 'svelte';
 import { WallpaperManager } from './manager';
 import Picker from './Picker.svelte';
 import WallpaperSettings from './WallpaperSettings.svelte';
+import Intro from './Intro.svelte';
 
 export const manifest: PluginManifest = {
   id: 'skwd-wall',
@@ -25,6 +26,7 @@ const VIEW_ID = 'wallpaper-picker';
 
 class PickerView extends View {
   private component: ReturnType<typeof mount> | null = null;
+  private intro: ReturnType<typeof mount> | null = null;
   constructor(app: App, private manager: WallpaperManager) {
     super(app);
   }
@@ -45,8 +47,30 @@ class PickerView extends View {
         manager: this.manager,
       },
     });
+
+    // First-run intro: a click-through that explains the plugin. Shown once,
+    // flag persisted in the plugin's own config.
+    if (this.app.config.get<boolean>('skwd-wall', 'introSeen') !== true) {
+      this.intro = mount(Intro, {
+        target: this.containerEl,
+        props: {
+          app: this.app,
+          onDone: () => {
+            this.app.config.set('skwd-wall', 'introSeen', true);
+            if (this.intro) {
+              unmount(this.intro);
+              this.intro = null;
+            }
+          },
+        },
+      });
+    }
   }
   async onClose() {
+    if (this.intro) {
+      unmount(this.intro);
+      this.intro = null;
+    }
     if (this.component) {
       unmount(this.component);
       this.component = null;

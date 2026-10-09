@@ -146,6 +146,17 @@ export class PluginLoader {
     }
   }
 
+  /**
+   * Forget a plugin module entirely (store uninstall). Without this, unload()
+   * only drops it from `loaded` while it stays `registered` → it keeps showing
+   * as installed/present and can't be reinstalled. Unload first, then unregister.
+   */
+  async unregister(id: string): Promise<void> {
+    await this.unload(id);
+    this.registered.delete(id);
+    this.syncStore();
+  }
+
   async unload(id: string): Promise<void> {
     const loaded = this.loaded.get(id);
     if (!loaded) return;
