@@ -116,6 +116,71 @@ public class FolderAccessPlugin extends Plugin {
         }
     }
 
+    /**
+     * Decode a DOWNSAMPLED thumbnail for the gallery (SKWD-style). Uses
+     * inSampleSize so a 4K image is never fully decoded — keeps scrolling smooth
+     * and memory low. Returns a small JPEG as base64. Full resolution is only
+     * read (via readFile) when the wallpaper is actually applied.
+     */
+    @PluginMethod
+    public void thumbnail(PluginCall call) {
+        String uriStr = call.getString("uri");
+        int max = call.getInt("max", 400);
+        if (uriStr == null) {
+            call.reject("missing uri");
+            return;
+        }
+        try {
+            ContentResolver cr = getContext().getContentResolver();
+            Uri uri = Uri.parse(uriStr);
+
+            // 1) Read bounds only.
+            android.graphics.BitmapFactory.Options bounds = new android.graphics.BitmapFactory.Options();
+            bounds.inJustDecodeBounds = true;
+            InputStream b = cr.openInputStream(uri);
+            android.graphics.BitmapFactory.decodeStream(b, null, bounds);
+            if (b != null) b.close();
+
+            // 2) Pick an integer downsample factor so the result is >= max.
+            int sample = 1;
+            int longest = Math.max(bounds.outWidth, bounds.outHeight);
+            while (longest / (sample * 2) >= max) sample *= 2;
+
+            android.graphics.BitmapFactory.Options opts = new android.graphics.BitmapFactory.Options();
+            opts.inSampleSize = sample;
+            InputStream in = cr.openInputStream(uri);
+            android.graphics.Bitmap bm = android.graphics.BitmapFactory.decodeStream(in, null, opts);
+            if (in != null) in.close();
+            if (bm == null) {
+                call.reject("decode failed");
+                return;
+            }
+
+            // 3) Scale down to the exact max longest side.
+            int w = bm.getWidth();
+            int h = bm.getHeight();
+            int lng = Math.max(w, h);
+            if (lng > max) {
+                float scale = (float) max / (float) lng;
+                android.graphics.Bitmap scaled =
+                    android.graphics.Bitmap.createScaledBitmap(bm, Math.round(w * scale), Math.round(h * scale), true);
+                if (scaled != bm) bm.recycle();
+                bm = scaled;
+            }
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bm.compress(android.graphics.Bitmap.CompressFormat.JPEG, 82, bos);
+            bm.recycle();
+            String b64 = Base64.encodeToString(bos.toByteArray(), Base64.NO_WRAP);
+            JSObject ret = new JSObject();
+            ret.put("data", b64);
+            ret.put("mime", "image/jpeg");
+            call.resolve(ret);
+        } catch (Exception e) {
+            call.reject("thumbnail failed: " + e.getMessage(), e);
+        }
+    }
+
     /** Is the persisted read permission for this tree URI still held? */
     @PluginMethod
     public void hasAccess(PluginCall call) {

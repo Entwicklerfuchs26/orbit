@@ -5,6 +5,7 @@
   import type { WallpaperManager } from './manager';
   import type { WallpaperItem } from './types';
   import { VIEW_MODES, SORTS, COLOR_FAMILIES, MEDIA_TABS } from './types';
+  import { supportsFolders } from './folders';
   import type { SortBy, MediaTab } from './types';
   import { colorFamily, lightness, rainbowKey } from './color';
   import { applyEffect, EFFECTS, type EffectType } from './effects';
@@ -57,14 +58,15 @@
 
   async function setAsSystem() {
     if (!activeId) return;
-    const url = urls.value[activeId];
-    if (!url) return;
     const target = setHome && setLock ? 'both' : setHome ? 'home' : setLock ? 'lock' : null;
     if (!target) {
       applyMsg = 'Mind. ein Ziel wählen';
       setTimeout(() => (applyMsg = ''), 2500);
       return;
     }
+    // Full resolution for the real wallpaper (the gallery shows thumbnails).
+    const url = await manager.fullUrl(activeId);
+    if (!url) return;
     applying = true;
     applyMsg = '';
     cancelHide();
@@ -73,6 +75,8 @@
       applyMsg = 'Als Hintergrund gesetzt ✓';
     } catch (e) {
       applyMsg = 'Fehler: ' + (e instanceof Error ? e.message : String(e));
+    } finally {
+      URL.revokeObjectURL(url);
     }
     applying = false;
     if (applyMsg.startsWith('Gesetzt') || applyMsg.includes('✓')) {
@@ -637,6 +641,7 @@
   // --- Add overlay (upload + Wallhaven) ---
   let addOpen = $state(false);
   let addTab = $state<'upload' | 'web'>('upload');
+  const foldersSupported = supportsFolders();
   let whFilters = $state<WhFilters>({ ...DEFAULT_WH_FILTERS });
   let whResults = $state<WhResult[]>([]);
   let whPage = $state(1);
@@ -908,6 +913,15 @@
           <Icon name="upload" size={18} /> Wallpaper hochladen
           <input type="file" accept="image/*,video/*" multiple onchange={onUpload} hidden />
         </label>
+        <p class="empty-or">oder</p>
+        {#if foldersSupported}
+          <button class="empty-cta" onclick={() => void manager.addFolder('image')}>
+            <Icon name="folder" size={18} /> Ordner verknüpfen
+          </button>
+        {/if}
+        <button class="empty-cta" onclick={() => { addOpen = true; openWebTab(); }}>
+          <Icon name="search" size={18} /> Online suchen
+        </button>
       </div>
     {:else if items.length === 0}
       <div class="empty">
@@ -1343,6 +1357,8 @@
   .empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: var(--space-2); color: var(--text-muted); }
   .empty h2 { color: var(--text); margin: 0; }
   .upload-cta { margin-top: var(--space-3); display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5); background: var(--color-primary); color: #fff; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
+  .empty-or { margin: var(--space-2) 0 0; font-size: 0.78rem; color: var(--text-faint); }
+  .empty-cta { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5); background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
 
   /* ---- Vertical swipe-select rail (SKWD-style, skewed parallelogram) ---- */
   .rail-zone { position: absolute; top: 0; bottom: 0; width: 60px; z-index: 25; touch-action: none; }

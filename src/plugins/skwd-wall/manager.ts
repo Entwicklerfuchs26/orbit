@@ -18,7 +18,7 @@ import type {
 import { DEFAULT_STATE, TRANSITIONS, RECOLOUR_PALETTES } from './types';
 import { applyEffect } from './effects';
 import { putImage, deleteImage, imageUrl } from './storage';
-import { pickFolder, scanFolder, folderFileUrl, reconnectFolder, forgetFolder } from './folders';
+import { pickFolder, scanFolder, folderFileUrl, folderThumbUrl, reconnectFolder, forgetFolder } from './folders';
 import { generateTheme, seedFromImage, type SchemeCharacter, type Finish } from '../theme/palette';
 import {
   isNativeApp,
@@ -158,10 +158,18 @@ export class WallpaperManager {
     // the user to the home screen on every change. Skip it.
     if (s.liveWallpaper) return;
     if (!((s.randomSetHome || s.randomSetLock) && isNativeApp())) return;
-    const url = this.getUrl(id);
-    if (!url) return;
     const target = s.randomSetHome && s.randomSetLock ? 'both' : s.randomSetHome ? 'home' : 'lock';
-    void setSystemWallpaper(url, target).catch(() => {});
+    void (async () => {
+      const full = await this.fullUrl(id); // full-res, not the gallery thumbnail
+      if (!full) return;
+      try {
+        await setSystemWallpaper(full, target);
+      } catch {
+        /* ignore */
+      } finally {
+        URL.revokeObjectURL(full);
+      }
+    })();
   }
 
   // --- Time scheduling ---
@@ -254,13 +262,25 @@ export class WallpaperManager {
     if (!item) return;
     this.resolving.add(id);
     try {
+      // Gallery display uses a small thumbnail for folder items (low memory,
+      // smooth scroll). IndexedDB blobs are already screen-sized.
       const url = item.folderId
-        ? await folderFileUrl(item.folderId, item.fileName ?? item.name)
+        ? await folderThumbUrl(item.folderId, item.fileName ?? item.name, item.kind ?? 'image')
         : await imageUrl(item.id);
       if (url) this.urls.update((m) => ({ ...m, [id]: url }));
     } finally {
       this.resolving.delete(id);
     }
+  }
+
+  /** A fresh FULL-resolution object URL for applying (system/live wallpaper).
+   *  Caller must revokeObjectURL() when done. Null if unavailable. */
+  async fullUrl(id: string): Promise<string | null> {
+    const item = [...this.state.get().items, ...this.state.get().trashedItems].find((it) => it.id === id);
+    if (!item) return null;
+    return item.folderId
+      ? folderFileUrl(item.folderId, item.fileName ?? item.name)
+      : imageUrl(item.id);
   }
 
   /** Free a folder-backed object URL once its tile scrolls far off screen, so
@@ -690,29 +710,52 @@ export class WallpaperManager {
 
     if (s.randomEnabled) {
       const pool = this.rotationPool().slice(0, 20);
-      const urls = pool.map((i) => this.getUrl(i.id)).filter((u): u is string => !!u);
-      if (urls.length === 0) return;
+      if (pool.length === 0) return;
       const sig = `rotate:${pool.map((i) => i.id).join(',')}:${s.randomIntervalSec}`;
       if (sig === this.lastLiveSig) return;
       this.lastLiveSig = sig;
       setTimeout(() => {
-        void setLivePool(urls, Math.max(2, s.randomIntervalSec) * 1000, true).catch(() => {
-          this.lastLiveSig = null;
-        });
+        void (async () => {
+          // Resolve full-res URLs (not gallery thumbnails) for the pool, send,
+          // then revoke — the native side has downscaled+copied them by now.
+          const fulls = (await Promise.all(pool.map((i) => this.fullUrl(i.id)))).filter(
+            (u): u is string => !!u,
+          );
+          if (fulls.length === 0) {
+            this.lastLiveSig = null;
+            return;
+          }
+          try {
+            await setLivePool(fulls, Math.max(2, s.randomIntervalSec) * 1000, true);
+          } catch {
+            this.lastLiveSig = null;
+          } finally {
+            for (const u of fulls) URL.revokeObjectURL(u);
+          }
+        })();
       }, 300);
     } else {
       const active = this.getActive();
       if (!active) return;
-      const url = this.getUrl(active.id);
-      if (!url) return;
       const sig = `single:${active.id}`;
       if (sig === this.lastLiveSig) return;
       this.lastLiveSig = sig;
       const kind = active.kind ?? 'image';
       setTimeout(() => {
-        void setLiveWallpaperMedia(url, kind).catch(() => {
-          this.lastLiveSig = null;
-        });
+        void (async () => {
+          const full = await this.fullUrl(active.id);
+          if (!full) {
+            this.lastLiveSig = null;
+            return;
+          }
+          try {
+            await setLiveWallpaperMedia(full, kind);
+          } catch {
+            this.lastLiveSig = null;
+          } finally {
+            URL.revokeObjectURL(full);
+          }
+        })();
       }, 300);
     }
   }

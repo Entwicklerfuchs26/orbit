@@ -217,6 +217,14 @@ einheitliches Settings-System. Reine Web-/Struktur-Änderungen → nur App neu l
 - [ ] Einstellungen haben jetzt **Reiter/Kategorien** oben (Ansicht · Darstellung · Automatik · Verhalten · Quellen · Daten) — nicht mehr ein langer Scroll
 - [ ] Reiter wechseln zeigt nur die jeweilige Kategorie
 
+### 24. Thumbnails + Einrichtungs-Buttons (neue APK)
+*Ordner-Bilder werden jetzt als verkleinerte Thumbnails angezeigt (wie SKWD) — kein
+4K im Speicher mehr. **Neue APK** (native Thumbnail-Methode).*
+- [ ] **Ordner-Scrollen flüssig**: große Ordner ruckeln nicht mehr (Galerie zeigt kleine Thumbnails, nativ heruntergerechnet)
+- [ ] **Als Hintergrund setzen** nutzt weiterhin die **volle Auflösung** (Thumbnail nur in der Galerie) — Wallpaper ist scharf
+- [ ] **Leerer Zustand / erstes Mal**: unter „Wallpaper hochladen" stehen jetzt auch **„Ordner verknüpfen"** und **„Online suchen"** — alle drei Wege direkt bei der Einrichtung
+- [ ] Live-Wallpaper / Auto-Wechsel aus einem Ordner weiterhin in voller Qualität
+
 ### 23. Speicher-Backend Teil 2: nativer Ordnerzugriff am Handy (SAF) — braucht APK-Rebuild
 *Native Android-Ordnerwahl (Storage Access Framework). **Neuer nativer Code → APK
 muss neu gebaut + installiert werden** (Web-Reload reicht NICHT). Bis dahin scheitert

@@ -17,6 +17,7 @@ interface FolderAccessNative {
   pickFolder(): Promise<{ uri?: string; name?: string; cancelled?: boolean }>;
   listFolder(o: { uri: string; kind: string }): Promise<{ files: { name: string; uri: string }[] }>;
   readFile(o: { uri: string }): Promise<{ data: string; mime: string }>;
+  thumbnail(o: { uri: string; max: number }): Promise<{ data: string; mime: string }>;
   hasAccess(o: { uri: string }): Promise<{ granted: boolean }>;
 }
 const Native = registerPlugin<FolderAccessNative>('FolderAccess');
@@ -193,6 +194,48 @@ export async function folderFileUrl(folderId: string, locator: string): Promise<
     return URL.createObjectURL(file);
   } catch {
     return null;
+  }
+}
+
+/** Resolve a small DOWNSCALED thumbnail for gallery display (low memory, smooth
+ *  scrolling). Full resolution is only loaded via folderFileUrl() when applying. */
+export async function folderThumbUrl(
+  folderId: string,
+  locator: string,
+  kind: 'image' | 'video',
+  max = 420,
+): Promise<string | null> {
+  // Videos: no cheap frame thumbnail yet → fall back to the full file.
+  if (kind === 'video') return folderFileUrl(folderId, locator);
+  if (isNative()) {
+    try {
+      const { data, mime } = await Native.thumbnail({ uri: locator, max });
+      const blob = await (await fetch(`data:${mime};base64,${data}`)).blob();
+      return URL.createObjectURL(blob);
+    } catch {
+      return folderFileUrl(folderId, locator);
+    }
+  }
+  // Web: decode-and-downscale with createImageBitmap (efficient) → canvas → blob.
+  const full = await folderFileUrl(folderId, locator);
+  if (!full) return null;
+  try {
+    const resp = await fetch(full);
+    const srcBlob = await resp.blob();
+    const bmp = await createImageBitmap(srcBlob);
+    const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const w = Math.max(1, Math.round(bmp.width * scale));
+    const h = Math.max(1, Math.round(bmp.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext('2d')?.drawImage(bmp, 0, 0, w, h);
+    bmp.close();
+    const thumb = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', 0.82));
+    URL.revokeObjectURL(full);
+    return thumb ? URL.createObjectURL(thumb) : full;
+  } catch {
+    return full;
   }
 }
 
