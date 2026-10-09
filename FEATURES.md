@@ -303,6 +303,19 @@ die Startseite selbst wählen. Reine Web-Änderung → nur App neu laden.*
 - [ ] Alle Tabs schließen + App neu laden → bei fester Startseite öffnet genau diese; bei **Letzte Sitzung** bleibt leer (bzw. kommt später das Onboarding)
 - [ ] Frischer Start (neues Profil / leerer Speicher) landet automatisch auf SKWD Wall statt auf leerem Bildschirm
 
+## 19. Kern-Phase · Block 3 — Onboarding (bitte testen)
+*Beim allerersten Start (leerer Speicher) kommt ein Einrichtungs-Dialog: Bundle/Plugins
+wählen. Bestehende Tester sehen ihn NICHT (werden als „onboarded" markiert). Zum echten
+Testen: im Browser Anwendungsdaten/localStorage leeren und neu laden.*
+
+- [ ] Frischer Start zeigt **„Willkommen bei Orbit"** mit Bundle-Karten
+- [ ] **SKWD Wall** ist als **Empfohlen** markiert und vorausgewählt
+- [ ] **Wallpaper + Design** aktiviert zusätzlich das Design-Plugin
+- [ ] **Eigenes** klappt eine Plugin-Liste mit Haken auf (einzeln wählbar)
+- [ ] **Los geht's** ist aus, wenn nichts gewählt ist; sonst aktiviert es die Plugins und landet direkt auf der Startseite
+- [ ] Nach Abschluss erscheint der Dialog bei normalem Neuladen **nicht mehr**
+- [ ] Bestehende Installation (schon Plugins drin) zeigt den Dialog **gar nicht**
+
 ## Bekannte Kleinigkeiten
 - Foto-Effekte waren bei großen Bildern leicht verpixelt → Grenze auf 4K erhöht (bitte erneut prüfen).
 - **Video-Wallpaper in der App ruckelt (offen, später fixen):** Ein Video als

@@ -6,6 +6,7 @@ export type {
   PluginConfig,
   AppConfig,
   NavigationItem,
+  Bundle,
   Command,
   SettingTab,
   PlatformInfo,

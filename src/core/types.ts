@@ -31,6 +31,20 @@ export interface PluginConfig {
   [key: string]: unknown;
 }
 
+/**
+ * A preset: a named set of plugins to enable on first run. Defined by the
+ * composition root (main.ts), not the core — the core stays feature-free and
+ * never names a specific plugin. Shown in the onboarding dialog.
+ */
+export interface Bundle {
+  id: string;
+  name: string;
+  description: string;
+  /** Plugin ids to enable. */
+  plugins: string[];
+  recommended?: boolean;
+}
+
 export interface AppConfig {
   plugins: Record<string, PluginConfig>;
 }

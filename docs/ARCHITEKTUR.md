@@ -71,7 +71,14 @@ Nextcloud, Projektmanagement, Avatar) sind Plugins.
   Settings → Allgemein → Start (`app.getStartPagePref` / `setStartPagePref`,
   `LAST_SESSION` = Sitzung wiederherstellen). Groundwork für die spätere eigene
   Launcher-Ansicht + Gesten-Hooks.
-- **Offen / als Nächstes (Kern-Phase):** Onboarding,
+- **Onboarding (Kern-Phase Block 3, erledigt):** Beim ersten Start (leere Config)
+  zeigt die Shell `Onboarding.svelte` — ein Bundle/Plugin-Picker. Bundles sind
+  Presets (Plugin-Listen), definiert in `main.ts` (Composition Root, nicht im Kern —
+  der Kern nennt nie ein konkretes Plugin), plus „Eigenes" (freie Auswahl).
+  Abschluss: `app.completeOnboarding(ids)` aktiviert die Plugins, setzt
+  `core.onboarded` und öffnet die Startseite. Kein Auto-Seed mehr; Bestandstester
+  werden beim Boot als onboarded markiert. `Bundle`-Typ im Kern (`types.ts`).
+- **Offen / als Nächstes (Kern-Phase):**
   Plugin-Store (JS-Plugins, evtl. GitHub), eigenständige teilbare APK (bringt kein
   Plugin mit), danach PC↔Handy-Sync. Deklarative Plugin-Verwaltung auf dem PC
   (NixOS/Home-Manager) ist angedacht.

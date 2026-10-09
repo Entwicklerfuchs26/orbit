@@ -3,6 +3,7 @@ import { mount } from 'svelte';
 import { SojusApp } from '@core/app';
 import Shell from '@shell/Shell.svelte';
 import type { PluginModule } from '@core/loader';
+import type { Bundle } from '@core/index';
 import { installCapabilities } from '@platform/index';
 
 // Phase 1: plugins are statically imported. Later phases load them from
@@ -15,6 +16,25 @@ const modules: PluginModule[] = [
   { manifest: welcomeManifest, default: WelcomePlugin },
   { manifest: themeManifest, default: ThemePlugin },
   { manifest: skwdWallManifest, default: SkwdWallPlugin },
+];
+
+// Preset bundles for first-run onboarding. Defined here (composition root), not
+// in the core — the core never names a specific plugin. "Eigenes" (free pick)
+// is added by the onboarding dialog itself.
+const bundles: Bundle[] = [
+  {
+    id: 'wall',
+    name: 'SKWD Wall',
+    description: 'Wallpaper-Picker mit eigenen Bildern + Wallhaven, Ansichtsmodi und automatischem Theme. Die Sternfunktion.',
+    plugins: ['skwd-wall'],
+    recommended: true,
+  },
+  {
+    id: 'wall-design',
+    name: 'Wallpaper + Design',
+    description: 'SKWD Wall plus das Design-Plugin für eigene Theme-Sets (Farbe, Schrift, Dichte).',
+    plugins: ['skwd-wall', 'theme'],
+  },
 ];
 
 async function main() {
@@ -34,16 +54,18 @@ async function main() {
     app.config.save();
   }
 
-  // First-run seed: welcome + SKWD Wall (the star). Theme-color plugin stays
-  // registered but off by default to avoid two theming sources fighting.
-  if (Object.keys(app.config.getAll().plugins).length === 0) {
-    app.config.enablePlugin('welcome');
-    app.config.enablePlugin('skwd-wall');
-  }
-  // Dev convenience: ensure the plugin is on for existing testers whose config
-  // predates it.
-  if (app.config.getPluginConfig('skwd-wall') === undefined) {
-    app.config.enablePlugin('skwd-wall');
+  // First run = truly empty config. Fresh installs go through onboarding (the
+  // bundle picker) instead of an auto-seed. Existing testers (config already
+  // populated) are marked onboarded so the dialog never interrupts them, and
+  // keep the dev convenience of having SKWD Wall on.
+  const fresh = Object.keys(app.config.getAll().plugins).length === 0;
+  if (!fresh) {
+    if (app.config.getPluginConfig('skwd-wall') === undefined) {
+      app.config.enablePlugin('skwd-wall');
+    }
+    if (app.config.get('core', 'onboarded') === undefined) {
+      app.config.set('core', 'onboarded', true);
+    }
   }
 
   // Install the platform-specific capabilities BEFORE plugins load, so a plugin
@@ -54,7 +76,7 @@ async function main() {
 
   mount(Shell, {
     target: document.getElementById('app')!,
-    props: { app },
+    props: { app, bundles },
   });
 
   // Expose for debugging in the browser console.

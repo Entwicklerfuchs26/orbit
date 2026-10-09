@@ -90,6 +90,24 @@ export class SojusApp implements IApp {
     this.workspace.activeTabId.subscribe(persist);
   }
 
+  /** Whether first-run onboarding is done (false shows the bundle picker). */
+  isOnboarded(): boolean {
+    return this.config.get<boolean>('core', 'onboarded') ?? false;
+  }
+
+  /**
+   * Finish onboarding: enable the chosen plugins (loads them, registering their
+   * views/nav/commands), mark onboarding done, and open the resulting home.
+   */
+  async completeOnboarding(pluginIds: string[]): Promise<void> {
+    for (const id of pluginIds) {
+      await this.plugins.setEnabled(id, true);
+    }
+    this.config.set('core', 'onboarded', true);
+    const startId = this.resolveStartPageId();
+    if (startId && this.workspace.hasView(startId)) this.workspace.openView(startId);
+  }
+
   /** The view id to open as the home, or null for "Letzte Sitzung" / none. */
   private resolveStartPageId(): string | null {
     const pref = this.config.get<string>('core', 'startPage');

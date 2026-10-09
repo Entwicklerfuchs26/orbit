@@ -6,11 +6,17 @@
   import ViewHost from './ViewHost.svelte';
   import CommandPalette from './CommandPalette.svelte';
   import Settings from './Settings.svelte';
+  import Onboarding from './Onboarding.svelte';
+  import type { Bundle } from '@core/index';
 
   interface Props {
     app: SojusApp;
+    bundles?: Bundle[];
   }
-  let { app }: Props = $props();
+  let { app, bundles = [] }: Props = $props();
+
+  // First run shows the bundle picker; it enables plugins, then this hides.
+  let showOnboarding = $state(!app.isOnboarded());
 
   let collapsed = $state(app.platform.isMobile);
   let paletteOpen = $state(false);
@@ -80,6 +86,10 @@
 
 <CommandPalette {app} open={paletteOpen} onClose={() => (paletteOpen = false)} />
 <Settings {app} open={settingsOpen} onClose={() => (settingsOpen = false)} />
+
+{#if showOnboarding}
+  <Onboarding {app} {bundles} onDone={() => (showOnboarding = false)} />
+{/if}
 
 <style>
   .shell {
