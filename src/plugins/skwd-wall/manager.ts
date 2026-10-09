@@ -32,6 +32,9 @@ export class WallpaperManager {
   readonly state: Store<WallpaperState>;
   /** id → object URL cache for display, reactive. */
   readonly urls = new Store<Record<string, string>>({});
+  /** id → sharper downscaled preview URL used ONLY for the app background. */
+  private bgCache = new Map<string, string>();
+  private bgResolving = new Set<string>();
   private unsubResolved?: () => void;
   private idCounter = 0;
 
@@ -102,6 +105,8 @@ export class WallpaperManager {
     this.stopRotation();
     this.stopScheduler();
     for (const url of Object.values(this.urls.get())) URL.revokeObjectURL(url);
+    for (const url of this.bgCache.values()) URL.revokeObjectURL(url);
+    this.bgCache.clear();
   }
 
   /**
@@ -111,6 +116,8 @@ export class WallpaperManager {
    */
   async clearAllData(): Promise<void> {
     for (const url of Object.values(this.urls.get())) URL.revokeObjectURL(url);
+    for (const url of this.bgCache.values()) URL.revokeObjectURL(url);
+    this.bgCache.clear();
     this.urls.set({});
     await clearAllImages();
     this.state.set({ ...DEFAULT_STATE });
@@ -488,7 +495,11 @@ export class WallpaperManager {
   applyActive(): void {
     const s = this.state.get();
     const active = this.getActive();
-    const url = active ? (this.getUrl(active.id) ?? null) : null;
+    // Background uses a sharper downscaled preview (not the tiny gallery
+    // thumbnail). Resolve it lazily; until ready, fall back to the thumbnail as
+    // an instant placeholder, then re-apply when the preview arrives.
+    if (active && !this.bgCache.has(active.id)) void this.resolveBg(active.id);
+    const url = active ? (this.bgCache.get(active.id) ?? this.getUrl(active.id) ?? null) : null;
     const type = s.randomShader ? this.randomGpuType() : s.transitionType;
     this.app.theme.setWallpaper({
       url,
@@ -499,6 +510,28 @@ export class WallpaperManager {
     this.applyTheme();
     this.applyUiScale();
     this.applyVideoAudio();
+  }
+
+  /** Resolve the sharper background preview for one item, then re-apply if active. */
+  private async resolveBg(id: string): Promise<void> {
+    if (this.bgCache.has(id) || this.bgResolving.has(id)) return;
+    const item = [...this.state.get().items, ...this.state.get().trashedItems].find((it) => it.id === id);
+    if (!item) return;
+    this.bgResolving.add(id);
+    try {
+      // Folder images: a 1600px downscale is sharp on a phone yet far lighter
+      // than full res. IndexedDB uploads are already screen-sized. Videos reuse
+      // the (full) file the thumbnail path returns.
+      const url = item.folderId
+        ? ((await this.folders?.thumbUrl(item.folderId, item.fileName ?? item.name, item.kind ?? 'image', 1600)) ?? null)
+        : await imageUrl(item.id);
+      if (url) {
+        this.bgCache.set(id, url);
+        if (id === this.state.get().activeId) this.applyActive();
+      }
+    } finally {
+      this.bgResolving.delete(id);
+    }
   }
 
   /** Regenerate + apply the full theme (chrome tokens + palette roles). */

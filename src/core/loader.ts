@@ -127,8 +127,20 @@ export class PluginLoader {
    * Returns a result instead of throwing so the store UI can show the error.
    */
   async loadFromUrl(url: string): Promise<{ ok: boolean; id?: string; error?: string }> {
+    let blobUrl: string | null = null;
     try {
-      const mod = (await import(/* @vite-ignore */ url)) as {
+      // Fetch the SOURCE and import it via a blob URL, rather than importing the
+      // remote URL directly. Two reasons: (1) GitHub raw serves .js as
+      // text/plain + nosniff, which the browser refuses to import as a module —
+      // a blob with the correct MIME sidesteps that; (2) `cache: 'no-store'`
+      // guarantees the freshest build every load (CDN query-string cache-busting
+      // is unreliable — jsDelivr ignores it). The plugin bundle is self-contained
+      // (no bare imports), so a blob import resolves with no import map.
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) return { ok: false, error: `Plugin-Download fehlgeschlagen (HTTP ${res.status}).` };
+      const code = await res.text();
+      blobUrl = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+      const mod = (await import(/* @vite-ignore */ blobUrl)) as {
         manifest?: PluginManifest;
         default?: new (app: App, manifest: PluginManifest) => Plugin;
       };
@@ -143,6 +155,8 @@ export class PluginLoader {
       return { ok: true, id: mod.manifest.id };
     } catch (e) {
       return { ok: false, error: (e as Error)?.message ?? String(e) };
+    } finally {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
     }
   }
 

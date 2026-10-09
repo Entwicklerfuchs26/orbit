@@ -49,17 +49,17 @@ export interface SourceConfig {
 }
 
 /**
- * Curated default source — served via jsDelivr (CDN over GitHub), NOT
- * raw.githubusercontent: raw serves .js as text/plain, which the browser
- * refuses to `import()` as a module (MIME check). jsDelivr serves the correct
- * application/javascript + permissive CORS. Relative `main` paths in the
- * registry resolve against this URL, so plugin code loads from jsDelivr too.
+ * Curated default source — GitHub raw. We fetch everything (registry + plugin
+ * code) via `fetch` + blob-import (see loader.loadFromUrl), so raw's text/plain
+ * MIME is a non-issue, CORS is `*`, and raw revalidates in ~5 min (far fresher
+ * than jsDelivr's branch cache, which also ignores query-string cache-busting).
+ * Relative `main` paths resolve against this URL → plugin code loads from raw too.
  */
 export const DEFAULT_SOURCES: SourceConfig[] = [
   {
     id: 'orbit-official',
     label: 'Orbit (offiziell)',
-    url: 'https://cdn.jsdelivr.net/gh/Entwicklerfuchs26/orbit-plugins@main/registry.json',
+    url: 'https://raw.githubusercontent.com/Entwicklerfuchs26/orbit-plugins/main/registry.json',
   },
 ];
 
@@ -67,7 +67,7 @@ const NS = 'core';
 
 /** Fetch + normalise a manifest list, resolving relative `main` URLs. */
 async function fetchManifestList(url: string): Promise<StorePluginEntry[]> {
-  const res = await fetch(url, { cache: 'no-cache' });
+  const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = (await res.json()) as StorePluginEntry[] | { plugins?: StorePluginEntry[] };
   const list = Array.isArray(data) ? data : (data.plugins ?? []);
@@ -152,11 +152,8 @@ export class PluginStore {
 
   /** Install (or update) a plugin: remember it, enable it, load its code now. */
   async install(entry: StorePluginEntry): Promise<{ ok: boolean; error?: string }> {
-    // Cache-bust the fetch so a (re)install always gets the current build, even
-    // if the browser cached the module URL. The CLEAN url is stored for boot
-    // (cacheable). Date.now is fine here — app runtime, not a workflow.
-    const sep = entry.main.includes('?') ? '&' : '?';
-    const result = await this.loader.loadFromUrl(`${entry.main}${sep}t=${Date.now()}`);
+    // loadFromUrl fetches with cache:'no-store' → always the current build.
+    const result = await this.loader.loadFromUrl(entry.main);
     if (!result.ok) return { ok: false, error: result.error };
     const list = this.getInstalled().filter((e) => e.id !== entry.id);
     list.push(entry);
